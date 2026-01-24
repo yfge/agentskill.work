@@ -1,5 +1,10 @@
 # Tasks
 
+- [ ] Add skill detail page with SEO/GEO (metadata + JSON-LD)
+- [ ] Add skill detail API endpoint (by owner/repo)
+- [ ] Track per-skill PV/UV in Redis (no UI display)
+- [ ] Add skill detail URLs to sitemap (DB-driven, capped)
+- [ ] Add INTERNAL_API_URL for server-side fetches
 - [x] Add GitHub API pagination
 - [ ] Add GitHub rate-limit/backoff handling
 - [ ] Add unit tests for GitHub sync (mock httpx responses)
