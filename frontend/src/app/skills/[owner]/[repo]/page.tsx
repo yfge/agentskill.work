@@ -10,8 +10,8 @@ import { normalizeClaudeSkill } from "@/lib/text";
 import { Skill } from "@/types/skill";
 
 type PageProps = {
-  params: { owner: string; repo: string };
-  searchParams?: { lang?: string };
+  params: Promise<{ owner: string; repo: string }> | { owner: string; repo: string };
+  searchParams?: Promise<{ lang?: string }> | { lang?: string };
 };
 
 function resolveLanguage(value?: string): Language {
@@ -33,8 +33,10 @@ export async function generateMetadata({
   params,
   searchParams,
 }: PageProps): Promise<Metadata> {
-  const lang = resolveLanguage(searchParams?.lang);
-  const skill = await fetchSkill(params.owner, params.repo);
+  const resolvedParams = await params;
+  const resolvedSearch = searchParams ? await searchParams : undefined;
+  const lang = resolveLanguage(resolvedSearch?.lang);
+  const skill = await fetchSkill(resolvedParams.owner, resolvedParams.repo);
   if (!skill) {
     return {
       title: "Skill not found - AgentSkill Hub",
@@ -47,8 +49,8 @@ export async function generateMetadata({
       : skill.description || skill.description_zh || "Claude Skill detail";
 
   const canonical = `https://agentskill.work/skills/${encodeURIComponent(
-    params.owner,
-  )}/${encodeURIComponent(params.repo)}`;
+    resolvedParams.owner,
+  )}/${encodeURIComponent(resolvedParams.repo)}`;
 
   return {
     title: `${skill.full_name} - AgentSkill Hub`,
@@ -81,8 +83,10 @@ export default async function SkillDetailPage({
   params,
   searchParams,
 }: PageProps) {
-  const lang = resolveLanguage(searchParams?.lang);
-  const skill = await fetchSkill(params.owner, params.repo);
+  const resolvedParams = await params;
+  const resolvedSearch = searchParams ? await searchParams : undefined;
+  const lang = resolveLanguage(resolvedSearch?.lang);
+  const skill = await fetchSkill(resolvedParams.owner, resolvedParams.repo);
   if (!skill) {
     notFound();
   }
@@ -129,8 +133,8 @@ export default async function SkillDetailPage({
           </p>
         </div>
         <SkillLangSwitch
-          owner={params.owner}
-          repo={params.repo}
+          owner={resolvedParams.owner}
+          repo={resolvedParams.repo}
           initialLang={lang}
         />
       </div>
