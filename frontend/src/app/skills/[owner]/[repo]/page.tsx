@@ -10,8 +10,8 @@ import { normalizeClaudeSkill } from "@/lib/text";
 import { Skill } from "@/types/skill";
 
 type PageProps = {
-  params: Promise<{ owner: string; repo: string }> | { owner: string; repo: string };
-  searchParams?: Promise<{ lang?: string }> | { lang?: string };
+  params: Promise<{ owner: string; repo: string }>;
+  searchParams?: Promise<{ lang?: string }>;
 };
 
 function resolveLanguage(value?: string): Language {
