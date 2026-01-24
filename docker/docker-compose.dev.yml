@@ -1,0 +1,70 @@
+version: "3.9"
+services:
+  agentskill-mysql:
+    image: mysql:8.0
+    container_name: agentskill-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: agentskill
+      MYSQL_DATABASE: agentskill
+      MYSQL_USER: agentskill
+      MYSQL_PASSWORD: agentskill
+    command: ["mysqld", "--character-set-server=utf8mb4", "--collation-server=utf8mb4_unicode_ci"]
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+
+  agentskill-redis:
+    image: redis:7-alpine
+    container_name: agentskill-redis
+    restart: always
+    volumes:
+      - ./redis_data:/data
+
+  agentskill-backend:
+    container_name: agentskill-backend
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.backend.dev
+    env_file:
+      - .env
+    environment:
+      UVICORN_ARGS: "--reload"
+    working_dir: /app/backend
+    command: ["/bin/sh", "/app/backend-entrypoint.sh"]
+    volumes:
+      - ../backend:/app/backend
+      - ./backend-entrypoint.sh:/app/backend-entrypoint.sh:ro
+    depends_on:
+      - agentskill-mysql
+      - agentskill-redis
+
+  agentskill-frontend:
+    container_name: agentskill-frontend
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.frontend.dev
+    env_file:
+      - .env
+    working_dir: /app/frontend
+    command: ["npm", "run", "dev", "--", "-H", "0.0.0.0", "-p", "3000"]
+    volumes:
+      - ../frontend:/app/frontend
+      - /app/frontend/node_modules
+      - /app/frontend/.next
+    depends_on:
+      - agentskill-backend
+
+  agentskill-nginx:
+    container_name: agentskill-nginx
+    image: nginx:latest
+    depends_on:
+      - agentskill-frontend
+      - agentskill-backend
+    ports:
+      - "8083:8080"
+    volumes:
+      - ./nginx.dev.conf:/etc/nginx/nginx.conf:ro
+
+volumes:
+  mysql_data:
+  redis_data:

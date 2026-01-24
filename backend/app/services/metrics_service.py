@@ -1,0 +1,46 @@
+import logging
+from typing import Tuple
+
+import redis
+
+from app.core.config import Settings
+
+logger = logging.getLogger(__name__)
+
+PV_KEY = "metrics:pv"
+UV_KEY = "metrics:uv"
+
+
+def _get_client(settings: Settings) -> redis.Redis | None:
+    try:
+        return redis.Redis.from_url(settings.redis_url, decode_responses=True)
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("redis init failed: %s", exc)
+        return None
+
+
+def track_visit(settings: Settings, visitor_id: str | None) -> None:
+    client = _get_client(settings)
+    if not client:
+        return
+    try:
+        pipe = client.pipeline()
+        pipe.incr(PV_KEY, 1)
+        if visitor_id:
+            pipe.sadd(UV_KEY, visitor_id)
+        pipe.execute()
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("track visit failed: %s", exc)
+
+
+def get_metrics(settings: Settings) -> Tuple[int, int]:
+    client = _get_client(settings)
+    if not client:
+        return 0, 0
+    try:
+        pv = int(client.get(PV_KEY) or 0)
+        uv = int(client.scard(UV_KEY))
+        return pv, uv
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("get metrics failed: %s", exc)
+        return 0, 0

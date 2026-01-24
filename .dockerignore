@@ -1,0 +1,22 @@
+.git
+.gitignore
+.DS_Store
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.pytest_cache/
+
+# Node
+node_modules/
+.next/
+
+# Logs
+*.log
+
+# Local data
+/docker/mysql_data/
+/docker/redis_data/

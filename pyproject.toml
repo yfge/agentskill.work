@@ -1,0 +1,12 @@
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+exclude = ["backend/alembic/versions"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
