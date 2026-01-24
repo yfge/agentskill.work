@@ -117,6 +117,7 @@ cp .env.example .env
 # 修改 .env 中的数据库/密钥/配置
 
 ./build_prod.sh
+./build_prod_images.sh
 docker compose -f docker-compose.prod.yml up -d
 ```
 

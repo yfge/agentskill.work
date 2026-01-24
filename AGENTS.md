@@ -19,6 +19,7 @@ This file provides guidance to all coding agents (Claude Code, Codex, Gemini, Cu
 | Run code quality checks | `pre-commit run -a` | repo root |
 | Start all services (Docker dev) | `./dev_in_docker.sh` | `docker/` |
 | Build production images | `./build_prod.sh` | `docker/` |
+| Build + push production images | `./build_prod_images.sh` | `docker/` |
 | Start production stack | `docker compose -f docker-compose.prod.yml up -d` | `docker/` |
 
 ## MUST DO Before Any Commit
