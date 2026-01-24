@@ -8,6 +8,7 @@
 
 - 自动同步 GitHub 热门 Claude Skill 项目并入库
 - 首页列表展示 + 搜索
+- 项目详情页（SEO/GEO 优化，支持跳转 GitHub）
 - 后端 API 提供同步与检索能力
 
 ## 技术栈
@@ -82,6 +83,7 @@ npm run dev
   - `GITHUB_MAX_RESULTS`：单次同步最多入库数量
   - `ENABLE_TRANSLATION`：是否启用翻译（DeepSeek）
   - `DEEPSEEK_API_KEY` / `DEEPSEEK_API_URL` / `DEEPSEEK_MODEL`
+  - `INTERNAL_API_URL`：服务端渲染时访问后端 API（如 `http://agentskill-backend:8000`）
 
 ## 多语言（中英文）
 
