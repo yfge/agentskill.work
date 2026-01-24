@@ -53,22 +53,22 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
   ];
 
-  const skillEntries = items
-    .map((skill) => {
-      const [owner, repo] = skill.full_name.split("/");
-      if (!owner || !repo) {
-        return null;
-      }
-      return {
-        url: `https://agentskill.work/skills/${encodeURIComponent(
-          owner,
-        )}/${encodeURIComponent(repo)}`,
-        lastModified: skill.last_pushed_at || skill.fetched_at || now,
-        changeFrequency: "daily",
-        priority: 0.8,
-      };
-    })
-    .filter((item): item is MetadataRoute.Sitemap[number] => item !== null);
+  const skillEntries: MetadataRoute.Sitemap = [];
+  for (const skill of items) {
+    const [owner, repo] = skill.full_name.split("/");
+    if (!owner || !repo) {
+      continue;
+    }
+    const lastModified = skill.last_pushed_at ?? skill.fetched_at ?? now;
+    skillEntries.push({
+      url: `https://agentskill.work/skills/${encodeURIComponent(
+        owner,
+      )}/${encodeURIComponent(repo)}`,
+      lastModified,
+      changeFrequency: "daily",
+      priority: 0.8,
+    });
+  }
 
   return [...baseEntries, ...skillEntries];
 }
