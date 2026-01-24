@@ -27,3 +27,11 @@ def search_skills(
     )
 
     return total, items
+
+
+def get_skill_by_full_name(db: Session, full_name: str) -> Skill | None:
+    return (
+        db.query(Skill)
+        .filter(func.lower(Skill.full_name) == full_name.lower())
+        .first()
+    )

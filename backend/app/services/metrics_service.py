@@ -9,6 +9,8 @@ logger = logging.getLogger(__name__)
 
 PV_KEY = "metrics:pv"
 UV_KEY = "metrics:uv"
+SKILL_PV_KEY = "metrics:skill:{skill_id}:pv"
+SKILL_UV_KEY = "metrics:skill:{skill_id}:uv"
 
 
 def _get_client(settings: Settings) -> redis.Redis | None:
@@ -44,3 +46,19 @@ def get_metrics(settings: Settings) -> Tuple[int, int]:
     except Exception as exc:  # noqa: BLE001
         logger.warning("get metrics failed: %s", exc)
         return 0, 0
+
+
+def track_skill_visit(
+    settings: Settings, skill_id: int, visitor_id: str | None
+) -> None:
+    client = _get_client(settings)
+    if not client:
+        return
+    try:
+        pipe = client.pipeline()
+        pipe.incr(SKILL_PV_KEY.format(skill_id=skill_id), 1)
+        if visitor_id:
+            pipe.sadd(SKILL_UV_KEY.format(skill_id=skill_id), visitor_id)
+        pipe.execute()
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("track skill visit failed: %s", exc)
