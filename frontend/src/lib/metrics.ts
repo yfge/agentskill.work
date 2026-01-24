@@ -14,6 +14,19 @@ export async function trackVisit(visitorId: string): Promise<void> {
   });
 }
 
+export async function trackSkillVisit(
+  skillId: number,
+  visitorId: string,
+): Promise<void> {
+  const url = `${getBase()}/metrics/skills/${skillId}/track`;
+  await fetch(url, {
+    method: "POST",
+    headers: {
+      "X-Visitor-Id": visitorId,
+    },
+  });
+}
+
 export async function fetchMetrics(): Promise<{ pv: number; uv: number }> {
   const url = `${getBase()}/metrics`;
   const res = await fetch(url, { cache: "no-store" });

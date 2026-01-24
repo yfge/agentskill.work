@@ -1,4 +1,5 @@
 import { Language } from "@/lib/i18n";
+import { normalizeClaudeSkill } from "@/lib/text";
 import { Skill } from "@/types/skill";
 import { SkillCard } from "@/components/SkillCard";
 
@@ -21,6 +22,7 @@ export function SkillList({
         <SkillCard
           key={skill.id}
           skill={skill}
+          lang={lang}
           descriptionOverride={
             lang === "zh"
               ? normalizeClaudeSkill(skill.description_zh || skill.description)
@@ -30,13 +32,4 @@ export function SkillList({
       ))}
     </div>
   );
-}
-
-function normalizeClaudeSkill(text?: string | null) {
-  if (!text) {
-    return text;
-  }
-  return text
-    .replace(/Claude\s*技能/gi, "Claude Skill")
-    .replace(/克劳德技能/gi, "Claude Skill");
 }

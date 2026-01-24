@@ -1,12 +1,12 @@
+import { getApiBase } from "@/lib/apiBase";
 import { SkillListResponse } from "@/types/skill";
-
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "/api";
 
 export async function fetchSkills(
   query: string,
   options: { limit?: number; offset?: number } = {},
 ): Promise<SkillListResponse> {
-  const base = API_BASE.endsWith("/") ? API_BASE.slice(0, -1) : API_BASE;
+  const base = getApiBase();
+  const trimmedBase = base.endsWith("/") ? base.slice(0, -1) : base;
   const params = new URLSearchParams();
   if (query) {
     params.set("q", query);
@@ -18,7 +18,7 @@ export async function fetchSkills(
     params.set("offset", String(options.offset));
   }
   const qs = params.toString();
-  const url = `${base}/skills${qs ? `?${qs}` : ""}`;
+  const url = `${trimmedBase}/skills${qs ? `?${qs}` : ""}`;
 
   const response = await fetch(url, { cache: "no-store" });
 
