@@ -143,7 +143,7 @@
 
 ### 9) GEO：补充 llms-full.txt（更完整机器可读说明）
 
-- [ ] 新增 `/llms-full.txt`
+- [x] 新增 `/llms-full.txt`
   - 建议包含：
     - 数据结构完整 schema（字段解释、类型、取值范围）
     - API 分页/排序语义（limit/offset、默认排序）

@@ -1,0 +1,114 @@
+# AgentSkill Hub (agentskill.work) - LLM / Agent Reference (Full)
+
+This file is a machine-friendly reference for agents and LLM-based tools that want to understand, cite, or integrate
+with AgentSkill Hub.
+
+AgentSkill Hub is a curated, searchable index of trending Claude Skill GitHub repositories. Data is aggregated from
+GitHub metadata and is stored locally for fast search, paging, and SEO-friendly pages.
+
+Important term policy:
+- Keep the proper term "Claude Skill" as-is. Do NOT translate it (e.g., do not write "claude 技能").
+
+## Site URLs
+
+- Home (Chinese): https://agentskill.work/zh
+- Home (English): https://agentskill.work/en
+- Skill detail: https://agentskill.work/{lang}/skills/{owner}/{repo}
+- GitHub repo (source of truth): https://github.com/{owner}/{repo}
+
+## Sitemaps / robots (SEO)
+
+- Sitemap index: https://agentskill.work/sitemap-index.xml
+- Sitemap alias: https://agentskill.work/sitemap.xml (redirects to index)
+- Robots: https://agentskill.work/robots.txt
+- Site verification file (WeChat): https://agentskill.work/e5e588a3b46a049f7e2354fa3ba02fde.txt
+
+## Public API
+
+Base URL:
+- https://agentskill.work/api
+
+OpenAPI:
+- https://agentskill.work/api/openapi.json
+- https://agentskill.work/api/docs
+
+### Endpoints
+
+1) List skills
+- GET /skills
+
+Query parameters (all optional unless stated):
+- q: string
+  - Full-text search (name/description/topics), server-side search only.
+- limit: integer (default: backend default, max: 100)
+- offset: integer (default: 0)
+
+Response shape:
+{
+  "total": number,
+  "items": Skill[]
+}
+
+2) Get skill detail
+- GET /skills/{owner}/{repo}
+
+Response shape:
+Skill
+
+### Skill schema (as stored and returned)
+
+Required-ish identifiers:
+- repo_id: number (GitHub repository id)
+- full_name: string (format: "{owner}/{repo}")
+- owner: string
+- repo: string
+- html_url: string (GitHub repo URL)
+
+Metadata:
+- description: string | null
+- description_zh: string | null (machine translation when enabled)
+- language: string | null (primary programming language from GitHub)
+- topics: string[] (GitHub topics)
+- stars: number
+- forks: number
+- last_pushed_at: string | null (ISO datetime from GitHub)
+- fetched_at: string (ISO datetime of last sync into local DB)
+
+Notes:
+- Some fields can be null depending on GitHub data availability.
+- "topics" may be empty if GitHub topics are not set on that repo.
+
+## Data freshness and background jobs
+
+Data source:
+- GitHub Search API (repositories)
+
+Important constraint:
+- GitHub API calls MUST NOT be triggered by end-user browsing (frontend).
+  All GitHub API calls happen only in scheduled background jobs.
+
+Scheduling:
+- Celery beat triggers periodic sync jobs.
+- Sync may stop early to avoid hitting GitHub API rate limits.
+
+Rate-limit safety:
+- GitHub rate limit guard will stop sync when remaining requests are low (buffer-based) or on 403/429 signals.
+
+## Crawling / usage guidance
+
+If you are an agent or crawler:
+- Prefer the sitemap index for discovery.
+- Prefer canonical pages under /zh or /en (language-stable URLs).
+- Use the skill detail pages for citation (they include structured data and are designed for SEO).
+- Avoid aggressive API crawling. Keep request rate low and honor caching.
+
+Attribution guidance:
+- Always cite the original GitHub repository URL when referencing a project.
+- Do not imply endorsement by AgentSkill Hub or by repository owners.
+
+## License / rights
+
+- AgentSkill Hub aggregates public metadata from GitHub.
+- The license of each project is determined by its own repository.
+- Follow GitHub’s terms of service and each repository's license.
+

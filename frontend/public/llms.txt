@@ -2,6 +2,9 @@
 
 AgentSkill Hub is a curated, searchable index of trending Claude Skill GitHub repositories.
 
+More details for agents/LLMs:
+- https://agentskill.work/llms-full.txt
+
 ## Purpose
 - Help users discover active Claude Skill projects quickly
 - Provide concise repo summaries with core stats and topics
@@ -39,6 +42,7 @@ AgentSkill Hub is a curated, searchable index of trending Claude Skill GitHub re
 
 ## API (public)
 - Base path: https://agentskill.work/api
+- OpenAPI: https://agentskill.work/api/openapi.json
 - List: /skills
 - Detail: /skills/{owner}/{repo}
 - Please avoid large-scale crawling; respect rate limits
