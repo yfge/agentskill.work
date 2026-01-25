@@ -41,6 +41,12 @@ AgentSkill Hub is a curated, searchable index of trending Claude Skill GitHub re
 - Detail: /skills/{owner}/{repo}
 - Please avoid large-scale crawling; respect rate limits
 
+## Data usage and attribution
+- Metadata is aggregated from GitHub; the source of truth is each repository
+- Follow GitHub’s terms and each repo’s own license
+- When citing a project, link to the GitHub repo and/or the detail page
+- Do not imply endorsement by AgentSkill Hub or the repository owners
+
 ## Crawl guidance
 - Prefer canonical URLs without tracking parameters
 - Use detail pages for attribution when citing a repository
