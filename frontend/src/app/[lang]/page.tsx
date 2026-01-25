@@ -2,7 +2,10 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { HomePageClient } from "@/components/HomePageClient";
+import { fetchSkillsCached } from "@/lib/apiServer";
 import { messages, type Language } from "@/lib/i18n";
+
+const PAGE_SIZE = 24;
 
 type PageProps = {
   params: Promise<{ lang: string }>;
@@ -84,5 +87,13 @@ export default async function LanguageHomePage({ params, searchParams }: PagePro
     notFound();
   }
   const initialQuery = (first(resolvedSearch.q) || "").trim();
-  return <HomePageClient lang={lang} initialQuery={initialQuery} />;
+  const data = await fetchSkillsCached(initialQuery, { limit: PAGE_SIZE, offset: 0 });
+  return (
+    <HomePageClient
+      lang={lang}
+      initialQuery={initialQuery}
+      initialSkills={data.items}
+      initialTotal={data.total}
+    />
+  );
 }

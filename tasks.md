@@ -153,9 +153,9 @@
 
 ### 8) 性能与缓存（TTFB/LCP）优化
 
-- [ ] 调整 Next fetch 缓存策略，降低 `no-store` 覆盖面
+- [x] 调整 Next fetch 缓存策略，降低 `no-store` 覆盖面
   - [x] 8.1 详情页/聚合页首屏数据：server fetch 使用 `revalidate`（搜索 `q` 时强制 `no-store`，避免高基数缓存）
-  - [ ] 8.2 首页首屏列表：改为服务端预取 + `revalidate`（避免 SSR 为空列表）
+  - [x] 8.2 首页首屏列表：改为服务端预取 + `revalidate`（避免 SSR 为空列表）
   - 目标：
     - 首页列表、详情页采用 `revalidate`（例如 5-10 分钟）
     - sitemap/robots 输出可缓存（例如 1 小时）

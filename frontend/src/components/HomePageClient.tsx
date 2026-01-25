@@ -29,22 +29,26 @@ function withoutLangParams(params: URLSearchParams): URLSearchParams {
 export function HomePageClient({
   lang: initialLang = defaultLanguage,
   initialQuery = "",
+  initialSkills = [],
+  initialTotal = 0,
 }: {
   lang?: Language;
   initialQuery?: string;
+  initialSkills?: Skill[];
+  initialTotal?: number;
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   const [query, setQuery] = useState(initialQuery);
-  const [skills, setSkills] = useState<Skill[]>([]);
+  const [skills, setSkills] = useState<Skill[]>(initialSkills);
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lang, setLang] = useState<Language>(initialLang);
-  const [total, setTotal] = useState(0);
+  const [total, setTotal] = useState(initialTotal);
   const [offset, setOffset] = useState(0);
-  const [activeQuery, setActiveQuery] = useState("");
+  const [activeQuery, setActiveQuery] = useState(initialQuery.trim());
 
   useEffect(() => {
     setStoredLanguage(lang);
@@ -81,8 +85,11 @@ export function HomePageClient({
 
   useEffect(() => {
     setQuery(initialQuery);
-    loadSkills(initialQuery.trim());
-  }, [initialQuery]);
+    setSkills(initialSkills);
+    setTotal(initialTotal);
+    setOffset(0);
+    setActiveQuery(initialQuery.trim());
+  }, [initialQuery, initialSkills, initialTotal]);
 
   useEffect(() => {
     const id = getVisitorId();

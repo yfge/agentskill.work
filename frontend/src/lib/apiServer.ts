@@ -42,9 +42,7 @@ export async function fetchSkillsCached(
   // default lists for SEO + faster TTFB.
   const response = await fetch(
     url,
-    query
-      ? { cache: "no-store" }
-      : { next: { revalidate: revalidateSeconds } },
+    query ? { cache: "no-store" } : { next: { revalidate: revalidateSeconds } },
   );
 
   if (!response.ok) {
@@ -53,4 +51,3 @@ export async function fetchSkillsCached(
 
   return response.json();
 }
-
