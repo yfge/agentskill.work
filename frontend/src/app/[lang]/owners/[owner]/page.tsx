@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { FacetPageClient } from "@/components/FacetPageClient";
-import { fetchSkills } from "@/lib/api";
+import { fetchSkillsCached } from "@/lib/apiServer";
 import { messages, type Language } from "@/lib/i18n";
 
 const PAGE_SIZE = 24;
@@ -99,7 +99,11 @@ export default async function OwnerPage({ params, searchParams }: PageProps) {
 
   const owner = resolvedParams.owner;
   const initialQuery = (first(resolvedSearch.q) || "").trim();
-  const data = await fetchSkills(initialQuery, { owner, limit: PAGE_SIZE, offset: 0 });
+  const data = await fetchSkillsCached(initialQuery, {
+    owner,
+    limit: PAGE_SIZE,
+    offset: 0,
+  });
   const copy = messages[lang];
 
   const heading = `${copy.detailOwner}: ${owner}`;

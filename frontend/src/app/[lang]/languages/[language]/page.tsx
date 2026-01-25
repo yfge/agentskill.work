@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { FacetPageClient } from "@/components/FacetPageClient";
-import { fetchSkills } from "@/lib/api";
+import { fetchSkillsCached } from "@/lib/apiServer";
 import { messages, type Language } from "@/lib/i18n";
 
 const PAGE_SIZE = 24;
@@ -99,7 +99,7 @@ export default async function LanguageFacetPage({ params, searchParams }: PagePr
 
   const language = resolvedParams.language;
   const initialQuery = (first(resolvedSearch.q) || "").trim();
-  const data = await fetchSkills(initialQuery, {
+  const data = await fetchSkillsCached(initialQuery, {
     language,
     limit: PAGE_SIZE,
     offset: 0,

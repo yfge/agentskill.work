@@ -38,7 +38,7 @@ async function fetchSkill(owner: string, repo: string): Promise<Skill | null> {
   const base = getApiBase();
   const trimmedBase = base.endsWith("/") ? base.slice(0, -1) : base;
   const url = `${trimmedBase}/skills/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}`;
-  const res = await fetch(url, { cache: "no-store" });
+  const res = await fetch(url, { next: { revalidate: 3600 } });
   if (!res.ok) {
     return null;
   }
