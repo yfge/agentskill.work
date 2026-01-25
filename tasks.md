@@ -189,7 +189,7 @@
 
 ### 11) GitHub 收录关键词扩展：Agent Skill
 
-- [ ] 在定时任务抓取时，把关键词扩展为包含 `"agent skill"`（提升召回，覆盖更多同义项目）
+- [x] 在定时任务抓取时，把关键词扩展为包含 `"agent skill"`（提升召回，覆盖更多同义项目）
   - 目标：
     - 在不改变“用户访问链路不直连 GitHub”的前提下，扩大入库候选集
     - 仍然遵守 GitHub rate limit（已有 `GITHUB_RATE_LIMIT_BUFFER` 保护）

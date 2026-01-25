@@ -12,7 +12,9 @@ class Settings(BaseSettings):
     redis_url: str = "redis://localhost:6379/0"
 
     github_token: str | None = None
-    github_search_query: str = "claude skill in:name,description,topics"
+    github_search_query: str = (
+        '("claude skill" OR "agent skill") in:name,description,topics'
+    )
     github_search_per_page: int = 30
     github_max_pages: int = 5
     github_max_results: int = 300
