@@ -136,9 +136,9 @@
 
 ### 6) 结构化数据增强（提高富摘要概率）
 
-- [ ] 在现有 JSON-LD 基础上补强
+- [x] 在现有 JSON-LD 基础上补强
   - [x] 6.1 详情页（SoftwareSourceCode）：增加 `interactionStatistic`（stars/forks）与 `mainEntityOfPage`（canonical）
-  - [ ] 6.2 聚合页（ItemList）：补充 `numberOfItems`、`startIndex`、分页语义（如可用）
+  - [x] 6.2 聚合页（ItemList）：补充 `numberOfItems`、`startIndex`、分页语义（如可用）
   - 验收标准：
     - 页面 JSON-LD 可通过常见验证器解析（无明显 schema 错误）
 

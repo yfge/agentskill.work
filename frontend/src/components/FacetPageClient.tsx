@@ -143,8 +143,10 @@ export function FacetPageClient({
       ? {
           "@context": "https://schema.org",
           "@type": "ItemList",
+          url: canonical,
           itemListOrder: "https://schema.org/ItemListOrderDescending",
-          numberOfItems: skills.length,
+          numberOfItems: total || skills.length,
+          startIndex: 1,
           itemListElement: skills.map((skill, index) => {
             const [owner, repo] = skill.full_name.split("/");
             const detailUrl =
@@ -164,6 +166,7 @@ export function FacetPageClient({
               item: {
                 "@type": "SoftwareSourceCode",
                 name: skill.full_name,
+                url: detailUrl,
                 codeRepository: skill.html_url,
                 description: description || undefined,
                 programmingLanguage: skill.language || undefined,

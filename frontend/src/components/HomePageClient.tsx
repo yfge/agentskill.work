@@ -126,8 +126,10 @@ export function HomePageClient({
       ? {
           "@context": "https://schema.org",
           "@type": "ItemList",
+          url: `https://agentskill.work/${lang}`,
           itemListOrder: "https://schema.org/ItemListOrderDescending",
-          numberOfItems: skills.length,
+          numberOfItems: total || skills.length,
+          startIndex: 1,
           itemListElement: skills.map((skill, index) => {
             const [owner, repo] = skill.full_name.split("/");
             const detailUrl =
