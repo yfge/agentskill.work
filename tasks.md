@@ -185,3 +185,13 @@
     - 在 README / docs/operations.md / llms-full.txt 明确写出 API base、鉴权策略（如有）、分页与限速建议
   - 验收标准：
     - 外部开发者/agent 只看文档即可正确调用（不猜测参数）
+
+## Open Source (OSS) Docs
+
+- [x] MIT license: `LICENSE`
+- [x] Bilingual README: `README.md`, `README.zh-CN.md`
+- [x] Contributing guide: `CONTRIBUTING.md`
+- [x] Code of Conduct: `CODE_OF_CONDUCT.md`
+- [x] Security policy: `SECURITY.md`
+- [x] Changelog: `CHANGELOG.md`
+- [x] Support policy: `SUPPORT.md`
