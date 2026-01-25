@@ -26,6 +26,8 @@ class SkillBase(BaseModel):
     language: str | None
     topics: str | None
     last_pushed_at: datetime | None
+    repo_created_at: datetime | None = None
+    repo_updated_at: datetime | None = None
 
 
 class SkillOut(SkillBase):

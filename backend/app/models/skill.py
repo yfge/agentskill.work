@@ -32,6 +32,12 @@ class Skill(Base):
     seo_description_zh: Mapped[str | None] = mapped_column(Text)
     content_updated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     last_pushed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    repo_created_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), index=True
+    )
+    repo_updated_at: Mapped[datetime | None] = mapped_column(
+        DateTime(timezone=True), index=True
+    )
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )

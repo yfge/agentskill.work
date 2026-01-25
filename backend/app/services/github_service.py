@@ -139,6 +139,8 @@ def sync_github_skills(db: Session, settings: Settings) -> int:
         skill.forks = repo.get("forks_count", 0)
         skill.language = repo.get("language")
         skill.topics = ",".join(repo.get("topics", []) or [])
+        skill.repo_created_at = _parse_datetime(repo.get("created_at"))
+        skill.repo_updated_at = _parse_datetime(repo.get("updated_at"))
         skill.last_pushed_at = _parse_datetime(repo.get("pushed_at"))
 
         if description and not skill.description_zh:

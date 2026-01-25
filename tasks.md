@@ -209,10 +209,10 @@
     - 优先按 GitHub 仓库创建时间（`repo_created_at`）倒序
     - fallback：按站内首次入库时间（`created_at`）倒序（当 GitHub created_at 缺失时）
   - 后端（数据与 API）：
-    - [ ] DB：新增字段（migration）
+    - [x] DB：新增字段（migration）
       - `repo_created_at`（GitHub created_at）
       - `repo_updated_at`（GitHub updated_at，可选，用于后续“最近更新”）
-    - [ ] GitHub 同步：在 upsert 时写入以上字段（仍在 Celery 任务里）
+    - [x] GitHub 同步：在 upsert 时写入以上字段（仍在 Celery 任务里）
     - [ ] 列表 API：支持按最新排序
       - 方案 A：给 `GET /api/skills` 增加 `sort=`（默认 `stars`，新增 `newest`）
       - 方案 B：新增独立端点 `GET /api/skills/latest`（更清晰、对 SEO 页面更稳定）
