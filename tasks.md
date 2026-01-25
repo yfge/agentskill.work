@@ -187,6 +187,54 @@
   - 验收标准：
     - 外部开发者/agent 只看文档即可正确调用（不猜测参数）
 
+### 11) GitHub 收录关键词扩展：Agent Skill
+
+- [ ] 在定时任务抓取时，把关键词扩展为包含 `"agent skill"`（提升召回，覆盖更多同义项目）
+  - 目标：
+    - 在不改变“用户访问链路不直连 GitHub”的前提下，扩大入库候选集
+    - 仍然遵守 GitHub rate limit（已有 `GITHUB_RATE_LIMIT_BUFFER` 保护）
+  - 实现建议：
+    - 调整 `GITHUB_SEARCH_QUERY`（默认值 + docker/.env.example）：
+      - 例如：`("claude skill" OR "agent skill") in:name,description,topics`
+      - 可选增强：加入复数（`"agent skills"` / `"claude skills"`），避免因分词差异漏收
+    - 只改“定时任务”用的 query；前端/分页/搜索仍只打自家 API
+  - 验收标准：
+    - Celery sync 任务成功完成（无异常、无额外 GitHub API 调用路径）
+    - 入库结果对比原 query 有新增 repo（抽样验证即可）
+
+### 12) 最新开源 Skill（Latest）
+
+- [ ] 增加“最新开源的 Claude Skill 项目”能力（列表页 + 首页入口）
+  - 定义（先定口径，避免歧义）：
+    - 优先按 GitHub 仓库创建时间（`repo_created_at`）倒序
+    - fallback：按站内首次入库时间（`created_at`）倒序（当 GitHub created_at 缺失时）
+  - 后端（数据与 API）：
+    - [ ] DB：新增字段（migration）
+      - `repo_created_at`（GitHub created_at）
+      - `repo_updated_at`（GitHub updated_at，可选，用于后续“最近更新”）
+    - [ ] GitHub 同步：在 upsert 时写入以上字段（仍在 Celery 任务里）
+    - [ ] 列表 API：支持按最新排序
+      - 方案 A：给 `GET /api/skills` 增加 `sort=`（默认 `stars`，新增 `newest`）
+      - 方案 B：新增独立端点 `GET /api/skills/latest`（更清晰、对 SEO 页面更稳定）
+  - 定时任务（确保“最新”真的会进库）：
+    - [ ] 在现有“按 stars”抓取之外，增加一个“recent/newest”抓取策略（仍然只在定时任务）
+      - 参考：GitHub Search API `sort=updated` + query 加 `created:>=YYYY-MM-DD`（窗口期可配）
+      - 配置建议：
+        - `GITHUB_NEWEST_WINDOW_DAYS`（例如 7）
+        - `GITHUB_NEWEST_MAX_PAGES` / `GITHUB_NEWEST_MAX_RESULTS`（小一点，避免拉爆）
+        - 与现有 rate-limit guard 共用
+  - 前端（SEO 页）：
+    - [ ] 新增页面：`/{lang}/latest`
+      - canonical + hreflang（/zh 与 /en 对应）
+      - JSON-LD：BreadcrumbList + ItemList
+      - 可分页（走 DB/API，不触发 GitHub）
+    - [ ] 首页增加入口（例如 “Latest” 模块 + 跳转按钮），帮助爬虫与用户发现
+    - [ ] sitemap-pages.xml 增加 `/{lang}/latest`（静态入口页必须可被 sitemap 发现）
+  - 验收标准：
+    - `/{lang}/latest` 可访问且可分页
+    - 有稳定可解释的“最新”排序（且数据来自 DB，不触发 GitHub API）
+    - sitemap 覆盖：详情页仍全量覆盖，latest 页被 sitemap-pages.xml 收录
+
 ## Open Source (OSS) Docs
 
 - [x] MIT license: `LICENSE`
