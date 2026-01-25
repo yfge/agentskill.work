@@ -1,7 +1,7 @@
 """create skills table
 
 Revision ID: 0001_create_skills
-Revises: 
+Revises:
 Create Date: 2026-01-24
 
 """

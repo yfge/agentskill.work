@@ -14,6 +14,7 @@ import {
 } from "@/lib/i18n";
 import { fetchSkills } from "@/lib/api";
 import { trackVisit } from "@/lib/metrics";
+import { normalizeClaudeSkill } from "@/lib/text";
 import { getVisitorId } from "@/lib/visitor";
 import { Skill } from "@/types/skill";
 
@@ -57,11 +58,7 @@ export default function HomePage() {
     document.documentElement.lang = normalized === "en" ? "en" : "zh-CN";
   }, []);
 
-  const loadSkills = async (
-    value: string,
-    nextOffset = 0,
-    append = false,
-  ) => {
+  const loadSkills = async (value: string, nextOffset = 0, append = false) => {
     try {
       if (append) {
         setLoadingMore(true);
@@ -140,6 +137,41 @@ export default function HomePage() {
       },
     })),
   };
+  const itemListSchema =
+    !loading && !error && skills.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          itemListOrder: "https://schema.org/ItemListOrderDescending",
+          numberOfItems: skills.length,
+          itemListElement: skills.map((skill, index) => {
+            const [owner, repo] = skill.full_name.split("/");
+            const detailUrl =
+              owner && repo
+                ? `https://agentskill.work/skills/${encodeURIComponent(
+                    owner,
+                  )}/${encodeURIComponent(repo)}`
+                : "https://agentskill.work";
+            const description =
+              lang === "zh"
+                ? normalizeClaudeSkill(skill.description_zh || skill.description)
+                : skill.description || skill.description_zh;
+            return {
+              "@type": "ListItem",
+              position: index + 1,
+              item: {
+                "@type": "SoftwareSourceCode",
+                name: skill.full_name,
+                url: detailUrl,
+                codeRepository: skill.html_url,
+                description: description || undefined,
+                programmingLanguage: skill.language || undefined,
+                keywords: skill.topics || undefined,
+              },
+            };
+          }),
+        }
+      : null;
 
   return (
     <main className="container">
@@ -151,6 +183,12 @@ export default function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
+      {itemListSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
+        />
+      )}
       <section className="hero">
         <div className="hero-text">
           <h1>{copy.title}</h1>

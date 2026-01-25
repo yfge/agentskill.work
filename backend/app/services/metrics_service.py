@@ -1,5 +1,4 @@
 import logging
-from typing import Tuple
 
 import redis
 
@@ -35,7 +34,7 @@ def track_visit(settings: Settings, visitor_id: str | None) -> None:
         logger.warning("track visit failed: %s", exc)
 
 
-def get_metrics(settings: Settings) -> Tuple[int, int]:
+def get_metrics(settings: Settings) -> tuple[int, int]:
     client = _get_client(settings)
     if not client:
         return 0, 0

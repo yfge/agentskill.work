@@ -1,3 +1,5 @@
+# ruff: noqa: E402
+
 import os
 import sys
 from pathlib import Path
@@ -11,11 +13,10 @@ os.environ.setdefault("ENABLE_SCHEDULER", "false")
 os.environ.setdefault("SYNC_ON_START", "false")
 
 import pytest
-from fastapi.testclient import TestClient
-
 from app.core.database import engine
 from app.db.base import Base
 from app.main import create_app
+from fastapi.testclient import TestClient
 
 
 @pytest.fixture(scope="session", autouse=True)

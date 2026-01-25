@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Header
+from fastapi import APIRouter, Header
 
 from app.core.config import get_settings
 from app.schemas.metrics import MetricsOut

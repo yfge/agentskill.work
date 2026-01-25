@@ -15,14 +15,18 @@ def list_skills(
     q: str | None = None,
     limit: int = Query(20, ge=1, le=100),
     offset: int = Query(0, ge=0),
-    db: Session = Depends(get_db),
+    db: Session = Depends(get_db),  # noqa: B008
 ):
     total, items = search_skills(db, q, limit, offset)
     return SkillList(total=total, items=items)
 
 
 @router.get("/{owner}/{repo}", response_model=SkillOut)
-def read_skill(owner: str, repo: str, db: Session = Depends(get_db)) -> SkillOut:
+def read_skill(
+    owner: str,
+    repo: str,
+    db: Session = Depends(get_db),  # noqa: B008
+) -> SkillOut:
     full_name = f"{owner}/{repo}"
     skill = get_skill_by_full_name(db, full_name)
     if not skill:
@@ -31,7 +35,10 @@ def read_skill(owner: str, repo: str, db: Session = Depends(get_db)) -> SkillOut
 
 
 @router.post("/sync")
-def sync_skills(request: Request, db: Session = Depends(get_db)) -> dict:
+def sync_skills(
+    request: Request,
+    db: Session = Depends(get_db),  # noqa: B008
+) -> dict:
     settings = get_settings()
     if not settings.sync_api_enabled:
         raise HTTPException(status_code=404, detail="Not found")

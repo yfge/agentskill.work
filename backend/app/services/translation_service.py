@@ -6,7 +6,6 @@ import httpx
 
 from app.core.config import Settings
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -29,8 +28,10 @@ def translate_to_zh(text: str, settings: Settings) -> str | None:
             {
                 "role": "system",
                 "content": (
-                    "You are a translation engine. Translate the user text to Simplified Chinese. "
-                    "Do not translate the term \"Claude Skill\"; keep it as \"Claude Skill\". "
+                    "You are a translation engine. Translate the user text to "
+                    "Simplified Chinese. "
+                    'Do not translate the term "Claude Skill"; keep it as '
+                    '"Claude Skill". '
                     "Only return the translated text."
                 ),
             },

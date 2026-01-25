@@ -9,6 +9,20 @@ export const metadata = {
   category: "technology",
   creator: "AgentSkill Hub",
   publisher: "AgentSkill Hub",
+  robots: {
+    index: true,
+    follow: true,
+    "max-snippet": -1,
+    "max-image-preview": "large",
+    "max-video-preview": -1,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-snippet": -1,
+      "max-image-preview": "large",
+      "max-video-preview": -1,
+    },
+  },
   alternates: {
     canonical: "https://agentskill.work",
     languages: {
@@ -28,7 +42,7 @@ export const metadata = {
     type: "website",
   },
   twitter: {
-    card: "summary",
+    card: "summary_large_image",
     title: "AgentSkill Hub",
     description:
       "Discover trending Claude Skill projects on GitHub with curated search and real-time updates.",
@@ -37,19 +51,21 @@ export const metadata = {
   keywords: [
     "AgentSkill",
     "Claude Skill",
+    "Claude Skill 项目",
+    "Claude Skill 列表",
     "agentskill.work",
     "GitHub",
+    "GitHub Claude Skill",
     "skills",
     "directory",
     "search",
+    "AI agent",
+    "AI tool directory",
+    "AI skill",
   ],
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="zh-CN">
       <body>

@@ -14,7 +14,12 @@
 
 body {
   margin: 0;
-  font-family: "IBM Plex Sans", "Work Sans", system-ui, -apple-system, sans-serif;
+  font-family:
+    "IBM Plex Sans",
+    "Work Sans",
+    system-ui,
+    -apple-system,
+    sans-serif;
   color: var(--text);
   background: radial-gradient(circle at top, var(--bg-accent), var(--bg));
   min-height: 100vh;

@@ -86,7 +86,7 @@ server {
 
 **TLS (Certbot + Nginx)**
 - Install: `dnf -y install certbot python3-certbot-nginx`
-- Issue/renew (first time):  
+- Issue/renew (first time):
   `certbot --nginx -d agentskill.work -d www.agentskill.work --agree-tos -m <email> --redirect -n`
 - Cert paths:
   - `/etc/letsencrypt/live/agentskill.work/fullchain.pem`

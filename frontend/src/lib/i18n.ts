@@ -42,45 +42,46 @@ export const messages = {
     infoCards: [
       {
         title: "自动抓取与更新",
-        body: "定时同步 GitHub 热门 Claude Skill 项目，更新 Stars、Forks、语言和话题。"
+        body: "定时同步 GitHub 热门 Claude Skill 项目，更新 Stars、Forks、语言和话题。",
       },
       {
         title: "搜索与详情页",
-        body: "支持按名称、仓库、描述检索，详情页展示仓库元信息与更新时间。"
+        body: "支持按名称、仓库、描述检索，详情页展示仓库元信息与更新时间。",
       },
       {
         title: "中英文访问",
-        body: "提供中文与英文界面，Claude Skill 保持原文表述。"
+        body: "提供中文与英文界面，Claude Skill 保持原文表述。",
       },
       {
         title: "透明数据来源",
-        body: "数据来自 GitHub Search API，可一键跳转至原仓库。"
-      }
+        body: "数据来自 GitHub Search API，可一键跳转至原仓库。",
+      },
     ],
     faqTitle: "常见问题",
     faqItems: [
       {
         question: "Claude Skill 是什么？",
         answer:
-          "社区在 GitHub 上发布的 Claude Skill 项目（原文 Claude Skill），用于扩展或示例化 Claude 的能力。"
+          "社区在 GitHub 上发布的 Claude Skill 项目（原文 Claude Skill），用于扩展或示例化 Claude 的能力。",
       },
       {
         question: "数据多久更新一次？",
-        answer: "系统按定时任务自动同步，默认每小时更新一次。"
+        answer: "系统按定时任务自动同步，默认每小时更新一次。",
       },
       {
         question: "如何让项目出现在列表中？",
-        answer: "仓库名称、描述或话题包含 “Claude Skill” 会被自动收录与更新。"
+        answer: "仓库名称、描述或话题包含 “Claude Skill” 会被自动收录与更新。",
       },
       {
         question: "是否提供直达 GitHub？",
-        answer: "每个项目详情页都包含 GitHub 地址，可直接访问源仓库。"
-      }
-    ]
+        answer: "每个项目详情页都包含 GitHub 地址，可直接访问源仓库。",
+      },
+    ],
   },
   en: {
     title: "AgentSkill Hub",
-    subtitle: "Discover trending Claude Skill projects on GitHub, curated and searchable.",
+    subtitle:
+      "Discover trending Claude Skill projects on GitHub, curated and searchable.",
     searchPlaceholder: "Search by name, repo, description...",
     search: "Search",
     loading: "Loading...",
@@ -121,43 +122,43 @@ export const messages = {
     infoCards: [
       {
         title: "Automated discovery",
-        body: "Scheduled sync pulls trending Claude Skill repos and refreshes Stars, Forks, language, and topics."
+        body: "Scheduled sync pulls trending Claude Skill repos and refreshes Stars, Forks, language, and topics.",
       },
       {
         title: "Search & detail pages",
-        body: "Search by name, repo, or description. Detail pages show metadata and update times."
+        body: "Search by name, repo, or description. Detail pages show metadata and update times.",
       },
       {
         title: "Bilingual access",
-        body: "Chinese and English UI with the term Claude Skill kept in its original wording."
+        body: "Chinese and English UI with the term Claude Skill kept in its original wording.",
       },
       {
         title: "Transparent sources",
-        body: "Data comes from the GitHub Search API with one-click access to each repo."
-      }
+        body: "Data comes from the GitHub Search API with one-click access to each repo.",
+      },
     ],
     faqTitle: "FAQ",
     faqItems: [
       {
         question: "What is a Claude Skill?",
         answer:
-          "Claude Skill projects published on GitHub by the community (term kept as Claude Skill), showcasing or extending Claude capabilities."
+          "Claude Skill projects published on GitHub by the community (term kept as Claude Skill), showcasing or extending Claude capabilities.",
       },
       {
         question: "How often is the data updated?",
-        answer: "Synced automatically on a schedule, typically every hour by default."
+        answer: "Synced automatically on a schedule, typically every hour by default.",
       },
       {
         question: "How does a repo get listed?",
         answer:
-          "Repos whose name, description, or topics include “Claude Skill” are automatically indexed and refreshed."
+          "Repos whose name, description, or topics include “Claude Skill” are automatically indexed and refreshed.",
       },
       {
         question: "Can I jump to GitHub?",
-        answer: "Every detail page includes a direct link to the source repository."
-      }
-    ]
-  }
+        answer: "Every detail page includes a direct link to the source repository.",
+      },
+    ],
+  },
 } as const;
 
 export type Language = keyof typeof messages;

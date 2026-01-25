@@ -1,5 +1,4 @@
 from functools import lru_cache
-from typing import List
 
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -33,12 +32,10 @@ class Settings(BaseSettings):
     deepseek_api_url: str = "https://api.deepseek.com"
     deepseek_model: str = "deepseek-chat"
 
-    cors_origins: str = Field(
-        default="http://localhost:3000,http://localhost:8083"
-    )
+    cors_origins: str = Field(default="http://localhost:3000,http://localhost:8083")
 
     @property
-    def cors_origin_list(self) -> List[str]:
+    def cors_origin_list(self) -> list[str]:
         return [item.strip() for item in self.cors_origins.split(",") if item.strip()]
 
 

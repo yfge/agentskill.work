@@ -92,10 +92,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function SkillDetailPage({
-  params,
-  searchParams,
-}: PageProps) {
+export default async function SkillDetailPage({ params, searchParams }: PageProps) {
   const resolvedParams = await params;
   const resolvedSearch = searchParams ? await searchParams : undefined;
   const lang = resolveLanguage(resolvedSearch?.lang);
@@ -109,8 +106,7 @@ export default async function SkillDetailPage({
     lang === "zh"
       ? normalizeClaudeSkill(skill.description_zh || skill.description)
       : skill.description || skill.description_zh;
-  const secondaryDescription =
-    lang === "zh" ? skill.description : skill.description_zh;
+  const secondaryDescription = lang === "zh" ? skill.description : skill.description_zh;
 
   const topics = (skill.topics || "")
     .split(",")

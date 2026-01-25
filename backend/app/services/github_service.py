@@ -1,5 +1,5 @@
-from datetime import datetime, timezone
 import logging
+from datetime import UTC, datetime
 
 import httpx
 from sqlalchemy.orm import Session
@@ -24,7 +24,7 @@ def _parse_rate_limit_reset(value: str | None) -> datetime | None:
     if not value:
         return None
     try:
-        return datetime.fromtimestamp(int(value), tz=timezone.utc)
+        return datetime.fromtimestamp(int(value), tz=UTC)
     except ValueError:
         return None
 
@@ -80,7 +80,10 @@ def fetch_github_repos(settings: Settings) -> list[dict]:
                 retry_after = response.headers.get("Retry-After")
                 if remaining == "0" or retry_after:
                     logger.warning(
-                        "github rate limit hit (status=%s, remaining=%s, reset=%s, retry_after=%s), stop sync",
+                        (
+                            "github rate limit hit (status=%s, remaining=%s, "
+                            "reset=%s, retry_after=%s), stop sync"
+                        ),
                         response.status_code,
                         remaining,
                         reset_at.isoformat() if reset_at else "unknown",

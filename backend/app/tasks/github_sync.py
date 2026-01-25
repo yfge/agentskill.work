@@ -5,7 +5,6 @@ from app.core.config import get_settings
 from app.core.database import SessionLocal
 from app.services.github_service import sync_github_skills
 
-
 logger = get_task_logger(__name__)
 
 
