@@ -34,19 +34,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
   const baseEntries: MetadataRoute.Sitemap = [
     {
-      url: "https://agentskill.work",
-      lastModified: now,
-      changeFrequency: "hourly",
-      priority: 1,
-    },
-    {
-      url: "https://agentskill.work/?lang=zh",
+      url: "https://agentskill.work/zh",
       lastModified: now,
       changeFrequency: "hourly",
       priority: 0.9,
     },
     {
-      url: "https://agentskill.work/?lang=en",
+      url: "https://agentskill.work/en",
       lastModified: now,
       changeFrequency: "hourly",
       priority: 0.9,
@@ -60,14 +54,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       continue;
     }
     const lastModified = skill.last_pushed_at ?? skill.fetched_at ?? now;
-    skillEntries.push({
-      url: `https://agentskill.work/skills/${encodeURIComponent(
-        owner,
-      )}/${encodeURIComponent(repo)}`,
-      lastModified,
-      changeFrequency: "daily",
-      priority: 0.8,
-    });
+    for (const lang of ["zh", "en"] as const) {
+      skillEntries.push({
+        url: `https://agentskill.work/${lang}/skills/${encodeURIComponent(
+          owner,
+        )}/${encodeURIComponent(repo)}`,
+        lastModified,
+        changeFrequency: "daily",
+        priority: 0.8,
+      });
+    }
   }
 
   return [...baseEntries, ...skillEntries];

@@ -6,6 +6,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { setStoredLanguage, type Language } from "@/lib/i18n";
 
+function withoutLangParams(params: URLSearchParams): URLSearchParams {
+  const next = new URLSearchParams(params.toString());
+  next.delete("lang");
+  next.delete("hl");
+  return next;
+}
+
 export function SkillLangSwitch({
   owner,
   repo,
@@ -26,9 +33,9 @@ export function SkillLangSwitch({
 
   const handleChange = (next: Language) => {
     setLang(next);
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("lang", next);
-    router.replace(`/skills/${owner}/${repo}?${params.toString()}`);
+    const params = withoutLangParams(new URLSearchParams(searchParams.toString()));
+    const qs = params.toString();
+    router.replace(`/${next}/skills/${owner}/${repo}${qs ? `?${qs}` : ""}`);
   };
 
   return <LanguageToggle lang={lang} onChange={handleChange} />;

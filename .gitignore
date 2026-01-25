@@ -33,7 +33,7 @@ ENV/
 
 # Node
 node_modules/
-/.next/
+.next/
 /out/
 /build
 npm-debug.log*

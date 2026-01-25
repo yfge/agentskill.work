@@ -24,17 +24,18 @@ export const metadata = {
     },
   },
   alternates: {
-    canonical: "https://agentskill.work",
+    canonical: "https://agentskill.work/zh",
     languages: {
-      "zh-CN": "https://agentskill.work/?lang=zh",
-      "en-US": "https://agentskill.work/?lang=en",
+      "zh-CN": "https://agentskill.work/zh",
+      "en-US": "https://agentskill.work/en",
+      "x-default": "https://agentskill.work/zh",
     },
   },
   openGraph: {
     title: "AgentSkill Hub",
     description:
       "Discover trending Claude Skill projects on GitHub with curated search and real-time updates.",
-    url: "https://agentskill.work",
+    url: "https://agentskill.work/zh",
     siteName: "AgentSkill Hub",
     locale: "zh_CN",
     alternateLocale: ["en_US"],

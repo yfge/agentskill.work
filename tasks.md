@@ -13,7 +13,7 @@
 
 ## 已完成（基线能力，已上线）
 
-- [x] 全站基础 SEO：`robots.txt`、`sitemap.xml`、canonical + hreflang（当前基于 `?lang=` 版本）
+- [x] 全站基础 SEO：`robots.txt`、`sitemap.xml`、canonical + hreflang（当前基于 `/zh` / `/en`）
 - [x] 首页/详情页结构化数据：WebSite/FAQ/ItemList + SoftwareSourceCode/BreadcrumbList
 - [x] 全站 OG/Twitter 基础卡片：`/opengraph-image`（默认分享图）
 - [x] 微信校验文件：`/e5e588a3b46a049f7e2354fa3ba02fde.txt`（可公网访问）
@@ -24,11 +24,11 @@
 
 ### 1) URL 级多语言（/en /zh）与去重策略
 
-- [ ] 将 `?lang=en|zh` 升级为路径型多语言（推荐：`/en/...`、`/zh/...`）
+- [x] 将 `?lang=en|zh` 升级为路径型多语言（`/en/...`、`/zh/...`）
   - 现状：语言通过 query 传参；虽然有 hreflang，但 URL 不够“干净”，对收录与分享一致性不友好。
   - 方案建议（Next.js App Router）：
     - 新增 `frontend/src/app/[lang]/...` 路由结构（lang 仅允许 `en`/`zh`）
-    - `/` 302/307 到默认语言（例如 `/zh`），或保留 `/` 作为默认语言静态页
+    - `/` 308 到默认语言（例如 `/zh`），或保留 `/` 作为默认语言静态页
     - 旧链接兼容：`/?lang=en`、`/skills/x/y?lang=en` 统一重定向到 `/en/...`
   - Canonical/hreflang 规则（必须明确）：
     - 每个语言页面 canonical 指向自己（/en 指向 /en，/zh 指向 /zh）

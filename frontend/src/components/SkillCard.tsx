@@ -14,7 +14,7 @@ export function SkillCard({
 }) {
   const description = descriptionOverride ?? skill.description;
   const detailPath = getSkillDetailPath(skill);
-  const detailHref = lang ? `${detailPath}?lang=${lang}` : detailPath;
+  const detailHref = lang ? `/${lang}${detailPath}` : detailPath;
   return (
     <Link className="card" href={detailHref}>
       <div>

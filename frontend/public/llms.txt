@@ -17,8 +17,9 @@ AgentSkill Hub is a curated, searchable index of trending Claude Skill GitHub re
 - html_url, repo_id
 
 ## Pages
-- Home list: https://agentskill.work/
-- Detail page: https://agentskill.work/skills/{owner}/{repo}
+- Home list (zh): https://agentskill.work/zh
+- Home list (en): https://agentskill.work/en
+- Detail page: https://agentskill.work/{lang}/skills/{owner}/{repo}
 
 ## Language
 - zh and en are supported
