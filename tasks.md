@@ -144,12 +144,12 @@
 
 ### 7) 站长平台接入（GSC/Bing）与验证
 
-- [ ] 增加可配置的站长验证（文件 or meta）并写入运维文档
+- [x] 增加可配置的站长验证（文件 or meta）并写入运维文档
   - 支持：
-    - Google Search Console（`google-site-verification`）
-    - Bing Webmaster
+    - Google Search Console（`GOOGLE_SITE_VERIFICATION` -> `google-site-verification` meta）
+    - Bing Webmaster（`BING_SITE_VERIFICATION` -> `msvalidate.01` meta）
   - 验收标准：
-    - 通过配置即可完成验证（无需改代码/重新构建，或至少流程明确）
+    - 通过配置即可完成验证（无需改代码/重新构建；改 `docker/.env` 后重启即可）
 
 ### 8) 性能与缓存（TTFB/LCP）优化
 

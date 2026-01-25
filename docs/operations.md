@@ -41,6 +41,14 @@ cd backend
 alembic upgrade head
 ```
 
+## Webmaster Verification (GSC / Bing)
+
+The frontend reads these variables at runtime (no rebuild required; just update
+`docker/.env` and restart the stack):
+
+- `GOOGLE_SITE_VERIFICATION` -> `<meta name="google-site-verification" ...>`
+- `BING_SITE_VERIFICATION` -> `<meta name="msvalidate.01" ...>`
+
 ## Server Deployment (agentskill.work)
 
 **Host**

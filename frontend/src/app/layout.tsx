@@ -67,8 +67,19 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const googleSiteVerification = process.env.GOOGLE_SITE_VERIFICATION;
+  const bingSiteVerification = process.env.BING_SITE_VERIFICATION;
+
   return (
     <html lang="zh-CN">
+      <head>
+        {googleSiteVerification ? (
+          <meta name="google-site-verification" content={googleSiteVerification} />
+        ) : null}
+        {bingSiteVerification ? (
+          <meta name="msvalidate.01" content={bingSiteVerification} />
+        ) : null}
+      </head>
       <body>
         {children}
         <script
