@@ -13,9 +13,10 @@ os.environ.setdefault("ENABLE_SCHEDULER", "false")
 os.environ.setdefault("SYNC_ON_START", "false")
 
 import pytest
-from app.core.database import engine
+from app.core.database import SessionLocal, engine
 from app.db.base import Base
 from app.main import create_app
+from app.models.skill import Skill
 from fastapi.testclient import TestClient
 
 
@@ -30,3 +31,14 @@ def setup_database():
 def client():
     app = create_app()
     return TestClient(app)
+
+
+@pytest.fixture(autouse=True)
+def clear_database():
+    """Keep tests isolated with a predictable database state."""
+    db = SessionLocal()
+    try:
+        db.query(Skill).delete()
+        db.commit()
+    finally:
+        db.close()

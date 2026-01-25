@@ -13,11 +13,16 @@ router = APIRouter(prefix="/skills", tags=["skills"])
 @router.get("", response_model=SkillList)
 def list_skills(
     q: str | None = None,
+    topic: str | None = None,
+    language: str | None = None,
+    owner: str | None = None,
     limit: int = Query(20, ge=1, le=100),
     offset: int = Query(0, ge=0),
     db: Session = Depends(get_db),  # noqa: B008
 ):
-    total, items = search_skills(db, q, limit, offset)
+    total, items = search_skills(
+        db, q, topic=topic, language=language, owner=owner, limit=limit, offset=offset
+    )
     return SkillList(total=total, items=items)
 
 

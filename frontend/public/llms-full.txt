@@ -40,6 +40,12 @@ OpenAPI:
 Query parameters (all optional unless stated):
 - q: string
   - Full-text search (name/description/topics), server-side search only.
+- topic: string
+  - Filter by a single topic (exact topic match within the stored comma-separated topics string).
+- language: string
+  - Filter by primary programming language (case-insensitive).
+- owner: string
+  - Filter by GitHub owner (matches full_name prefix "{owner}/...").
 - limit: integer (default: backend default, max: 100)
 - offset: integer (default: 0)
 
@@ -111,4 +117,3 @@ Attribution guidance:
 - AgentSkill Hub aggregates public metadata from GitHub.
 - The license of each project is determined by its own repository.
 - Follow GitHub’s terms of service and each repository's license.
-

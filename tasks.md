@@ -78,10 +78,22 @@
 ### 4) 长尾入口页：Topic / Language / Owner 聚合页
 
 - [ ] 新增可索引聚合页（提高长尾覆盖 + 内链结构）
+  - [x] 4.1 后端支持：`GET /api/skills` 支持按 `topic` / `language` / `owner` 过滤（只查 DB，不触发 GitHub API）
+    - `topic`：按 topics（逗号分隔）做整词匹配
+    - `language`：大小写不敏感匹配
+    - `owner`：匹配 `full_name` 的 `{owner}/...`
+    - 说明：后端 list API 仍限制 `limit <= 100`，聚合页与 sitemap 分片要按该上限分页
+  - [ ] 4.2 前端页面：
+    - `/{lang}/topics/{topic}`
+    - `/{lang}/languages/{language}`
+    - `/{lang}/owners/{owner}`
+  - [ ] 4.3 SEO 收录：
+    - sitemap 里加入以上聚合页（按热门 topic/language/owner 分批）
+    - 首页/详情页增加可爬取内链（“Explore topics/languages/owners”）
   - 页面：
-    - `/topics/{topic}`
-    - `/languages/{lang}`
-    - `/owners/{owner}`
+    - `/{lang}/topics/{topic}`
+    - `/{lang}/languages/{language}`
+    - `/{lang}/owners/{owner}`
   - 页面内容（必须“够厚”）：
     - 顶部 intro（解释该聚合页的含义，保持“Claude Skill”术语）
     - 可分页列表（仅打自家 API）

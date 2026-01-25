@@ -44,6 +44,7 @@ More details for agents/LLMs:
 - Base path: https://agentskill.work/api
 - OpenAPI: https://agentskill.work/api/openapi.json
 - List: /skills
+  - query: `q`, `topic`, `language`, `owner`, `limit`, `offset`
 - Detail: /skills/{owner}/{repo}
 - Please avoid large-scale crawling; respect rate limits
 
