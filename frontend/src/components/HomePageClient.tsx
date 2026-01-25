@@ -7,7 +7,12 @@ import { LanguageToggle } from "@/components/LanguageToggle";
 import { SkillList } from "@/components/SkillList";
 import { fetchSkills } from "@/lib/api";
 import { trackVisit } from "@/lib/metrics";
-import { defaultLanguage, messages, setStoredLanguage, type Language } from "@/lib/i18n";
+import {
+  defaultLanguage,
+  messages,
+  setStoredLanguage,
+  type Language,
+} from "@/lib/i18n";
 import { normalizeClaudeSkill } from "@/lib/text";
 import { getVisitorId } from "@/lib/visitor";
 import { Skill } from "@/types/skill";
@@ -180,7 +185,9 @@ export function HomePageClient({
               setLang(next);
               setStoredLanguage(next);
               document.documentElement.lang = next === "en" ? "en" : "zh-CN";
-              const params = withoutLangParams(new URLSearchParams(searchParams.toString()));
+              const params = withoutLangParams(
+                new URLSearchParams(searchParams.toString()),
+              );
               const qs = params.toString();
               router.replace(`/${next}${qs ? `?${qs}` : ""}`);
             }}
@@ -258,4 +265,3 @@ export function HomePageClient({
     </main>
   );
 }
-

@@ -68,6 +68,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const canonical = `https://agentskill.work/${lang}/skills/${encodeURIComponent(
     resolvedParams.owner,
   )}/${encodeURIComponent(resolvedParams.repo)}`;
+  const ogImagePath = `/${lang}/skills/${encodeURIComponent(
+    resolvedParams.owner,
+  )}/${encodeURIComponent(resolvedParams.repo)}/opengraph-image`;
 
   return {
     title: `${skill.full_name} - AgentSkill Hub`,
@@ -93,14 +96,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       siteName: "AgentSkill Hub",
       locale: lang === "en" ? "en_US" : "zh_CN",
       alternateLocale: [lang === "en" ? "zh_CN" : "en_US"],
-      images: [{ url: "/opengraph-image" }],
+      images: [{ url: ogImagePath }],
       type: "article",
     },
     twitter: {
       card: "summary_large_image",
       title: `${skill.full_name} - AgentSkill Hub`,
       description,
-      images: ["/opengraph-image"],
+      images: [ogImagePath],
     },
   };
 }
@@ -233,7 +236,12 @@ export default async function SkillDetailPage({ params }: PageProps) {
             <Link className="button" href={`/${lang}`}>
               {copy.backToList}
             </Link>
-            <a className="button primary" href={skill.html_url} target="_blank" rel="noreferrer">
+            <a
+              className="button primary"
+              href={skill.html_url}
+              target="_blank"
+              rel="noreferrer"
+            >
               {copy.viewOnGitHub}
             </a>
           </div>
@@ -297,4 +305,3 @@ export default async function SkillDetailPage({ params }: PageProps) {
     </main>
   );
 }
-

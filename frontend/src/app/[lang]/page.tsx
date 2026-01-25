@@ -26,7 +26,10 @@ function first(value: string | string[] | undefined): string | undefined {
   return value;
 }
 
-export async function generateMetadata({ params, searchParams }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+  searchParams,
+}: PageProps): Promise<Metadata> {
   const resolvedParams = await params;
   const resolvedSearch = searchParams ? await searchParams : {};
   const lang = resolveLanguage(resolvedParams.lang);
@@ -83,4 +86,3 @@ export default async function LanguageHomePage({ params, searchParams }: PagePro
   const initialQuery = (first(resolvedSearch.q) || "").trim();
   return <HomePageClient lang={lang} initialQuery={initialQuery} />;
 }
-

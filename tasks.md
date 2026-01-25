@@ -39,10 +39,10 @@
 
 ### 2) 详情页分享卡片（OG image）按项目动态生成
 
-- [ ] 为每个 repo 生成动态 OG 图（微信/社交传播更强）
+- [x] 为每个 repo 生成动态 OG 图（微信/社交传播更强）
   - 目标：分享出去的卡片包含：`owner/repo`、stars、forks、language、top topics（以及“Claude Skill”标识）
   - 实现建议：
-    - 增加 route：`frontend/src/app/skills/[owner]/[repo]/opengraph-image.tsx`
+    - 增加 route：`frontend/src/app/[lang]/skills/[owner]/[repo]/opengraph-image.tsx`
     - OG 图生成时从自家 API 拉取 skill（绝不直连 GitHub）
     - metadata 的 openGraph.images 改为该动态图片的绝对 URL（包含 `metadataBase`）
   - 注意：
