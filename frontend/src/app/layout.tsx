@@ -2,13 +2,13 @@ import "./globals.css";
 
 export const metadata = {
   metadataBase: new URL("https://agentskill.work"),
-  title: "AgentSkill Hub",
+  title: "agentskill.work",
   description:
-    "Discover trending Claude Skill projects on GitHub with curated search and real-time updates.",
-  applicationName: "AgentSkill Hub",
+    "agentskill.work is a curated directory of trending Claude Skill projects on GitHub.",
+  applicationName: "agentskill.work",
   category: "technology",
-  creator: "AgentSkill Hub",
-  publisher: "AgentSkill Hub",
+  creator: "agentskill.work",
+  publisher: "agentskill.work",
   robots: {
     index: true,
     follow: true,
@@ -32,11 +32,11 @@ export const metadata = {
     },
   },
   openGraph: {
-    title: "AgentSkill Hub",
+    title: "agentskill.work",
     description:
-      "Discover trending Claude Skill projects on GitHub with curated search and real-time updates.",
+      "agentskill.work is a curated directory of trending Claude Skill projects on GitHub.",
     url: "https://agentskill.work/zh",
-    siteName: "AgentSkill Hub",
+    siteName: "agentskill.work",
     locale: "zh_CN",
     alternateLocale: ["en_US"],
     images: [{ url: "/opengraph-image" }],
@@ -44,17 +44,17 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "AgentSkill Hub",
+    title: "agentskill.work",
     description:
-      "Discover trending Claude Skill projects on GitHub with curated search and real-time updates.",
+      "agentskill.work is a curated directory of trending Claude Skill projects on GitHub.",
     images: ["/opengraph-image"],
   },
   keywords: [
-    "AgentSkill",
+    "agentskill.work",
     "Claude Skill",
     "Claude Skill 项目",
     "Claude Skill 列表",
-    "agentskill.work",
+    "AgentSkill",
     "GitHub",
     "GitHub Claude Skill",
     "skills",

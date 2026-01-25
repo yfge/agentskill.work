@@ -18,7 +18,7 @@ def create_app() -> FastAPI:
         yield
 
     app = FastAPI(
-        title="AgentSkill Hub API",
+        title="agentskill.work API",
         openapi_url="/api/openapi.json",
         docs_url="/api/docs",
         lifespan=lifespan,

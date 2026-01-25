@@ -100,14 +100,14 @@ export function HomePageClient({
   const schema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "AgentSkill Hub",
+    name: "agentskill.work",
     url: "https://agentskill.work",
     description: copy.subtitle,
     inLanguage: ["zh-CN", "en-US"],
     about: "Claude Skill projects on GitHub",
     publisher: {
       "@type": "Organization",
-      name: "AgentSkill Hub",
+      name: "agentskill.work",
       url: "https://agentskill.work",
     },
     potentialAction: {

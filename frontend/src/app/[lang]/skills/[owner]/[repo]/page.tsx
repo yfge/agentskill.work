@@ -65,14 +65,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const skill = await fetchSkill(resolvedParams.owner, resolvedParams.repo);
   if (!skill) {
     return {
-      title: "Skill not found - AgentSkill Hub",
+      title: "Skill not found - agentskill.work",
     };
   }
 
   const title =
     lang === "zh"
-      ? skill.seo_title_zh || `${skill.full_name} - Claude Skill - AgentSkill Hub`
-      : skill.seo_title_en || `${skill.full_name} - Claude Skill - AgentSkill Hub`;
+      ? skill.seo_title_zh || `${skill.full_name} - Claude Skill - agentskill.work`
+      : skill.seo_title_en || `${skill.full_name} - Claude Skill - agentskill.work`;
   const description =
     lang === "zh"
       ? normalizeClaudeSkill(
@@ -115,7 +115,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title,
       description,
       url: canonical,
-      siteName: "AgentSkill Hub",
+      siteName: "agentskill.work",
       locale: lang === "en" ? "en_US" : "zh_CN",
       alternateLocale: [lang === "en" ? "zh_CN" : "en_US"],
       images: [{ url: ogImagePath }],

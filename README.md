@@ -1,8 +1,8 @@
-# AgentSkill Hub (agentskill.work)
+# agentskill.work
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
-AgentSkill Hub is a curated, searchable index of trending **Claude Skill** GitHub repositories.
+agentskill.work is a curated, searchable index of trending **Claude Skill** GitHub repositories.
 
 > Term policy: keep the proper term **"Claude Skill"** as-is. Do NOT translate it.
 

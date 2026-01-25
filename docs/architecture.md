@@ -2,7 +2,7 @@
 
 ## Overview
 
-AgentSkill Hub consists of:
+agentskill.work consists of:
 
 - **Backend** (FastAPI): syncs GitHub repositories, stores them in MySQL, and exposes search APIs.
 - **Frontend** (Next.js): displays the skill list and provides search UX.

@@ -29,7 +29,7 @@ export default function OpenGraphImage() {
           letterSpacing: "0.02em",
         }}
       >
-        AgentSkill Hub
+        agentskill.work
       </div>
       <div
         style={{

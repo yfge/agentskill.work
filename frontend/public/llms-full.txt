@@ -1,9 +1,9 @@
-# AgentSkill Hub (agentskill.work) - LLM / Agent Reference (Full)
+# agentskill.work - LLM / Agent Reference (Full)
 
 This file is a machine-friendly reference for agents and LLM-based tools that want to understand, cite, or integrate
-with AgentSkill Hub.
+with agentskill.work.
 
-AgentSkill Hub is a curated, searchable index of trending Claude Skill GitHub repositories. Data is aggregated from
+agentskill.work is a curated, searchable index of trending Claude Skill GitHub repositories. Data is aggregated from
 GitHub metadata and is stored locally for fast search, paging, and SEO-friendly pages.
 
 Important term policy:
@@ -138,10 +138,10 @@ If you are an agent or crawler:
 
 Attribution guidance:
 - Always cite the original GitHub repository URL when referencing a project.
-- Do not imply endorsement by AgentSkill Hub or by repository owners.
+- Do not imply endorsement by agentskill.work or by repository owners.
 
 ## License / rights
 
-- AgentSkill Hub aggregates public metadata from GitHub.
+- agentskill.work aggregates public metadata from GitHub.
 - The license of each project is determined by its own repository.
 - Follow GitHub’s terms of service and each repository's license.

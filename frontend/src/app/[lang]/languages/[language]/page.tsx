@@ -51,7 +51,7 @@ export async function generateMetadata({
 
   const title = `${
     lang === "zh" ? `语言：${language}` : `Language: ${language}`
-  } - Claude Skill - AgentSkill Hub`;
+  } - Claude Skill - agentskill.work`;
 
   return {
     title,
@@ -74,7 +74,7 @@ export async function generateMetadata({
       title,
       description,
       url: canonical,
-      siteName: "AgentSkill Hub",
+      siteName: "agentskill.work",
       locale: lang === "en" ? "en_US" : "zh_CN",
       alternateLocale: [lang === "en" ? "zh_CN" : "en_US"],
       images: [{ url: "/opengraph-image" }],

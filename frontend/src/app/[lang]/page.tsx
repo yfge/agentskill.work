@@ -64,7 +64,7 @@ export async function generateMetadata({
       title: copy.title,
       description: copy.subtitle,
       url: canonical,
-      siteName: "AgentSkill Hub",
+      siteName: "agentskill.work",
       locale: lang === "en" ? "en_US" : "zh_CN",
       alternateLocale: [lang === "en" ? "zh_CN" : "en_US"],
       images: [{ url: "/opengraph-image" }],

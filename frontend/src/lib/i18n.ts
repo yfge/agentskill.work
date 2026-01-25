@@ -1,6 +1,6 @@
 export const messages = {
   zh: {
-    title: "AgentSkill Hub",
+    title: "agentskill.work",
     subtitle: "自动汇总 GitHub 上热门 Claude Skill 项目，集中展示与搜索。",
     searchPlaceholder: "按名称、仓库、描述搜索...",
     search: "搜索",
@@ -40,7 +40,7 @@ export const messages = {
     detailNoDescription: "暂无描述",
     detailSource: "数据来自 GitHub，同步时间：",
     detailUnknown: "未知",
-    infoTitle: "为什么选择 AgentSkill Hub",
+    infoTitle: "为什么选择 agentskill.work",
     infoSubtitle: "把热门 Claude Skill 项目集中成可搜索的清单。",
     infoCards: [
       {
@@ -90,7 +90,7 @@ export const messages = {
     ],
   },
   en: {
-    title: "AgentSkill Hub",
+    title: "agentskill.work",
     subtitle:
       "Discover trending Claude Skill projects on GitHub, curated and searchable.",
     searchPlaceholder: "Search by name, repo, description...",
@@ -131,7 +131,7 @@ export const messages = {
     detailNoDescription: "No description yet.",
     detailSource: "Data from GitHub. Synced on ",
     detailUnknown: "Unknown",
-    infoTitle: "Why AgentSkill Hub",
+    infoTitle: "Why agentskill.work",
     infoSubtitle: "A searchable index of trending Claude Skill projects.",
     infoCards: [
       {

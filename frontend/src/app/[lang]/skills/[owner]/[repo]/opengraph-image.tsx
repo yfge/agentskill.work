@@ -69,7 +69,7 @@ export default async function OpenGraphImage({
           fontFamily: "Arial, sans-serif",
         }}
       >
-        <div style={{ fontSize: 54, fontWeight: 700 }}>AgentSkill Hub</div>
+        <div style={{ fontSize: 54, fontWeight: 700 }}>agentskill.work</div>
         <div style={{ marginTop: 16, fontSize: 26, color: "#6f655a" }}>
           Claude Skill
         </div>
@@ -143,7 +143,7 @@ export default async function OpenGraphImage({
             color: "#8fe1c8",
           }}
         >
-          AgentSkill Hub
+          agentskill.work
         </div>
       </div>
 

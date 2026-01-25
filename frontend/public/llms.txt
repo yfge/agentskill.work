@@ -1,6 +1,6 @@
-# AgentSkill Hub (agentskill.work)
+# agentskill.work
 
-AgentSkill Hub is a curated, searchable index of trending Claude Skill GitHub repositories.
+agentskill.work is a curated, searchable index of trending Claude Skill GitHub repositories.
 
 More details for agents/LLMs:
 - https://agentskill.work/llms-full.txt
@@ -56,7 +56,7 @@ More details for agents/LLMs:
 - Metadata is aggregated from GitHub; the source of truth is each repository
 - Follow GitHub’s terms and each repo’s own license
 - When citing a project, link to the GitHub repo and/or the detail page
-- Do not imply endorsement by AgentSkill Hub or the repository owners
+- Do not imply endorsement by agentskill.work or the repository owners
 
 ## Crawl guidance
 - Prefer canonical URLs without tracking parameters

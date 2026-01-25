@@ -1,8 +1,8 @@
-# AgentSkill Hub（agentskill.work）
+# agentskill.work
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
-AgentSkill Hub 是一个用于发现与检索 **Claude Skill** GitHub 仓库的流量站：定时抓取热门项目入库，并提供可索引的列表页/详情页。
+agentskill.work 是一个用于发现与检索 **Claude Skill** GitHub 仓库的流量站：定时抓取热门项目入库，并提供可索引的列表页/详情页。
 
 > 术语约束：请保持 **"Claude Skill"** 原文，不要翻译成其它中文说法。
 
