@@ -22,6 +22,7 @@ cd docker && docker compose up -d
 - Beat: `agentskill-celery-beat`
 - Sync task: `tasks.github_sync` (interval from `SYNC_INTERVAL_MINUTES`)
 - Immediate sync on beat start (if `SYNC_ON_START=true`)
+- GitHub rate-limit buffer: `GITHUB_RATE_LIMIT_BUFFER` (stop when remaining <= buffer)
 
 ```bash
 # Run worker locally

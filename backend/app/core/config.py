@@ -17,6 +17,7 @@ class Settings(BaseSettings):
     github_search_per_page: int = 30
     github_max_pages: int = 5
     github_max_results: int = 300
+    github_rate_limit_buffer: int = 2
 
     sync_interval_minutes: int = 60
     sync_on_start: bool = True

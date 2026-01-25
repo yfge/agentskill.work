@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timezone
 import logging
 
 import httpx
@@ -18,6 +18,34 @@ def _parse_datetime(value: str | None) -> datetime | None:
     if not value:
         return None
     return datetime.fromisoformat(value.replace("Z", "+00:00"))
+
+
+def _parse_rate_limit_reset(value: str | None) -> datetime | None:
+    if not value:
+        return None
+    try:
+        return datetime.fromtimestamp(int(value), tz=timezone.utc)
+    except ValueError:
+        return None
+
+
+def _should_stop_for_rate_limit(
+    remaining: str | None, reset_at: datetime | None, buffer: int
+) -> bool:
+    if remaining is None:
+        return False
+    try:
+        remaining_int = int(remaining)
+    except ValueError:
+        return False
+    if remaining_int > buffer:
+        return False
+    logger.warning(
+        "github rate limit near exhaustion (remaining=%s, reset=%s), stop sync",
+        remaining_int,
+        reset_at.isoformat() if reset_at else "unknown",
+    )
+    return True
 
 
 def fetch_github_repos(settings: Settings) -> list[dict]:
@@ -43,6 +71,22 @@ def fetch_github_repos(settings: Settings) -> list[dict]:
                 "page": page,
             }
             response = client.get(GITHUB_API_URL, headers=headers, params=params)
+
+            if response.status_code in {403, 429}:
+                remaining = response.headers.get("X-RateLimit-Remaining")
+                reset_at = _parse_rate_limit_reset(
+                    response.headers.get("X-RateLimit-Reset")
+                )
+                retry_after = response.headers.get("Retry-After")
+                if remaining == "0" or retry_after:
+                    logger.warning(
+                        "github rate limit hit (status=%s, remaining=%s, reset=%s, retry_after=%s), stop sync",
+                        response.status_code,
+                        remaining,
+                        reset_at.isoformat() if reset_at else "unknown",
+                        retry_after or "unknown",
+                    )
+                    break
             response.raise_for_status()
             data = response.json()
             items = data.get("items", [])
@@ -58,8 +102,12 @@ def fetch_github_repos(settings: Settings) -> list[dict]:
                 break
 
             remaining = response.headers.get("X-RateLimit-Remaining")
-            if remaining == "0":
-                logger.warning("github rate limit exhausted; stop pagination")
+            reset_at = _parse_rate_limit_reset(
+                response.headers.get("X-RateLimit-Reset")
+            )
+            if _should_stop_for_rate_limit(
+                remaining, reset_at, settings.github_rate_limit_buffer
+            ):
                 break
 
     return results
