@@ -78,7 +78,7 @@
 
 ### 4) 长尾入口页：Topic / Language / Owner 聚合页
 
-- [ ] 新增可索引聚合页（提高长尾覆盖 + 内链结构）
+- [x] 新增可索引聚合页（提高长尾覆盖 + 内链结构）
   - [x] 4.1 后端支持：`GET /api/skills` 支持按 `topic` / `language` / `owner` 过滤（只查 DB，不触发 GitHub API）
     - `topic`：按 topics（逗号分隔）做整词匹配
     - `language`：大小写不敏感匹配
@@ -88,8 +88,9 @@
     - `/{lang}/topics/{topic}`
     - `/{lang}/languages/{language}`
     - `/{lang}/owners/{owner}`
-  - [ ] 4.3 SEO 收录：
-    - sitemap 里加入以上聚合页（按热门 topic/language/owner 分批）
+  - [x] 4.3 SEO 收录：
+    - 新增 `https://agentskill.work/sitemap-facets.xml`（按热门 topic/language/owner 输出聚合页）
+    - `sitemap-index.xml` 已包含 `sitemap-facets.xml`
     - 首页/详情页增加可爬取内链（详情页已将 topics/owner/language 变为内链）
   - 页面：
     - `/{lang}/topics/{topic}`

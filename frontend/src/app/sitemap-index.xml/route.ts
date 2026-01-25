@@ -33,7 +33,10 @@ export async function GET() {
   const total = await fetchTotalSkills();
   const pages = total > 0 ? Math.ceil(total / SKILLS_PER_SITEMAP) : 0;
 
-  const urls: string[] = ["https://agentskill.work/sitemap-pages.xml"];
+  const urls: string[] = [
+    "https://agentskill.work/sitemap-pages.xml",
+    "https://agentskill.work/sitemap-facets.xml",
+  ];
   for (let page = 1; page <= pages; page += 1) {
     urls.push(`https://agentskill.work/sitemap-skills/${page}.xml`);
   }
