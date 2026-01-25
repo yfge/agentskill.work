@@ -224,12 +224,12 @@
         - `GITHUB_NEWEST_MAX_PAGES` / `GITHUB_NEWEST_MAX_RESULTS`（小一点，避免拉爆）
         - 与现有 rate-limit guard 共用
   - 前端（SEO 页）：
-    - [ ] 新增页面：`/{lang}/latest`
+    - [x] 新增页面：`/{lang}/latest`
       - canonical + hreflang（/zh 与 /en 对应）
       - JSON-LD：BreadcrumbList + ItemList
       - 可分页（走 DB/API，不触发 GitHub）
-    - [ ] 首页增加入口（例如 “Latest” 模块 + 跳转按钮），帮助爬虫与用户发现
-    - [ ] sitemap-pages.xml 增加 `/{lang}/latest`（静态入口页必须可被 sitemap 发现）
+    - [x] 首页增加入口（例如 “Latest” 模块 + 跳转按钮），帮助爬虫与用户发现
+    - [x] sitemap-pages.xml 增加 `/{lang}/latest`（静态入口页必须可被 sitemap 发现）
   - 验收标准：
     - `/{lang}/latest` 可访问且可分页
     - 有稳定可解释的“最新”排序（且数据来自 DB，不触发 GitHub API）

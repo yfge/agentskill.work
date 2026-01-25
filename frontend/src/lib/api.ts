@@ -9,6 +9,7 @@ export async function fetchSkills(
     topic?: string;
     language?: string;
     owner?: string;
+    sort?: "stars" | "newest";
   } = {},
 ): Promise<SkillListResponse> {
   const base = getApiBase();
@@ -25,6 +26,9 @@ export async function fetchSkills(
   }
   if (options.owner) {
     params.set("owner", options.owner);
+  }
+  if (options.sort) {
+    params.set("sort", options.sort);
   }
   if (options.limit !== undefined) {
     params.set("limit", String(options.limit));

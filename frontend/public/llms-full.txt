@@ -13,6 +13,7 @@ Important term policy:
 
 - Home (Chinese): https://agentskill.work/zh
 - Home (English): https://agentskill.work/en
+- Latest list: https://agentskill.work/{lang}/latest
 - Skill detail: https://agentskill.work/{lang}/skills/{owner}/{repo}
 - GitHub repo (source of truth): https://github.com/{owner}/{repo}
 

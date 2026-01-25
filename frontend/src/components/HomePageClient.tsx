@@ -209,6 +209,13 @@ export function HomePageClient({
         </div>
       </section>
 
+      <nav className="browse-nav" aria-label="Browse">
+        <a href={`/${lang}`} aria-current="page">
+          {copy.navTrending}
+        </a>
+        <a href={`/${lang}/latest`}>{copy.navLatest}</a>
+      </nav>
+
       <form
         className="search"
         onSubmit={(event) => {

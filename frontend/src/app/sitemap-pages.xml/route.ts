@@ -38,6 +38,18 @@ export function GET() {
       changefreq: "hourly",
       priority: "0.9",
     },
+    {
+      loc: "https://agentskill.work/zh/latest",
+      lastmod: today,
+      changefreq: "hourly",
+      priority: "0.7",
+    },
+    {
+      loc: "https://agentskill.work/en/latest",
+      lastmod: today,
+      changefreq: "hourly",
+      priority: "0.7",
+    },
   ];
 
   const xml =

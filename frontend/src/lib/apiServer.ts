@@ -11,6 +11,7 @@ export async function fetchSkillsCached(
     topic?: string;
     language?: string;
     owner?: string;
+    sort?: "stars" | "newest";
   } = {},
   revalidateSeconds: number = DEFAULT_REVALIDATE_SECONDS,
 ): Promise<SkillListResponse> {
@@ -28,6 +29,9 @@ export async function fetchSkillsCached(
   }
   if (options.owner) {
     params.set("owner", options.owner);
+  }
+  if (options.sort) {
+    params.set("sort", options.sort);
   }
   if (options.limit !== undefined) {
     params.set("limit", String(options.limit));
