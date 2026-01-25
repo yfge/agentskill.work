@@ -25,7 +25,7 @@ async function fetchTotalSkills(): Promise<number> {
   return Number.isFinite(data.total) ? data.total : 0;
 }
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
 
 export async function GET() {
   const today = toDateStamp(new Date());
@@ -37,13 +37,11 @@ export async function GET() {
     urls.push(`https://agentskill.work/sitemap-skills/${page}.xml`);
   }
 
-  const xml = `<?xml version="1.0" encoding="UTF-8"?>\n` +
+  const xml =
+    `<?xml version="1.0" encoding="UTF-8"?>\n` +
     `<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n` +
     `${urls
-      .map(
-        (loc) =>
-          `  <sitemap><loc>${loc}</loc><lastmod>${today}</lastmod></sitemap>`,
-      )
+      .map((loc) => `  <sitemap><loc>${loc}</loc><lastmod>${today}</lastmod></sitemap>`)
       .join("\n")}\n` +
     `</sitemapindex>\n`;
 
