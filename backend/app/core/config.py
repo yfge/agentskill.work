@@ -19,6 +19,9 @@ class Settings(BaseSettings):
     github_max_pages: int = 5
     github_max_results: int = 300
     github_rate_limit_buffer: int = 2
+    github_newest_window_days: int = 7
+    github_newest_max_pages: int = 2
+    github_newest_max_results: int = 100
 
     sync_interval_minutes: int = 60
     sync_on_start: bool = True

@@ -56,7 +56,8 @@ export async function generateMetadata({
   const copy = messages[lang];
   const offsetValue = first(resolvedSearch.offset);
   const offsetParsed = parseOffset(offsetValue);
-  const offset = offsetParsed !== null && offsetParsed % PAGE_SIZE === 0 ? offsetParsed : 0;
+  const offset =
+    offsetParsed !== null && offsetParsed % PAGE_SIZE === 0 ? offsetParsed : 0;
 
   const canonical = `https://agentskill.work/${lang}/latest${
     offset > 0 ? `?offset=${offset}` : ""
@@ -114,7 +115,8 @@ export default async function LatestPage({ params, searchParams }: PageProps) {
 
   const offsetValue = first(resolvedSearch.offset);
   const offsetParsed = parseOffset(offsetValue);
-  const offset = offsetParsed !== null && offsetParsed % PAGE_SIZE === 0 ? offsetParsed : null;
+  const offset =
+    offsetParsed !== null && offsetParsed % PAGE_SIZE === 0 ? offsetParsed : null;
   if (offset === null) {
     notFound();
   }
@@ -137,4 +139,3 @@ export default async function LatestPage({ params, searchParams }: PageProps) {
     />
   );
 }
-

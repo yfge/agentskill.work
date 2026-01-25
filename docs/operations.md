@@ -24,6 +24,10 @@ cd docker && docker compose up -d
 - Enrichment task: `tasks.skill_enrich` (interval from `ENRICH_INTERVAL_MINUTES`, enabled by `ENABLE_ENRICHMENT=true`)
 - Immediate sync on beat start (if `SYNC_ON_START=true`)
 - GitHub search query: `GITHUB_SEARCH_QUERY` (defaults to `("claude skill" OR "agent skill") in:name,description,topics`)
+- Latest discovery (new repos) search window:
+  - `GITHUB_NEWEST_WINDOW_DAYS` (default: 7)
+  - `GITHUB_NEWEST_MAX_PAGES` (default: 2)
+  - `GITHUB_NEWEST_MAX_RESULTS` (default: 100)
 - GitHub rate-limit buffer: `GITHUB_RATE_LIMIT_BUFFER` (stop when remaining <= buffer)
 - LLM requirement: enrichment needs `DEEPSEEK_API_KEY` (LLM is never called in user-facing request handlers)
 

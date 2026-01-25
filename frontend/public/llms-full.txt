@@ -128,6 +128,10 @@ Important constraint:
 Scheduling:
 - Celery beat triggers periodic sync jobs.
 - Celery beat can also trigger offline enrichment jobs (DeepSeek), gated by ENABLE_ENRICHMENT.
+- Sync fetches repos using two strategies:
+  - Trending: GitHub Search sorted by stars (config: GITHUB_SEARCH_QUERY / GITHUB_MAX_PAGES / GITHUB_MAX_RESULTS)
+  - Latest discovery: GitHub Search with a created window (created:>=YYYY-MM-DD) and sort=updated
+    (config: GITHUB_NEWEST_WINDOW_DAYS / GITHUB_NEWEST_MAX_PAGES / GITHUB_NEWEST_MAX_RESULTS)
 - Sync may stop early to avoid hitting GitHub API rate limits.
 
 Rate-limit safety:

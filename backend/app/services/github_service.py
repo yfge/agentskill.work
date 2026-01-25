@@ -1,5 +1,5 @@
 import logging
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
 import httpx
 from sqlalchemy.orm import Session
@@ -48,7 +48,15 @@ def _should_stop_for_rate_limit(
     return True
 
 
-def fetch_github_repos(settings: Settings) -> list[dict]:
+def _fetch_github_search(
+    settings: Settings,
+    *,
+    query: str,
+    sort: str,
+    order: str,
+    max_pages: int,
+    max_results: int,
+) -> list[dict]:
     headers = {
         "Accept": "application/vnd.github+json",
         "X-GitHub-Api-Version": "2022-11-28",
@@ -57,16 +65,16 @@ def fetch_github_repos(settings: Settings) -> list[dict]:
         headers["Authorization"] = f"Bearer {settings.github_token}"
 
     per_page = min(settings.github_search_per_page, MAX_PER_PAGE)
-    max_pages = max(1, settings.github_max_pages)
-    max_results = max(1, settings.github_max_results)
+    max_pages = max(1, max_pages)
+    max_results = max(1, max_results)
     results: list[dict] = []
 
     with httpx.Client(timeout=30) as client:
         for page in range(1, max_pages + 1):
             params = {
-                "q": settings.github_search_query,
-                "sort": "stars",
-                "order": "desc",
+                "q": query,
+                "sort": sort,
+                "order": order,
                 "per_page": per_page,
                 "page": page,
             }
@@ -116,11 +124,59 @@ def fetch_github_repos(settings: Settings) -> list[dict]:
     return results
 
 
+def fetch_github_repos(settings: Settings) -> list[dict]:
+    return _fetch_github_search(
+        settings,
+        query=settings.github_search_query,
+        sort="stars",
+        order="desc",
+        max_pages=settings.github_max_pages,
+        max_results=settings.github_max_results,
+    )
+
+
+def fetch_github_newest_repos(settings: Settings) -> list[dict]:
+    window_days = max(1, settings.github_newest_window_days)
+    since = (datetime.now(UTC) - timedelta(days=window_days)).date().isoformat()
+    query = f"({settings.github_search_query}) created:>={since}"
+    return _fetch_github_search(
+        settings,
+        query=query,
+        sort="updated",
+        order="desc",
+        max_pages=settings.github_newest_max_pages,
+        max_results=settings.github_newest_max_results,
+    )
+
+
 def sync_github_skills(db: Session, settings: Settings) -> int:
-    repos = fetch_github_repos(settings)
+    repos: list[dict] = []
+    repos_by_stars = fetch_github_repos(settings)
+    repos.extend(repos_by_stars)
+
+    repos_by_newest: list[dict] = []
+    if settings.github_newest_max_results > 0 and settings.github_newest_max_pages > 0:
+        repos_by_newest = fetch_github_newest_repos(settings)
+        repos.extend(repos_by_newest)
+
+    logger.info(
+        "github sync fetched repos: by_stars=%s, by_newest=%s, combined=%s",
+        len(repos_by_stars),
+        len(repos_by_newest),
+        len(repos),
+    )
+
     count = 0
+    deduped: dict[int, dict] = {}
 
     for repo in repos:
+        repo_id = repo.get("id")
+        if repo_id is None:
+            continue
+        # Keep the latest seen payload for the repo; fields overlap and are safe.
+        deduped[int(repo_id)] = repo
+
+    for repo in deduped.values():
         repo_id = repo.get("id")
         if repo_id is None:
             continue

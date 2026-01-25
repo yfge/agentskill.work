@@ -217,7 +217,7 @@
       - [x] 方案 A：`GET /api/skills?sort=stars|newest`（默认 `stars`）
       - [ ] 方案 B：新增独立端点 `GET /api/skills/latest`（当前不需要；如后续要更“语义化”再加）
   - 定时任务（确保“最新”真的会进库）：
-    - [ ] 在现有“按 stars”抓取之外，增加一个“recent/newest”抓取策略（仍然只在定时任务）
+    - [x] 在现有“按 stars”抓取之外，增加一个“recent/newest”抓取策略（仍然只在定时任务）
       - 参考：GitHub Search API `sort=updated` + query 加 `created:>=YYYY-MM-DD`（窗口期可配）
       - 配置建议：
         - `GITHUB_NEWEST_WINDOW_DAYS`（例如 7）
