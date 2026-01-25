@@ -67,6 +67,8 @@
     - 使用 Next Route Handlers 输出 XML（避免 Next 单 sitemap 限制）
     - 生成时仅调用自家 API（分页获取 skills）
     - 加缓存（revalidate/Cache-Control），避免每次爬虫请求都打爆 API/DB
+    - 注意：`/sitemap-index.xml` 必须是运行时动态（例如 `export const dynamic = "force-dynamic"`），否则 Next 可能在 build
+      阶段预渲染该路由并触发对自家 API 的 fetch，导致 Docker build 时超时失败
   - 验收标准：
     - `https://agentskill.work/sitemap-index.xml` 存在且可被 robots 引用
     - index 中列出的 `sitemap-skills-*.xml` 返回 200 且包含有效 URL 集
