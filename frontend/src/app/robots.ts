@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: "*",
       allow: "/",
     },
-    sitemap: "https://agentskill.work/sitemap.xml",
+    sitemap: "https://agentskill.work/sitemap-index.xml",
   };
 }

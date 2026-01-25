@@ -33,7 +33,8 @@ AgentSkill Hub is a curated, searchable index of trending Claude Skill GitHub re
 ## SEO and structured data
 - WebSite, FAQ, and ItemList on the home page
 - SoftwareSourceCode and BreadcrumbList on detail pages
-- Sitemap: https://agentskill.work/sitemap.xml
+- Sitemap index: https://agentskill.work/sitemap-index.xml
+- Sitemap alias: https://agentskill.work/sitemap.xml (redirects to index)
 - Robots: https://agentskill.work/robots.txt
 
 ## API (public)

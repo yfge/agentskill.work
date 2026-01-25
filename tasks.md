@@ -53,8 +53,12 @@
 
 ### 3) Sitemap 扩展（sitemap-index + 分片）与 lastmod
 
-- [ ] 将单一 `sitemap.xml` 升级为 sitemap index（站点规模化必备）
-  - 现状：单文件且有 `MAX_SITEMAP_ITEMS=500` 上限，未来会限制收录增长。
+- [x] 将单一 `sitemap.xml` 升级为 sitemap index（站点规模化必备）
+  - 实现：
+    - `https://agentskill.work/sitemap-index.xml`（sitemap index）
+    - `https://agentskill.work/sitemap-pages.xml`（静态页面）
+    - `https://agentskill.work/sitemap-skills/{n}.xml`（skills 分片，`n` 从 1 开始）
+    - `https://agentskill.work/sitemap.xml` 308 重定向到 index
   - 目标：
     - 提供 `sitemap-index.xml`，按分页输出 `sitemap-skills-{n}.xml`
     - 每个 url 写 `lastmod`（优先 `last_pushed_at`，fallback `fetched_at`）
@@ -65,7 +69,7 @@
     - 加缓存（revalidate/Cache-Control），避免每次爬虫请求都打爆 API/DB
   - 验收标准：
     - `https://agentskill.work/sitemap-index.xml` 存在且可被 robots 引用
-    - 任意 `sitemap-skills-*.xml` 返回 200 且包含有效 URL 集
+    - index 中列出的 `sitemap-skills-*.xml` 返回 200 且包含有效 URL 集
 
 ### 4) 长尾入口页：Topic / Language / Owner 聚合页
 

@@ -64,8 +64,7 @@ export default async function OpenGraphImage({
           flexDirection: "column",
           justifyContent: "center",
           padding: "64px",
-          background:
-            "linear-gradient(135deg, #f0e6d2 0%, #f6f4ef 45%, #ffffff 100%)",
+          background: "linear-gradient(135deg, #f0e6d2 0%, #f6f4ef 45%, #ffffff 100%)",
           color: "#1e1b16",
           fontFamily: "Arial, sans-serif",
         }}
@@ -120,8 +119,7 @@ export default async function OpenGraphImage({
         flexDirection: "column",
         justifyContent: "space-between",
         padding: "64px",
-        background:
-          "linear-gradient(135deg, #0b1210 0%, #0f1d1a 40%, #132b22 100%)",
+        background: "linear-gradient(135deg, #0b1210 0%, #0f1d1a 40%, #132b22 100%)",
         color: "#f3f5f4",
         fontFamily: "Arial, sans-serif",
       }}
@@ -211,7 +209,9 @@ export default async function OpenGraphImage({
               color: "#f3f5f4",
             }}
           >
-            <span style={{ fontSize: 14, color: "#8fe1c8" }}>{copy.detailLanguage}</span>
+            <span style={{ fontSize: 14, color: "#8fe1c8" }}>
+              {copy.detailLanguage}
+            </span>
             <span style={{ fontSize: 20, fontWeight: 700 }}>
               {skill.language || copy.detailUnknown}
             </span>
