@@ -48,4 +48,3 @@ def downgrade() -> None:
     op.drop_column("skills", "key_features_en")
     op.drop_column("skills", "summary_zh")
     op.drop_column("skills", "summary_en")
-

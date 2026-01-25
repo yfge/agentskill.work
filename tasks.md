@@ -119,7 +119,7 @@
       - `seo_title_en` / `seo_title_zh`（<= 60 字符左右，避免标题同质化）
       - `seo_description_en` / `seo_description_zh`（<= 160 字符左右，避免描述同质化）
       - `content_updated_at`（内容生成时间，用于判定是否需要重新生成）
-  - [ ] 5.2 后端：离线生成任务（Celery）
+  - [x] 5.2 后端：离线生成任务（Celery）
     - 仅在定时任务里调用 DeepSeek（严禁在用户请求链路调用 LLM）
     - 选取策略：优先补齐 `content_updated_at is null` 的技能，其次 `last_pushed_at > content_updated_at`
     - 失败兜底：解析/校验失败或接口错误时只记录日志，不影响 GitHub 同步主任务
@@ -132,7 +132,7 @@
     - 展示 `key_features_{lang}`、`use_cases_{lang}`（缺失则隐藏该区块）
   - [ ] 5.4 SEO：metadata 使用 `seo_title_{lang}` / `seo_description_{lang}`（存在时覆盖默认）
   - [ ] 5.5 GEO：同步更新 `llms-full.txt`（补充新字段语义与示例）
-  - [ ] 5.6 运维：`.env.example` + `docs/operations.md` 补充开关与频率说明
+  - [x] 5.6 运维：`.env.example` + `docs/operations.md` 补充开关与频率说明
 
 ### 6) 结构化数据增强（提高富摘要概率）
 

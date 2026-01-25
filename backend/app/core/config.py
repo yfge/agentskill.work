@@ -22,6 +22,7 @@ class Settings(BaseSettings):
     sync_on_start: bool = True
     enable_scheduler: bool = True
     enable_translation: bool = False
+    enable_enrichment: bool = False
     sync_api_enabled: bool = False
     sync_api_token: str | None = None
 
@@ -31,6 +32,9 @@ class Settings(BaseSettings):
     deepseek_api_key: str | None = None
     deepseek_api_url: str = "https://api.deepseek.com"
     deepseek_model: str = "deepseek-chat"
+
+    enrich_interval_minutes: int = 180
+    enrich_batch_size: int = 5
 
     cors_origins: str = Field(default="http://localhost:3000,http://localhost:8083")
 

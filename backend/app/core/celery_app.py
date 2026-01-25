@@ -33,6 +33,18 @@ celery_app = Celery(
 
 settings = get_settings()
 
+beat_schedule: dict[str, object] = {}
+if settings.enable_scheduler:
+    beat_schedule["github-sync-schedule"] = {
+        "task": "tasks.github_sync",
+        "schedule": timedelta(minutes=settings.sync_interval_minutes),
+    }
+    if settings.enable_enrichment:
+        beat_schedule["skill-enrich-schedule"] = {
+            "task": "tasks.skill_enrich",
+            "schedule": timedelta(minutes=settings.enrich_interval_minutes),
+        }
+
 celery_app.conf.update(
     task_serializer="json",
     accept_content=["json"],
@@ -41,16 +53,7 @@ celery_app.conf.update(
     enable_utc=True,
     task_acks_late=True,
     worker_max_tasks_per_child=100,
-    beat_schedule=(
-        {
-            "github-sync-schedule": {
-                "task": "tasks.github_sync",
-                "schedule": timedelta(minutes=settings.sync_interval_minutes),
-            }
-        }
-        if settings.enable_scheduler
-        else {}
-    ),
+    beat_schedule=beat_schedule,
 )
 
 
@@ -69,3 +72,4 @@ if _running_under_pytest():
 
 
 import app.tasks.github_sync  # noqa: E402,F401
+import app.tasks.skill_enrich  # noqa: E402,F401

@@ -21,8 +21,10 @@ cd docker && docker compose up -d
 - Worker: `agentskill-celery-worker`
 - Beat: `agentskill-celery-beat`
 - Sync task: `tasks.github_sync` (interval from `SYNC_INTERVAL_MINUTES`)
+- Enrichment task: `tasks.skill_enrich` (interval from `ENRICH_INTERVAL_MINUTES`, enabled by `ENABLE_ENRICHMENT=true`)
 - Immediate sync on beat start (if `SYNC_ON_START=true`)
 - GitHub rate-limit buffer: `GITHUB_RATE_LIMIT_BUFFER` (stop when remaining <= buffer)
+- LLM requirement: enrichment needs `DEEPSEEK_API_KEY` (LLM is never called in user-facing request handlers)
 
 ```bash
 # Run worker locally
