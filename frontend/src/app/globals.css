@@ -362,6 +362,19 @@ a {
   border-radius: 999px;
   border: 1px solid var(--border);
   background: var(--card);
+  color: var(--text);
+  text-decoration: none;
+  transition:
+    border-color 0.18s ease,
+    transform 0.18s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.detail-topic:hover {
+  border-color: rgba(182, 95, 59, 0.6);
+  transform: translateY(-1px);
 }
 
 .detail-actions {

@@ -83,13 +83,13 @@
     - `language`：大小写不敏感匹配
     - `owner`：匹配 `full_name` 的 `{owner}/...`
     - 说明：后端 list API 仍限制 `limit <= 100`，聚合页与 sitemap 分片要按该上限分页
-  - [ ] 4.2 前端页面：
+  - [x] 4.2 前端页面：
     - `/{lang}/topics/{topic}`
     - `/{lang}/languages/{language}`
     - `/{lang}/owners/{owner}`
   - [ ] 4.3 SEO 收录：
     - sitemap 里加入以上聚合页（按热门 topic/language/owner 分批）
-    - 首页/详情页增加可爬取内链（“Explore topics/languages/owners”）
+    - 首页/详情页增加可爬取内链（详情页已将 topics/owner/language 变为内链）
   - 页面：
     - `/{lang}/topics/{topic}`
     - `/{lang}/languages/{language}`

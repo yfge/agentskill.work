@@ -3,13 +3,28 @@ import { SkillListResponse } from "@/types/skill";
 
 export async function fetchSkills(
   query: string,
-  options: { limit?: number; offset?: number } = {},
+  options: {
+    limit?: number;
+    offset?: number;
+    topic?: string;
+    language?: string;
+    owner?: string;
+  } = {},
 ): Promise<SkillListResponse> {
   const base = getApiBase();
   const trimmedBase = base.endsWith("/") ? base.slice(0, -1) : base;
   const params = new URLSearchParams();
   if (query) {
     params.set("q", query);
+  }
+  if (options.topic) {
+    params.set("topic", options.topic);
+  }
+  if (options.language) {
+    params.set("language", options.language);
+  }
+  if (options.owner) {
+    params.set("owner", options.owner);
   }
   if (options.limit !== undefined) {
     params.set("limit", String(options.limit));

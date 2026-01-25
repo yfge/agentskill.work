@@ -288,14 +288,38 @@ export default async function SkillDetailPage({ params }: PageProps) {
         {topics.length > 0 ? (
           <div className="detail-topics">
             {topics.map((topic) => (
-              <span key={topic} className="detail-topic">
+              <Link
+                key={topic}
+                className="detail-topic"
+                href={`/${lang}/topics/${encodeURIComponent(topic)}`}
+              >
                 {topic}
-              </span>
+              </Link>
             ))}
           </div>
         ) : (
           <p className="status">{copy.detailNoTopics}</p>
         )}
+      </section>
+
+      <section className="detail-card">
+        <h2>{copy.detailExplore}</h2>
+        <div className="detail-topics">
+          <Link
+            className="detail-topic"
+            href={`/${lang}/owners/${encodeURIComponent(resolvedParams.owner)}`}
+          >
+            {copy.detailOwner}: {resolvedParams.owner}
+          </Link>
+          {skill.language && (
+            <Link
+              className="detail-topic"
+              href={`/${lang}/languages/${encodeURIComponent(skill.language)}`}
+            >
+              {copy.detailLanguage}: {skill.language}
+            </Link>
+          )}
+        </div>
       </section>
 
       <p className="detail-source">
