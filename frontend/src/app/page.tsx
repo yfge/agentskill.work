@@ -17,9 +17,8 @@ function first(value: string | string[] | undefined): string | undefined {
 export default async function RootPage({ searchParams }: PageProps) {
   const resolvedSearch = searchParams ? await searchParams : {};
   const queryLang = first(resolvedSearch.lang) || first(resolvedSearch.hl);
-  const detectedLang = detectLanguageFromAcceptLanguage(
-    headers().get("accept-language"),
-  );
+  const acceptLanguage = (await headers()).get("accept-language");
+  const detectedLang = detectLanguageFromAcceptLanguage(acceptLanguage);
   const langRaw = queryLang || detectedLang;
   const lang = normalizeLanguage(langRaw);
 
