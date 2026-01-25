@@ -196,10 +196,27 @@ export default async function SkillDetailPage({ params }: PageProps) {
     "@type": "SoftwareSourceCode",
     name: skill.full_name,
     description: summary || undefined,
+    url: canonical,
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": canonical,
+    },
     codeRepository: skill.html_url,
     programmingLanguage: skill.language || undefined,
     dateModified: skill.last_pushed_at || undefined,
     keywords: skill.topics || undefined,
+    interactionStatistic: [
+      {
+        "@type": "InteractionCounter",
+        interactionType: { "@type": "LikeAction" },
+        userInteractionCount: skill.stars,
+      },
+      {
+        "@type": "InteractionCounter",
+        interactionType: { "@type": "CreateAction" },
+        userInteractionCount: skill.forks,
+      },
+    ],
   };
   const breadcrumbSchema = {
     "@context": "https://schema.org",
