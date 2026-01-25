@@ -11,11 +11,14 @@ More details for agents/LLMs:
 
 ## Content model (per skill)
 - full_name (owner/repo)
-- owner, repo
 - description (original)
 - description_zh (machine translation when enabled)
+- summary_en / summary_zh (offline LLM enrichment)
+- key_features_en / key_features_zh (offline LLM enrichment)
+- use_cases_en / use_cases_zh (offline LLM enrichment)
+- seo_title_en / seo_title_zh, seo_description_en / seo_description_zh (offline LLM enrichment)
 - stars, forks, language
-- topics
+- topics (stored as comma-separated string)
 - last_pushed_at (GitHub), fetched_at (last sync)
 - html_url, repo_id
 
@@ -46,6 +49,7 @@ More details for agents/LLMs:
 - List: /skills
   - query: `q`, `topic`, `language`, `owner`, `limit`, `offset`
 - Detail: /skills/{owner}/{repo}
+- Facets: /facets/topics, /facets/languages, /facets/owners
 - Please avoid large-scale crawling; respect rate limits
 
 ## Data usage and attribution

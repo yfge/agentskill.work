@@ -20,6 +20,7 @@ Important term policy:
 
 - Sitemap index: https://agentskill.work/sitemap-index.xml
 - Sitemap alias: https://agentskill.work/sitemap.xml (redirects to index)
+- Facet sitemap (topics/languages/owners): https://agentskill.work/sitemap-facets.xml
 - Robots: https://agentskill.work/robots.txt
 - Site verification file (WeChat): https://agentskill.work/e5e588a3b46a049f7e2354fa3ba02fde.txt
 
@@ -61,20 +62,40 @@ Response shape:
 Response shape:
 Skill
 
+3) Facets (for discovery / sitemap generation)
+- GET /facets/topics?limit=100
+- GET /facets/languages?limit=50
+- GET /facets/owners?limit=50
+
+Response shape:
+{
+  "items": [{"value": string, "count": number}]
+}
+
 ### Skill schema (as stored and returned)
 
 Required-ish identifiers:
+- id: number (local database id)
 - repo_id: number (GitHub repository id)
-- full_name: string (format: "{owner}/{repo}")
-- owner: string
-- repo: string
+- full_name: string (format: "{owner}/{repo}"; owner/repo can be derived by splitting on "/")
 - html_url: string (GitHub repo URL)
 
 Metadata:
 - description: string | null
 - description_zh: string | null (machine translation when enabled)
+- summary_en: string | null (LLM-generated, offline)
+- summary_zh: string | null (LLM-generated, offline)
+- key_features_en: string[] | null (LLM-generated, offline)
+- key_features_zh: string[] | null (LLM-generated, offline)
+- use_cases_en: string[] | null (LLM-generated, offline)
+- use_cases_zh: string[] | null (LLM-generated, offline)
+- seo_title_en: string | null (LLM-generated, offline)
+- seo_title_zh: string | null (LLM-generated, offline)
+- seo_description_en: string | null (LLM-generated, offline)
+- seo_description_zh: string | null (LLM-generated, offline)
+- content_updated_at: string | null (ISO datetime; when enrichment content was generated)
 - language: string | null (primary programming language from GitHub)
-- topics: string[] (GitHub topics)
+- topics: string | null (comma-separated GitHub topics; split on "," for an array)
 - stars: number
 - forks: number
 - last_pushed_at: string | null (ISO datetime from GitHub)
@@ -95,10 +116,12 @@ Important constraint:
 
 Scheduling:
 - Celery beat triggers periodic sync jobs.
+- Celery beat can also trigger offline enrichment jobs (DeepSeek), gated by ENABLE_ENRICHMENT.
 - Sync may stop early to avoid hitting GitHub API rate limits.
 
 Rate-limit safety:
 - GitHub rate limit guard will stop sync when remaining requests are low (buffer-based) or on 403/429 signals.
+- Enrichment is batch-limited (ENRICH_BATCH_SIZE) and uses a Redis lock to avoid overlapping runs.
 
 ## Crawling / usage guidance
 

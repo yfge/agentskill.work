@@ -110,7 +110,7 @@
 
 ### 5) 内容增厚（离线生成）：LLM 友好摘要 / 要点 / 使用场景
 
-- [ ] 在“定时任务”里离线生成内容块，提升详情页信息密度，减少 thin-content
+- [x] 在“定时任务”里离线生成内容块，提升详情页信息密度，减少 thin-content
   - [x] 5.1 DB 字段 + 迁移
     - 新增字段（中英文分别存，避免混用导致 SEO 语义不清）：
       - `summary_en` / `summary_zh`（1-2 段，页面主摘要）
@@ -131,7 +131,7 @@
     - 优先展示 `summary_{lang}`，无则 fallback 到 `description_{lang}`
     - 展示 `key_features_{lang}`、`use_cases_{lang}`（缺失则隐藏该区块）
   - [x] 5.4 SEO：metadata 使用 `seo_title_{lang}` / `seo_description_{lang}`（存在时覆盖默认）
-  - [ ] 5.5 GEO：同步更新 `llms-full.txt`（补充新字段语义与示例）
+  - [x] 5.5 GEO：同步更新 `llms-full.txt`（补充新字段语义与示例）
   - [x] 5.6 运维：`.env.example` + `docs/operations.md` 补充开关与频率说明
 
 ### 6) 结构化数据增强（提高富摘要概率）
