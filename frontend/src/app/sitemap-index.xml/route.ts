@@ -1,7 +1,8 @@
 import { getApiBase } from "@/lib/apiBase";
 
 const REVALIDATE_SECONDS = 60 * 60;
-const SKILLS_PER_SITEMAP = 5_000;
+// Keep in sync with backend API max limit (FastAPI validation).
+const SKILLS_PER_SITEMAP = 100;
 
 type SkillListResponse = {
   total: number;

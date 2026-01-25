@@ -3,7 +3,8 @@ import { SkillListResponse } from "@/types/skill";
 import type { NextRequest } from "next/server";
 
 const REVALIDATE_SECONDS = 60 * 60;
-const SKILLS_PER_SITEMAP = 5_000;
+// Keep in sync with backend API max limit (FastAPI validation).
+const SKILLS_PER_SITEMAP = 100;
 const LANGS = ["zh", "en"] as const;
 
 function toDateStamp(value: Date): string {
