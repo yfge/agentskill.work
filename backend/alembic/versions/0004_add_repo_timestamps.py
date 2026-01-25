@@ -36,4 +36,3 @@ def downgrade() -> None:
     op.drop_index("ix_skills_repo_created_at", table_name="skills")
     op.drop_column("skills", "repo_updated_at")
     op.drop_column("skills", "repo_created_at")
-

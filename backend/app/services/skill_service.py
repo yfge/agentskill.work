@@ -10,6 +10,7 @@ def search_skills(
     topic: str | None = None,
     language: str | None = None,
     owner: str | None = None,
+    sort: str = "stars",
     limit: int = 20,
     offset: int = 0,
 ) -> tuple[int, list[Skill]]:
@@ -55,8 +56,13 @@ def search_skills(
 
     count_stmt = select(func.count()).select_from(stmt.subquery())
     total = db.execute(count_stmt).scalar_one()
+
+    order_by = Skill.stars.desc()
+    if sort == "newest":
+        order_by = func.coalesce(Skill.repo_created_at, Skill.created_at).desc()
+
     items = (
-        db.execute(stmt.order_by(Skill.stars.desc()).offset(offset).limit(limit))
+        db.execute(stmt.order_by(order_by, Skill.id.desc()).offset(offset).limit(limit))
         .scalars()
         .all()
     )

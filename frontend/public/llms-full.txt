@@ -52,6 +52,9 @@ Query parameters (all optional unless stated):
   - Filter by primary programming language (case-insensitive).
 - owner: string
   - Filter by GitHub owner (matches full_name prefix "{owner}/...").
+- sort: string (default: stars)
+  - stars: order by GitHub stars (descending)
+  - newest: order by GitHub repo created time (repo_created_at desc; fallback to created_at)
 - limit: integer (default: backend default, max: 100)
 - offset: integer (default: 0)
 
@@ -103,6 +106,8 @@ Metadata:
 - topics: string | null (comma-separated GitHub topics; split on "," for an array)
 - stars: number
 - forks: number
+- repo_created_at: string | null (ISO datetime from GitHub; repo created time)
+- repo_updated_at: string | null (ISO datetime from GitHub; repo updated time)
 - last_pushed_at: string | null (ISO datetime from GitHub)
 - fetched_at: string (ISO datetime of last sync into local DB)
 

@@ -213,9 +213,9 @@
       - `repo_created_at`（GitHub created_at）
       - `repo_updated_at`（GitHub updated_at，可选，用于后续“最近更新”）
     - [x] GitHub 同步：在 upsert 时写入以上字段（仍在 Celery 任务里）
-    - [ ] 列表 API：支持按最新排序
-      - 方案 A：给 `GET /api/skills` 增加 `sort=`（默认 `stars`，新增 `newest`）
-      - 方案 B：新增独立端点 `GET /api/skills/latest`（更清晰、对 SEO 页面更稳定）
+    - [x] 列表 API：支持按最新排序（DB 内排序，不触发 GitHub）
+      - [x] 方案 A：`GET /api/skills?sort=stars|newest`（默认 `stars`）
+      - [ ] 方案 B：新增独立端点 `GET /api/skills/latest`（当前不需要；如后续要更“语义化”再加）
   - 定时任务（确保“最新”真的会进库）：
     - [ ] 在现有“按 stars”抓取之外，增加一个“recent/newest”抓取策略（仍然只在定时任务）
       - 参考：GitHub Search API `sort=updated` + query 加 `created:>=YYYY-MM-DD`（窗口期可配）
