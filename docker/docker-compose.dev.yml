@@ -38,6 +38,38 @@ services:
       - agentskill-mysql
       - agentskill-redis
 
+  agentskill-celery-worker:
+    container_name: agentskill-celery-worker
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.backend.dev
+    env_file:
+      - .env
+    working_dir: /app/backend
+    command:
+      ["celery", "-A", "app.core.celery_app.celery_app", "worker", "-l", "info"]
+    volumes:
+      - ../backend:/app/backend
+    depends_on:
+      - agentskill-mysql
+      - agentskill-redis
+
+  agentskill-celery-beat:
+    container_name: agentskill-celery-beat
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.backend.dev
+    env_file:
+      - .env
+    working_dir: /app/backend
+    command:
+      ["celery", "-A", "app.core.celery_app.celery_app", "beat", "-l", "info"]
+    volumes:
+      - ../backend:/app/backend
+    depends_on:
+      - agentskill-mysql
+      - agentskill-redis
+
   agentskill-frontend:
     container_name: agentskill-frontend
     build:

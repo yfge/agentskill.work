@@ -25,6 +25,9 @@ class Settings(BaseSettings):
     sync_api_enabled: bool = False
     sync_api_token: str | None = None
 
+    celery_broker_url: str | None = None
+    celery_result_backend: str | None = None
+
     deepseek_api_key: str | None = None
     deepseek_api_url: str = "https://api.deepseek.com"
     deepseek_model: str = "deepseek-chat"

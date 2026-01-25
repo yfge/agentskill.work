@@ -16,6 +16,21 @@ cd docker && ./dev_in_docker.sh
 cd docker && docker compose up -d
 ```
 
+## Scheduled Sync (Celery)
+
+- Worker: `agentskill-celery-worker`
+- Beat: `agentskill-celery-beat`
+- Sync task: `tasks.github_sync` (interval from `SYNC_INTERVAL_MINUTES`)
+- Immediate sync on beat start (if `SYNC_ON_START=true`)
+
+```bash
+# Run worker locally
+celery -A app.core.celery_app.celery_app worker -l info
+
+# Run beat locally
+celery -A app.core.celery_app.celery_app beat -l info
+```
+
 ## Migrations
 
 ```bash

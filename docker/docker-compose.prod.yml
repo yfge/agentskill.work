@@ -33,6 +33,32 @@ services:
       - agentskill-redis
     restart: always
 
+  agentskill-celery-worker:
+    container_name: agentskill-celery-worker
+    image: "${REGISTRY:-registry.cn-beijing.aliyuncs.com/geyunfei}/agentskill-backend:${IMAGE_TAG:-latest}"
+    env_file:
+      - .env
+    working_dir: /app/backend
+    command:
+      ["celery", "-A", "app.core.celery_app.celery_app", "worker", "-l", "info"]
+    depends_on:
+      - agentskill-mysql
+      - agentskill-redis
+    restart: always
+
+  agentskill-celery-beat:
+    container_name: agentskill-celery-beat
+    image: "${REGISTRY:-registry.cn-beijing.aliyuncs.com/geyunfei}/agentskill-backend:${IMAGE_TAG:-latest}"
+    env_file:
+      - .env
+    working_dir: /app/backend
+    command:
+      ["celery", "-A", "app.core.celery_app.celery_app", "beat", "-l", "info"]
+    depends_on:
+      - agentskill-mysql
+      - agentskill-redis
+    restart: always
+
   agentskill-frontend:
     container_name: agentskill-frontend
     image: "${REGISTRY:-registry.cn-beijing.aliyuncs.com/geyunfei}/agentskill-frontend:${IMAGE_TAG:-latest}"
