@@ -1,31 +1,33 @@
-# AgentSkill Hub
+# AgentSkill Hub (agentskill.work)
 
-一个用于展示 **AgentSkill / Claude Skill** 的网站：自动抓取 GitHub 上热门的 Claude Skill 项目入库，在首页展示，并支持搜索。
+[English](README.md) | [简体中文](README.zh-CN.md)
 
-> 说明：本项目 99% 由 AI 完成，仍需人工审阅与持续完善。
+AgentSkill Hub is a curated, searchable index of trending **Claude Skill** GitHub repositories.
 
-## 功能概览
+> Term policy: keep the proper term **"Claude Skill"** as-is. Do NOT translate it.
 
-- 自动同步 GitHub 热门 Claude Skill 项目并入库
-- 首页列表展示 + 搜索
-- 项目详情页（SEO/GEO 优化，支持跳转 GitHub）
-- 后端 API 提供同步与检索能力
+## Features
 
-## 技术栈
+- Scheduled sync of trending Claude Skill repos (GitHub metadata stored locally)
+- Search + paging (never calls GitHub from the user-facing request path)
+- SEO/GEO: sitemaps, structured data (JSON-LD), dynamic Open Graph images, `llms.txt`
+- Bilingual UI: `/zh` and `/en`
+- Offline content enrichment (DeepSeek) via Celery (summary / key features / use cases / SEO title & description)
 
-- **Backend**: FastAPI + SQLAlchemy + Alembic
-- **Frontend**: Next.js + TypeScript
-- **Infra**: Docker / Nginx / MySQL / Redis
+## Tech Stack
 
-## 仓库结构
+- Backend: FastAPI + SQLAlchemy + Alembic + Celery
+- Frontend: Next.js (App Router) + TypeScript
+- Infra: Docker + Nginx + MySQL + Redis
 
-- `backend/`：后端服务
-- `frontend/`：前端 Web
-- `docker/`：Docker 开发/生产编排与 Nginx 入口
-- `docs/`：文档索引
-- `scripts/`：同步脚本、维护工具
+## Repository Layout
 
-## 快速开始（Docker，一键启动）
+- `backend/`: API server + background workers
+- `frontend/`: Next.js web app (SEO pages)
+- `docker/`: dev/prod compose + nginx entry
+- `docs/`: operational docs
+
+## Quick Start (Docker, dev)
 
 ```bash
 cd docker
@@ -33,14 +35,14 @@ cp .env.example .env
 ./dev_in_docker.sh
 ```
 
-访问：
+Open:
 
-- Web（Nginx 入口）：`http://localhost:8083`
-- Backend API（Nginx 代理）：`http://localhost:8083/api`
+- Web (Nginx entry): `http://localhost:8083`
+- API (via Nginx): `http://localhost:8083/api`
 
-## 本地开发（不使用 Docker）
+## Local Development (no Docker)
 
-### 后端
+Backend:
 
 ```bash
 cd backend
@@ -54,42 +56,30 @@ alembic upgrade head
 uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-### 前端
+Frontend:
 
 ```bash
 cd frontend
 npm install
 
-# 指向后端 API（本地直连）
-export NEXT_PUBLIC_API_URL=http://localhost:8000
+# point to the backend directly
+export NEXT_PUBLIC_API_URL=http://localhost:8000/api
 
 npm run dev
 ```
 
-## 数据同步
+## Data Sync / Background Jobs
 
-- 手动执行：
-  ```bash
-  cd backend
-  python -m scripts.sync_github_skills
-  ```
-- API 触发：`POST /api/skills/sync`（默认关闭，需设置 `SYNC_API_ENABLED=true`）
-- 定时同步：Celery beat + worker（见 `backend/app/core/celery_app.py` / `docs/operations.md`）
-  - `SYNC_INTERVAL_MINUTES`：同步频率（分钟）
-  - `SYNC_ON_START`：启动时是否立刻同步
-  - `ENABLE_SCHEDULER`：是否启用定时任务
-  - `SYNC_API_ENABLED` / `SYNC_API_TOKEN`：是否允许外部触发同步（建议关闭）
-  - `GITHUB_MAX_PAGES`：自动翻页最大页数
-  - `GITHUB_MAX_RESULTS`：单次同步最多入库数量
-  - `ENABLE_TRANSLATION`：是否启用翻译（DeepSeek，离线任务）
-  - `ENABLE_ENRICHMENT`：是否启用内容增厚（DeepSeek，离线任务）
-  - `DEEPSEEK_API_KEY` / `DEEPSEEK_API_URL` / `DEEPSEEK_MODEL`
-  - `INTERNAL_API_URL`：服务端渲染时访问后端 API（如 `http://agentskill-backend:8000`）
+- Scheduled sync: Celery beat + worker (see `backend/app/core/celery_app.py`)
+- Manual sync API: `POST /api/skills/sync` (disabled by default; protected by token if enabled)
+- Translation / enrichment: offline tasks only (never run in the user-facing request path)
+
+Operations doc: `docs/operations.md`
 
 ## Public API
 
 Base URL:
-- `/api` (via Nginx proxy)
+- `/api` (via Nginx)
 
 OpenAPI:
 - `/api/openapi.json`
@@ -102,47 +92,14 @@ Read endpoints (no auth):
 - `GET /api/facets/languages`
 - `GET /api/facets/owners`
 
-Write endpoint (disabled by default):
-- `POST /api/skills/sync` (requires `SYNC_API_ENABLED=true` and `SYNC_API_TOKEN`)
+## Contributing
 
-## 多语言（中英文）
+See `CONTRIBUTING.md`. This repo enforces:
 
-- 前端内置中英文切换（右上角按钮）。
-- 中文展示会优先使用 `description_zh`，若为空则回退英文描述。
+- `pre-commit run -a` before commits
+- Conventional Commits (commit-msg hook)
+- DB migrations via Alembic for schema changes
 
-## 数据库迁移（Alembic）
+## License
 
-```bash
-cd backend
-alembic revision --autogenerate -m "create skills table"
-alembic upgrade head
-```
-
-> 注意：已应用的迁移不要修改，新增变更请创建新迁移。
-
-## 代码规范与质量
-
-```bash
-pre-commit install
-pre-commit run -a
-```
-
-- Python: Ruff (lint + format)
-- Frontend: ESLint + Prettier
-- Commit: Conventional Commits（commit-msg hook）
-
-## 发布与部署（Docker）
-
-```bash
-cd docker
-cp .env.example .env
-# 修改 .env 中的数据库/密钥/配置
-
-./build_prod.sh
-./build_prod_images.sh
-docker compose -f docker-compose.prod.yml up -d
-```
-
-## 文档入口
-
-- `docs/README.md`
+MIT. See `LICENSE`.
