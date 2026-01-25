@@ -1,23 +1,49 @@
-# AgentSkill Hub
+# AgentSkill Hub (agentskill.work)
 
-AgentSkill Hub is a curated, searchable index of trending Claude Skill projects on GitHub.
+AgentSkill Hub is a curated, searchable index of trending Claude Skill GitHub repositories.
 
-## What this site provides
-- A single place to discover popular Claude Skill repositories
-- Search by repository name, owner, or description
-- Detail pages with stars, forks, topics, and last update time
+## Purpose
+- Help users discover active Claude Skill projects quickly
+- Provide concise repo summaries with core stats and topics
 
-## Data sources and updates
+## Content model (per skill)
+- full_name (owner/repo)
+- owner, repo
+- description (original)
+- description_zh (machine translation when enabled)
+- stars, forks, language
+- topics
+- last_pushed_at (GitHub), fetched_at (last sync)
+- html_url, repo_id
+
+## Pages
+- Home list: https://agentskill.work/
+- Detail page: https://agentskill.work/skills/{owner}/{repo}
+
+## Language
+- zh and en are supported
+- "Claude Skill" is kept as a proper term
+
+## Data sources and freshness
 - Source: GitHub Search API
 - Sync: scheduled background job (typically hourly)
+- Sync may stop early to respect GitHub rate limits
 
-## Languages
-- Chinese (zh) and English (en)
-- “Claude Skill” is kept as the original term
+## SEO and structured data
+- WebSite, FAQ, and ItemList on the home page
+- SoftwareSourceCode and BreadcrumbList on detail pages
+- Sitemap: https://agentskill.work/sitemap.xml
+- Robots: https://agentskill.work/robots.txt
 
-## Key pages
-- https://agentskill.work/
-- https://agentskill.work/skills/{owner}/{repo}
+## API (public)
+- Base path: https://agentskill.work/api
+- List: /skills
+- Detail: /skills/{owner}/{repo}
+- Please avoid large-scale crawling; respect rate limits
+
+## Crawl guidance
+- Prefer canonical URLs without tracking parameters
+- Use detail pages for attribution when citing a repository
 
 ## Contact
 - https://agentskill.work/
