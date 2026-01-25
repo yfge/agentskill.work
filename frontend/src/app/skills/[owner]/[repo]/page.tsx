@@ -18,6 +18,17 @@ function resolveLanguage(value?: string): Language {
   return value?.toLowerCase() === "en" ? "en" : "zh";
 }
 
+function formatDate(value?: string | null): string | null {
+  if (!value) {
+    return null;
+  }
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return null;
+  }
+  return date.toISOString().slice(0, 10);
+}
+
 async function fetchSkill(owner: string, repo: string): Promise<Skill | null> {
   const base = getApiBase();
   const trimmedBase = base.endsWith("/") ? base.slice(0, -1) : base;
@@ -91,26 +102,49 @@ export default async function SkillDetailPage({
     notFound();
   }
 
-  const description =
+  const copy = messages[lang];
+  const primaryDescription =
     lang === "zh"
       ? normalizeClaudeSkill(skill.description_zh || skill.description)
       : skill.description || skill.description_zh;
-  const copy = messages[lang];
+  const secondaryDescription =
+    lang === "zh" ? skill.description : skill.description_zh;
 
   const topics = (skill.topics || "")
     .split(",")
     .map((item) => item.trim())
     .filter(Boolean);
 
-  const lastPushedAt = skill.last_pushed_at
-    ? new Date(skill.last_pushed_at).toISOString().slice(0, 10)
-    : null;
+  const lastPushedAt = formatDate(skill.last_pushed_at);
+  const fetchedAt = formatDate(skill.fetched_at);
+
+  const stats = [
+    { label: copy.detailStars, value: skill.stars.toLocaleString() },
+    { label: copy.detailForks, value: skill.forks.toLocaleString() },
+    { label: copy.detailLanguage, value: skill.language || copy.detailUnknown },
+    {
+      label: copy.detailLastPushed,
+      value: lastPushedAt || copy.detailUnknown,
+    },
+    {
+      label: copy.detailLastSynced,
+      value: fetchedAt || copy.detailUnknown,
+    },
+  ];
+
+  const repoFacts = [
+    { label: copy.detailOwner, value: resolvedParams.owner },
+    { label: copy.detailRepo, value: resolvedParams.repo },
+    { label: copy.detailFullName, value: skill.full_name },
+    { label: copy.detailRepoId, value: skill.repo_id.toLocaleString() },
+    { label: copy.detailGitHub, value: skill.html_url, href: skill.html_url },
+  ];
 
   const schema = {
     "@context": "https://schema.org",
     "@type": "SoftwareSourceCode",
     name: skill.full_name,
-    description: description || undefined,
+    description: primaryDescription || undefined,
     codeRepository: skill.html_url,
     programmingLanguage: skill.language || undefined,
     dateModified: skill.last_pushed_at || undefined,
@@ -129,7 +163,7 @@ export default async function SkillDetailPage({
           <p className="detail-eyebrow">Claude Skill</p>
           <h1>{skill.full_name}</h1>
           <p className="detail-description">
-            {description || "No description yet."}
+            {primaryDescription || copy.detailNoDescription}
           </p>
         </div>
         <SkillLangSwitch
@@ -139,36 +173,87 @@ export default async function SkillDetailPage({
         />
       </div>
 
-      <div className="detail-meta">
-        <span>⭐ {skill.stars}</span>
-        <span>🍴 {skill.forks}</span>
-        <span>{skill.language || "Unknown"}</span>
-        {lastPushedAt && <span>Updated {lastPushedAt}</span>}
+      <div className="detail-grid">
+        <section className="detail-card">
+          <h2>{copy.detailOverview}</h2>
+          <div className="stat-grid">
+            {stats.map((stat) => (
+              <div key={stat.label} className="stat">
+                <span className="stat-label">{stat.label}</span>
+                <strong className="stat-value">{stat.value}</strong>
+              </div>
+            ))}
+          </div>
+          <div className="detail-actions">
+            <Link className="button" href="/">
+              {copy.backToList}
+            </Link>
+            <a
+              className="button primary"
+              href={skill.html_url}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {copy.viewOnGitHub}
+            </a>
+          </div>
+        </section>
+
+        <section className="detail-card">
+          <h2>{copy.detailRepoInfo}</h2>
+          <div className="detail-list">
+            {repoFacts.map((fact) => (
+              <div key={fact.label} className="detail-list-row">
+                <span className="detail-list-label">{fact.label}</span>
+                <span className="detail-list-value">
+                  {fact.href ? (
+                    <a href={fact.href} target="_blank" rel="noreferrer">
+                      {fact.value}
+                    </a>
+                  ) : (
+                    fact.value
+                  )}
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
       </div>
 
-      {topics.length > 0 && (
-        <div className="detail-topics">
-          {topics.map((topic) => (
-            <span key={topic} className="detail-topic">
-              {topic}
+      <section className="detail-card">
+        <h2>{copy.detailSummary}</h2>
+        <p className="detail-description">
+          {primaryDescription || copy.detailNoDescription}
+        </p>
+        {secondaryDescription && secondaryDescription !== primaryDescription && (
+          <div className="detail-alt">
+            <span className="detail-alt-label">
+              {lang === "zh" ? copy.detailOriginal : copy.detailTranslated}
             </span>
-          ))}
-        </div>
-      )}
+            <p>{secondaryDescription}</p>
+          </div>
+        )}
+      </section>
 
-      <div className="detail-actions">
-        <Link className="button" href="/">
-          {copy.backToList}
-        </Link>
-        <a
-          className="button primary"
-          href={skill.html_url}
-          target="_blank"
-          rel="noreferrer"
-        >
-          {copy.viewOnGitHub}
-        </a>
-      </div>
+      <section className="detail-card">
+        <h2>{copy.detailTopics}</h2>
+        {topics.length > 0 ? (
+          <div className="detail-topics">
+            {topics.map((topic) => (
+              <span key={topic} className="detail-topic">
+                {topic}
+              </span>
+            ))}
+          </div>
+        ) : (
+          <p className="status">{copy.detailNoTopics}</p>
+        )}
+      </section>
+
+      <p className="detail-source">
+        {copy.detailSource}
+        {fetchedAt || copy.detailUnknown}
+      </p>
     </main>
   );
 }
