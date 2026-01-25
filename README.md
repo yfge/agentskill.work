@@ -74,16 +74,36 @@ npm run dev
   python -m scripts.sync_github_skills
   ```
 - API 触发：`POST /api/skills/sync`（默认关闭，需设置 `SYNC_API_ENABLED=true`）
-- 定时同步：由后台定时任务控制（见 `backend/app/core/scheduler.py`）
+- 定时同步：Celery beat + worker（见 `backend/app/core/celery_app.py` / `docs/operations.md`）
   - `SYNC_INTERVAL_MINUTES`：同步频率（分钟）
   - `SYNC_ON_START`：启动时是否立刻同步
   - `ENABLE_SCHEDULER`：是否启用定时任务
   - `SYNC_API_ENABLED` / `SYNC_API_TOKEN`：是否允许外部触发同步（建议关闭）
   - `GITHUB_MAX_PAGES`：自动翻页最大页数
   - `GITHUB_MAX_RESULTS`：单次同步最多入库数量
-  - `ENABLE_TRANSLATION`：是否启用翻译（DeepSeek）
+  - `ENABLE_TRANSLATION`：是否启用翻译（DeepSeek，离线任务）
+  - `ENABLE_ENRICHMENT`：是否启用内容增厚（DeepSeek，离线任务）
   - `DEEPSEEK_API_KEY` / `DEEPSEEK_API_URL` / `DEEPSEEK_MODEL`
   - `INTERNAL_API_URL`：服务端渲染时访问后端 API（如 `http://agentskill-backend:8000`）
+
+## Public API
+
+Base URL:
+- `/api` (via Nginx proxy)
+
+OpenAPI:
+- `/api/openapi.json`
+- `/api/docs`
+
+Read endpoints (no auth):
+- `GET /api/skills?q=&limit=&offset=&topic=&language=&owner=`
+- `GET /api/skills/{owner}/{repo}`
+- `GET /api/facets/topics`
+- `GET /api/facets/languages`
+- `GET /api/facets/owners`
+
+Write endpoint (disabled by default):
+- `POST /api/skills/sync` (requires `SYNC_API_ENABLED=true` and `SYNC_API_TOKEN`)
 
 ## 多语言（中英文）
 

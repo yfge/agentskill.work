@@ -216,6 +216,34 @@ a {
   line-height: 1.6;
 }
 
+.resources {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.resources-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
+
+.resources-list li {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 16px;
+}
+
+.resources-list a {
+  color: var(--accent);
+  font-weight: 600;
+}
+
 .detail {
   display: flex;
   flex-direction: column;

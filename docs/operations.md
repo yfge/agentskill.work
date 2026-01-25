@@ -41,6 +41,13 @@ cd backend
 alembic upgrade head
 ```
 
+## Public API
+
+- Base URL: `https://agentskill.work/api`
+- OpenAPI: `/api/openapi.json` and `/api/docs`
+- Read endpoints are public (no auth).
+- Write endpoint `POST /api/skills/sync` is disabled by default (requires `SYNC_API_ENABLED=true` + `SYNC_API_TOKEN`).
+
 ## Webmaster Verification (GSC / Bing)
 
 The frontend reads these variables at runtime (no rebuild required; just update

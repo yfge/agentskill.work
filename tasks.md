@@ -179,7 +179,7 @@
 
 ### 10) 对外 API 可读性：OpenAPI 链接与最小开发者文档
 
-- [ ] 在文档与 GEO 文件中明确 OpenAPI 入口与常用端点语义
+- [x] 在文档与 GEO 文件中明确 OpenAPI 入口与常用端点语义
   - 现状：FastAPI OpenAPI 已可访问（`/api/openapi.json`）
   - 目标：
     - 在 README / docs/operations.md / llms-full.txt 明确写出 API base、鉴权策略（如有）、分页与限速建议

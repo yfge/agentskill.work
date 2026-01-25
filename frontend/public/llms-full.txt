@@ -33,6 +33,11 @@ OpenAPI:
 - https://agentskill.work/api/openapi.json
 - https://agentskill.work/api/docs
 
+Auth / rate guidance:
+- Read endpoints are public (no auth).
+- Write endpoints (e.g., manual sync) are disabled by default and must be protected by a token if enabled.
+- Please use pagination (limit/offset) and avoid aggressive polling; data is refreshed on a schedule.
+
 ### Endpoints
 
 1) List skills

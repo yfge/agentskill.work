@@ -80,6 +80,14 @@ export const messages = {
         answer: "每个项目详情页都包含 GitHub 地址，可直接访问源仓库。",
       },
     ],
+    resourcesTitle: "开发者资源",
+    resourcesSubtitle: "OpenAPI 与 LLM/agent 参考文件（llms.txt）。",
+    resourcesLinks: [
+      { label: "API 文档（Swagger）", href: "/api/docs" },
+      { label: "OpenAPI JSON", href: "/api/openapi.json" },
+      { label: "llms.txt", href: "/llms.txt" },
+      { label: "llms-full.txt", href: "/llms-full.txt" },
+    ],
   },
   en: {
     title: "AgentSkill Hub",
@@ -163,6 +171,14 @@ export const messages = {
         question: "Can I jump to GitHub?",
         answer: "Every detail page includes a direct link to the source repository.",
       },
+    ],
+    resourcesTitle: "Developer resources",
+    resourcesSubtitle: "OpenAPI and LLM/agent reference files (llms.txt).",
+    resourcesLinks: [
+      { label: "API docs (Swagger)", href: "/api/docs" },
+      { label: "OpenAPI JSON", href: "/api/openapi.json" },
+      { label: "llms.txt", href: "/llms.txt" },
+      { label: "llms-full.txt", href: "/llms-full.txt" },
     ],
   },
 } as const;

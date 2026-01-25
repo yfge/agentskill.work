@@ -271,6 +271,20 @@ export function HomePageClient({
           ))}
         </div>
       </section>
+
+      <section className="resources">
+        <div className="info-header">
+          <h2>{copy.resourcesTitle}</h2>
+          <p>{copy.resourcesSubtitle}</p>
+        </div>
+        <ul className="resources-list">
+          {copy.resourcesLinks.map((item) => (
+            <li key={item.href}>
+              <a href={item.href}>{item.label}</a>
+            </li>
+          ))}
+        </ul>
+      </section>
     </main>
   );
 }
