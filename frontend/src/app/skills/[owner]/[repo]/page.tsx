@@ -1,6 +1,7 @@
+import { headers } from "next/headers";
 import { permanentRedirect } from "next/navigation";
 
-import { normalizeLanguage } from "@/lib/i18n";
+import { detectLanguageFromAcceptLanguage, normalizeLanguage } from "@/lib/i18n";
 
 type PageProps = {
   params: Promise<{ owner: string; repo: string }>;
@@ -21,7 +22,11 @@ export default async function LegacySkillDetailRedirect({
   const resolvedParams = await params;
   const resolvedSearch = searchParams ? await searchParams : {};
 
-  const langRaw = first(resolvedSearch.lang) || first(resolvedSearch.hl) || "zh";
+  const queryLang = first(resolvedSearch.lang) || first(resolvedSearch.hl);
+  const detectedLang = detectLanguageFromAcceptLanguage(
+    headers().get("accept-language"),
+  );
+  const langRaw = queryLang || detectedLang;
   const lang = normalizeLanguage(langRaw);
 
   const nextParams = new URLSearchParams();

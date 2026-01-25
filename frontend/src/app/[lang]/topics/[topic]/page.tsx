@@ -122,4 +122,3 @@ export default async function TopicPage({ params, searchParams }: PageProps) {
     />
   );
 }
-

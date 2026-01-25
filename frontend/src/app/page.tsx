@@ -1,6 +1,7 @@
+import { headers } from "next/headers";
 import { permanentRedirect } from "next/navigation";
 
-import { normalizeLanguage } from "@/lib/i18n";
+import { detectLanguageFromAcceptLanguage, normalizeLanguage } from "@/lib/i18n";
 
 type PageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
@@ -15,7 +16,11 @@ function first(value: string | string[] | undefined): string | undefined {
 
 export default async function RootPage({ searchParams }: PageProps) {
   const resolvedSearch = searchParams ? await searchParams : {};
-  const langRaw = first(resolvedSearch.lang) || first(resolvedSearch.hl) || "zh";
+  const queryLang = first(resolvedSearch.lang) || first(resolvedSearch.hl);
+  const detectedLang = detectLanguageFromAcceptLanguage(
+    headers().get("accept-language"),
+  );
+  const langRaw = queryLang || detectedLang;
   const lang = normalizeLanguage(langRaw);
 
   const params = new URLSearchParams();

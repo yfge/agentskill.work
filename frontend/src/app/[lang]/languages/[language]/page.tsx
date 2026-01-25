@@ -126,4 +126,3 @@ export default async function LanguageFacetPage({ params, searchParams }: PagePr
     />
   );
 }
-

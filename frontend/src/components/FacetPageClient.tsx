@@ -112,7 +112,10 @@ export function FacetPageClient({
   }, [initialQuery, initialSkills, initialTotal]);
 
   const copy = messages[lang];
-  const canonical = useMemo(() => `https://agentskill.work/${lang}${path}`, [lang, path]);
+  const canonical = useMemo(
+    () => `https://agentskill.work/${lang}${path}`,
+    [lang, path],
+  );
   const breadcrumbSchema = useMemo(
     () => ({
       "@context": "https://schema.org",
@@ -246,4 +249,3 @@ export function FacetPageClient({
     </main>
   );
 }
-

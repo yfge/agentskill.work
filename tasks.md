@@ -19,6 +19,7 @@
 - [x] 微信校验文件：`/e5e588a3b46a049f7e2354fa3ba02fde.txt`（可公网访问）
 - [x] GEO 基础文件：`/llms.txt`（已补充 usage/attribution）
 - [x] Analytics：Umami script 已全站注入
+- [x] 默认语言：访问 `/`（或 legacy 旧路由无 lang/hl）时按浏览器 `Accept-Language` 自动选择 `/zh` 或 `/en`
 
 ## 待办（SEO / GEO 优化 Backlog）
 
@@ -28,7 +29,7 @@
   - 现状：语言通过 query 传参；虽然有 hreflang，但 URL 不够“干净”，对收录与分享一致性不友好。
   - 方案建议（Next.js App Router）：
     - 新增 `frontend/src/app/[lang]/...` 路由结构（lang 仅允许 `en`/`zh`）
-    - `/` 308 到默认语言（例如 `/zh`），或保留 `/` 作为默认语言静态页
+    - `/` 308 到“默认语言”（按浏览器 `Accept-Language` 自动选择 `/zh` 或 `/en`）
     - 旧链接兼容：`/?lang=en`、`/skills/x/y?lang=en` 统一重定向到 `/en/...`
   - Canonical/hreflang 规则（必须明确）：
     - 每个语言页面 canonical 指向自己（/en 指向 /en，/zh 指向 /zh）

@@ -194,3 +194,59 @@ export function setStoredLanguage(lang: Language) {
   }
   window.localStorage.setItem("agentskill_lang", lang);
 }
+
+export function detectLanguageFromAcceptLanguage(
+  value: string | null | undefined,
+): Language {
+  if (!value) {
+    return defaultLanguage;
+  }
+
+  let best: { lang: Language; q: number; index: number } | null = null;
+  const parts = value.split(",");
+
+  for (let index = 0; index < parts.length; index++) {
+    const part = parts[index]?.trim();
+    if (!part) {
+      continue;
+    }
+
+    const [rangeRaw, ...params] = part.split(";");
+    const range = rangeRaw?.trim().toLowerCase();
+    if (!range) {
+      continue;
+    }
+
+    let lang: Language | null = null;
+    if (range.startsWith("zh")) {
+      lang = "zh";
+    } else if (range.startsWith("en")) {
+      lang = "en";
+    } else {
+      continue;
+    }
+
+    let q = 1;
+    for (const param of params) {
+      const [key, rawValue] = param.trim().split("=");
+      if (key === "q" && rawValue) {
+        const parsed = Number.parseFloat(rawValue);
+        if (!Number.isNaN(parsed)) {
+          q = parsed;
+        }
+      }
+    }
+
+    if (!best || q > best.q || (q === best.q && index < best.index)) {
+      best = { lang, q, index };
+    }
+  }
+
+  if (best) {
+    return best.lang;
+  }
+
+  // If the browser doesn't advertise English/Chinese, English is a better default
+  // for non-Chinese locales.
+  return "en";
+}
