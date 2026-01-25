@@ -46,7 +46,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="zh-CN">
-      <body>{children}</body>
+      <body>
+        {children}
+        <script
+          defer
+          src="https://umami.agentskill.work/script.js"
+          data-website-id="6b5e7d60-f8b8-4e27-a664-9059b9a3565a"
+        ></script>
+      </body>
     </html>
   );
 }
