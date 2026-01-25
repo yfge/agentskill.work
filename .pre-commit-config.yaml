@@ -34,7 +34,7 @@ repos:
     hooks:
       - id: frontend-eslint
         name: frontend lint (errors only)
-        entry: bash -lc 'cd frontend && npm run lint -- --max-warnings=0'
+        entry: bash -lc 'cd frontend && npm run lint'
         language: system
         files: ^frontend/.*\.(js|jsx|ts|tsx)$
         pass_filenames: false
