@@ -9,6 +9,17 @@ class SkillBase(BaseModel):
     full_name: str
     description: str | None
     description_zh: str | None
+    summary_en: str | None = None
+    summary_zh: str | None = None
+    key_features_en: list[str] | None = None
+    key_features_zh: list[str] | None = None
+    use_cases_en: list[str] | None = None
+    use_cases_zh: list[str] | None = None
+    seo_title_en: str | None = None
+    seo_title_zh: str | None = None
+    seo_description_en: str | None = None
+    seo_description_zh: str | None = None
+    content_updated_at: datetime | None = None
     html_url: str
     stars: int
     forks: int

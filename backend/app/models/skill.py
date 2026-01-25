@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from sqlalchemy import BigInteger, DateTime, Integer, String, Text, func
+from sqlalchemy import JSON, BigInteger, DateTime, Integer, String, Text, func
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.db.base import Base
@@ -20,6 +20,17 @@ class Skill(Base):
     forks: Mapped[int] = mapped_column(Integer, default=0)
     language: Mapped[str | None] = mapped_column(String(64))
     topics: Mapped[str | None] = mapped_column(Text)
+    summary_en: Mapped[str | None] = mapped_column(Text)
+    summary_zh: Mapped[str | None] = mapped_column(Text)
+    key_features_en: Mapped[list[str] | None] = mapped_column(JSON)
+    key_features_zh: Mapped[list[str] | None] = mapped_column(JSON)
+    use_cases_en: Mapped[list[str] | None] = mapped_column(JSON)
+    use_cases_zh: Mapped[list[str] | None] = mapped_column(JSON)
+    seo_title_en: Mapped[str | None] = mapped_column(String(255))
+    seo_title_zh: Mapped[str | None] = mapped_column(String(255))
+    seo_description_en: Mapped[str | None] = mapped_column(Text)
+    seo_description_zh: Mapped[str | None] = mapped_column(Text)
+    content_updated_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     last_pushed_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()

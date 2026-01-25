@@ -3,7 +3,11 @@ from sqlalchemy.orm import Session
 
 from app.core.database import get_db
 from app.schemas.facets import FacetItem, FacetList
-from app.services.facets_service import list_top_languages, list_top_owners, list_top_topics
+from app.services.facets_service import (
+    list_top_languages,
+    list_top_owners,
+    list_top_topics,
+)
 
 router = APIRouter(prefix="/facets", tags=["facets"])
 
@@ -42,4 +46,3 @@ def list_owners(
         for value, count in list_top_owners(db, limit)
     ]
     return FacetList(items=items)
-

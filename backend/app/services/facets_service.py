@@ -53,4 +53,3 @@ def list_top_topics(db: Session, limit: int) -> list[tuple[str, int]]:
                 continue
             counter[item] += 1
     return counter.most_common(limit)
-

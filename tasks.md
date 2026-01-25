@@ -111,17 +111,28 @@
 ### 5) 内容增厚（离线生成）：LLM 友好摘要 / 要点 / 使用场景
 
 - [ ] 在“定时任务”里离线生成内容块，提升详情页信息密度，减少 thin-content
-  - 目标内容（建议存 DB）：
-    - `summary_en` / `summary_zh`（1-2 段）
-    - `key_features`（3-6 条 bullet）
-    - `use_cases`（3-6 条 bullet）
-    - 可选：`seo_title` / `seo_description`（避免所有页 title/description 太像）
-  - 实现要点：
-    - 严格禁止在用户请求链路里调用 LLM（避免延迟/成本/不稳定）
-    - DeepSeek prompt 里强制保留 “Claude Skill” 原词
-    - 为 LLM 任务加 rate limit / 重试 / 失败兜底（不影响主同步）
-  - 验收标准：
-    - 有内容的详情页明显更“厚”，并能在 HTML 中直接看到（爬虫可读）
+  - [x] 5.1 DB 字段 + 迁移
+    - 新增字段（中英文分别存，避免混用导致 SEO 语义不清）：
+      - `summary_en` / `summary_zh`（1-2 段，页面主摘要）
+      - `key_features_en` / `key_features_zh`（3-6 条 bullet）
+      - `use_cases_en` / `use_cases_zh`（3-6 条 bullet）
+      - `seo_title_en` / `seo_title_zh`（<= 60 字符左右，避免标题同质化）
+      - `seo_description_en` / `seo_description_zh`（<= 160 字符左右，避免描述同质化）
+      - `content_updated_at`（内容生成时间，用于判定是否需要重新生成）
+  - [ ] 5.2 后端：离线生成任务（Celery）
+    - 仅在定时任务里调用 DeepSeek（严禁在用户请求链路调用 LLM）
+    - 选取策略：优先补齐 `content_updated_at is null` 的技能，其次 `last_pushed_at > content_updated_at`
+    - 失败兜底：解析/校验失败或接口错误时只记录日志，不影响 GitHub 同步主任务
+    - 限速/并发控制：
+      - 单次任务最多处理 `ENRICH_BATCH_SIZE` 条
+      - 任务互斥锁（Redis lock）避免 beat 重叠导致重复生成
+      - Celery retry/backoff（上游抖动时自动重试）
+  - [ ] 5.3 前端：详情页内容增厚（HTML 可见，利于收录）
+    - 优先展示 `summary_{lang}`，无则 fallback 到 `description_{lang}`
+    - 展示 `key_features_{lang}`、`use_cases_{lang}`（缺失则隐藏该区块）
+  - [ ] 5.4 SEO：metadata 使用 `seo_title_{lang}` / `seo_description_{lang}`（存在时覆盖默认）
+  - [ ] 5.5 GEO：同步更新 `llms-full.txt`（补充新字段语义与示例）
+  - [ ] 5.6 运维：`.env.example` + `docs/operations.md` 补充开关与频率说明
 
 ### 6) 结构化数据增强（提高富摘要概率）
 

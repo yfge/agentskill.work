@@ -8,4 +8,3 @@ class FacetItem(BaseModel):
 
 class FacetList(BaseModel):
     items: list[FacetItem]
-
