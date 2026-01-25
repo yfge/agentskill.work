@@ -29,6 +29,20 @@ function first(value: string | string[] | undefined): string | undefined {
   return value;
 }
 
+function parseOffset(value: string | undefined): number | null {
+  if (!value) {
+    return 0;
+  }
+  if (!/^\d+$/.test(value)) {
+    return null;
+  }
+  const parsed = Number(value);
+  if (!Number.isSafeInteger(parsed) || parsed < 0) {
+    return null;
+  }
+  return parsed;
+}
+
 export async function generateMetadata({
   params,
   searchParams,
@@ -40,18 +54,35 @@ export async function generateMetadata({
     return {};
   }
   const copy = messages[lang];
-  const canonical = `https://agentskill.work/${lang}`;
   const hasQuery = Boolean(first(resolvedSearch.q)?.trim());
+  const offsetValue = first(resolvedSearch.offset);
+  const offsetParsed = parseOffset(offsetValue);
+  const offset =
+    !hasQuery && offsetParsed !== null && offsetParsed % PAGE_SIZE === 0
+      ? offsetParsed
+      : 0;
+
+  const canonical = `https://agentskill.work/${lang}${
+    offset > 0 ? `?offset=${offset}` : ""
+  }`;
+  const title =
+    offset > 0
+      ? lang === "zh"
+        ? `${copy.title} - 第 ${Math.floor(offset / PAGE_SIZE) + 1} 页`
+        : `${copy.title} - Page ${Math.floor(offset / PAGE_SIZE) + 1}`
+      : copy.title;
 
   return {
-    title: copy.title,
+    title,
     description: copy.subtitle,
     alternates: {
       canonical,
       languages: {
-        "zh-CN": "https://agentskill.work/zh",
-        "en-US": "https://agentskill.work/en",
-        "x-default": "https://agentskill.work/zh",
+        "zh-CN": `https://agentskill.work/zh${offset > 0 ? `?offset=${offset}` : ""}`,
+        "en-US": `https://agentskill.work/en${offset > 0 ? `?offset=${offset}` : ""}`,
+        "x-default": `https://agentskill.work/zh${
+          offset > 0 ? `?offset=${offset}` : ""
+        }`,
       },
     },
     robots: hasQuery
@@ -61,7 +92,7 @@ export async function generateMetadata({
         }
       : undefined,
     openGraph: {
-      title: copy.title,
+      title,
       description: copy.subtitle,
       url: canonical,
       siteName: "agentskill.work",
@@ -72,7 +103,7 @@ export async function generateMetadata({
     },
     twitter: {
       card: "summary_large_image",
-      title: copy.title,
+      title,
       description: copy.subtitle,
       images: ["/opengraph-image"],
     },
@@ -87,13 +118,26 @@ export default async function LanguageHomePage({ params, searchParams }: PagePro
     notFound();
   }
   const initialQuery = (first(resolvedSearch.q) || "").trim();
-  const data = await fetchSkillsCached(initialQuery, { limit: PAGE_SIZE, offset: 0 });
+  const offsetValue = first(resolvedSearch.offset);
+  const offsetParsed = parseOffset(offsetValue);
+  const initialOffset =
+    !initialQuery && offsetParsed !== null && offsetParsed % PAGE_SIZE === 0
+      ? offsetParsed
+      : 0;
+  const data = await fetchSkillsCached(initialQuery, {
+    limit: PAGE_SIZE,
+    offset: initialOffset,
+  });
+  if (!initialQuery && initialOffset > 0 && data.items.length === 0) {
+    notFound();
+  }
   return (
     <HomePageClient
       lang={lang}
       initialQuery={initialQuery}
       initialSkills={data.items}
       initialTotal={data.total}
+      initialOffset={initialOffset}
     />
   );
 }

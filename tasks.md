@@ -20,6 +20,7 @@
 - [x] GEO 基础文件：`/llms.txt`（已补充 usage/attribution）
 - [x] Analytics：Umami script 已全站注入
 - [x] 默认语言：访问 `/`（或 legacy 旧路由无 lang/hl）时按浏览器 `Accept-Language` 自动选择 `/zh` 或 `/en`
+- [x] 首页列表可抓取分页入口：`/{lang}?offset=...`（Load more 为 `<a>`，无 JS/爬虫也可跟进）
 
 ## 待办（SEO / GEO 优化 Backlog）
 

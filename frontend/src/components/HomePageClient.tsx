@@ -31,11 +31,13 @@ export function HomePageClient({
   initialQuery = "",
   initialSkills = [],
   initialTotal = 0,
+  initialOffset = 0,
 }: {
   lang?: Language;
   initialQuery?: string;
   initialSkills?: Skill[];
   initialTotal?: number;
+  initialOffset?: number;
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -47,7 +49,7 @@ export function HomePageClient({
   const [error, setError] = useState<string | null>(null);
   const [lang, setLang] = useState<Language>(initialLang);
   const [total, setTotal] = useState(initialTotal);
-  const [offset, setOffset] = useState(0);
+  const [offset, setOffset] = useState(initialOffset);
   const [activeQuery, setActiveQuery] = useState(initialQuery.trim());
 
   useEffect(() => {
@@ -87,9 +89,9 @@ export function HomePageClient({
     setQuery(initialQuery);
     setSkills(initialSkills);
     setTotal(initialTotal);
-    setOffset(0);
+    setOffset(initialOffset);
     setActiveQuery(initialQuery.trim());
-  }, [initialQuery, initialSkills, initialTotal]);
+  }, [initialQuery, initialSkills, initialTotal, initialOffset]);
 
   useEffect(() => {
     const id = getVisitorId();
@@ -133,10 +135,13 @@ export function HomePageClient({
       ? {
           "@context": "https://schema.org",
           "@type": "ItemList",
-          url: `https://agentskill.work/${lang}`,
+          url:
+            activeQuery || initialOffset <= 0
+              ? `https://agentskill.work/${lang}`
+              : `https://agentskill.work/${lang}?offset=${initialOffset}`,
           itemListOrder: "https://schema.org/ItemListOrderDescending",
           numberOfItems: total || skills.length,
-          startIndex: 1,
+          startIndex: activeQuery ? 1 : initialOffset + 1,
           itemListElement: skills.map((skill, index) => {
             const [owner, repo] = skill.full_name.split("/");
             const detailUrl =
@@ -151,7 +156,7 @@ export function HomePageClient({
                 : skill.description || skill.description_zh;
             return {
               "@type": "ListItem",
-              position: index + 1,
+              position: (activeQuery ? 0 : initialOffset) + index + 1,
               item: {
                 "@type": "SoftwareSourceCode",
                 name: skill.full_name,
@@ -231,15 +236,29 @@ export function HomePageClient({
           <span>
             {copy.countLabel} {skills.length}/{total}
           </span>
-          {skills.length < total && (
-            <button
-              type="button"
-              onClick={() => loadSkills(activeQuery, offset + PAGE_SIZE, true)}
-              disabled={loadingMore}
-            >
-              {loadingMore ? copy.loading : copy.loadMore}
-            </button>
-          )}
+          {skills.length < total ? (
+            activeQuery ? (
+              <button
+                type="button"
+                onClick={() => loadSkills(activeQuery, offset + PAGE_SIZE, true)}
+                disabled={loadingMore}
+              >
+                {loadingMore ? copy.loading : copy.loadMore}
+              </button>
+            ) : (
+              <a
+                className="pagination-link"
+                href={`/${lang}?offset=${offset + PAGE_SIZE}`}
+                onClick={(event) => {
+                  event.preventDefault();
+                  loadSkills(activeQuery, offset + PAGE_SIZE, true);
+                }}
+                aria-disabled={loadingMore ? "true" : undefined}
+              >
+                {loadingMore ? copy.loading : copy.loadMore}
+              </a>
+            )
+          ) : null}
         </div>
       )}
 
