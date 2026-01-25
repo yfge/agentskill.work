@@ -4,7 +4,11 @@ export const metadata = {
   metadataBase: new URL("https://agentskill.work"),
   title: "AgentSkill Hub",
   description:
-    "Discover trending Claude Skill projects on GitHub with search and real-time updates.",
+    "Discover trending Claude Skill projects on GitHub with curated search and real-time updates.",
+  applicationName: "AgentSkill Hub",
+  category: "technology",
+  creator: "AgentSkill Hub",
+  publisher: "AgentSkill Hub",
   alternates: {
     canonical: "https://agentskill.work",
     languages: {
@@ -15,18 +19,20 @@ export const metadata = {
   openGraph: {
     title: "AgentSkill Hub",
     description:
-      "Discover trending Claude Skill projects on GitHub with search and real-time updates.",
+      "Discover trending Claude Skill projects on GitHub with curated search and real-time updates.",
     url: "https://agentskill.work",
     siteName: "AgentSkill Hub",
     locale: "zh_CN",
     alternateLocale: ["en_US"],
+    images: [{ url: "/opengraph-image" }],
     type: "website",
   },
   twitter: {
     card: "summary",
     title: "AgentSkill Hub",
     description:
-      "Discover trending Claude Skill projects on GitHub with search and real-time updates.",
+      "Discover trending Claude Skill projects on GitHub with curated search and real-time updates.",
+    images: ["/opengraph-image"],
   },
   keywords: [
     "AgentSkill",

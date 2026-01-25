@@ -160,6 +160,57 @@ a {
   opacity: 0.7;
 }
 
+.info,
+.faq {
+  margin-top: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.info-header h2 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.info-header p {
+  margin: 6px 0 0;
+  color: var(--muted);
+}
+
+.info-grid,
+.faq-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.info-card,
+.faq-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 0 12px 28px rgba(30, 27, 22, 0.06);
+}
+
+.info-card h3,
+.faq-item h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.info-card p,
+.faq-item p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
 .detail {
   display: flex;
   flex-direction: column;
@@ -177,6 +228,19 @@ a {
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+.breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.breadcrumbs a {
+  color: var(--accent);
 }
 
 .detail-eyebrow {

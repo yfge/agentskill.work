@@ -1,0 +1,23 @@
+# AgentSkill Hub
+
+AgentSkill Hub is a curated, searchable index of trending Claude Skill projects on GitHub.
+
+## What this site provides
+- A single place to discover popular Claude Skill repositories
+- Search by repository name, owner, or description
+- Detail pages with stars, forks, topics, and last update time
+
+## Data sources and updates
+- Source: GitHub Search API
+- Sync: scheduled background job (typically hourly)
+
+## Languages
+- Chinese (zh) and English (en)
+- “Claude Skill” is kept as the original term
+
+## Key pages
+- https://agentskill.work/
+- https://agentskill.work/skills/{owner}/{repo}
+
+## Contact
+- https://agentskill.work/

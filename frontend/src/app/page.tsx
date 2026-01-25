@@ -116,11 +116,29 @@ export default function HomePage() {
     url: "https://agentskill.work",
     description: copy.subtitle,
     inLanguage: ["zh-CN", "en"],
+    about: "Claude Skill projects on GitHub",
+    publisher: {
+      "@type": "Organization",
+      name: "AgentSkill Hub",
+      url: "https://agentskill.work",
+    },
     potentialAction: {
       "@type": "SearchAction",
       target: "https://agentskill.work/?q={search_term_string}",
       "query-input": "required name=search_term_string",
     },
+  };
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: copy.faqItems.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
   };
 
   return (
@@ -128,6 +146,10 @@ export default function HomePage() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
       <section className="hero">
         <div className="hero-text">
@@ -184,6 +206,35 @@ export default function HomePage() {
           )}
         </div>
       )}
+
+      <section className="info">
+        <div className="info-header">
+          <h2>{copy.infoTitle}</h2>
+          <p>{copy.infoSubtitle}</p>
+        </div>
+        <div className="info-grid">
+          {copy.infoCards.map((card) => (
+            <article key={card.title} className="info-card">
+              <h3>{card.title}</h3>
+              <p>{card.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="faq">
+        <div className="info-header">
+          <h2>{copy.faqTitle}</h2>
+        </div>
+        <div className="faq-list">
+          {copy.faqItems.map((item) => (
+            <article key={item.question} className="faq-item">
+              <h3>{item.question}</h3>
+              <p>{item.answer}</p>
+            </article>
+          ))}
+        </div>
+      </section>
     </main>
   );
 }

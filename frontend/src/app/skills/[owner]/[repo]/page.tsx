@@ -80,12 +80,14 @@ export async function generateMetadata({
       siteName: "AgentSkill Hub",
       locale: lang === "en" ? "en_US" : "zh_CN",
       alternateLocale: [lang === "en" ? "zh_CN" : "en_US"],
+      images: [{ url: "/opengraph-image" }],
       type: "article",
     },
     twitter: {
       card: "summary",
       title: `${skill.full_name} - AgentSkill Hub`,
       description,
+      images: ["/opengraph-image"],
     },
   };
 }
@@ -150,6 +152,26 @@ export default async function SkillDetailPage({
     dateModified: skill.last_pushed_at || undefined,
     keywords: skill.topics || undefined,
   };
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: copy.homeLabel,
+        item: "https://agentskill.work",
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: skill.full_name,
+        item: `https://agentskill.work/skills/${encodeURIComponent(
+          resolvedParams.owner,
+        )}/${encodeURIComponent(resolvedParams.repo)}`,
+      },
+    ],
+  };
 
   return (
     <main className="container detail">
@@ -158,6 +180,15 @@ export default async function SkillDetailPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <nav className="breadcrumbs" aria-label="Breadcrumb">
+        <Link href="/">{copy.homeLabel}</Link>
+        <span>/</span>
+        <span>{skill.full_name}</span>
+      </nav>
       <div className="detail-header">
         <div className="detail-title">
           <p className="detail-eyebrow">Claude Skill</p>
