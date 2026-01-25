@@ -100,8 +100,12 @@ def _coerce_payload(raw: dict[str, Any]) -> dict[str, Any] | None:
     payload = {
         "summary_en": _truncate(_normalize_terms(summary_en), 800),
         "summary_zh": _truncate(_normalize_terms(summary_zh), 800),
-        "key_features_en": [_truncate(_normalize_terms(v), 140) for v in key_features_en][:6],
-        "key_features_zh": [_truncate(_normalize_terms(v), 140) for v in key_features_zh][:6],
+        "key_features_en": [
+            _truncate(_normalize_terms(v), 140) for v in key_features_en
+        ][:6],
+        "key_features_zh": [
+            _truncate(_normalize_terms(v), 140) for v in key_features_zh
+        ][:6],
         "use_cases_en": [_truncate(_normalize_terms(v), 140) for v in use_cases_en][:6],
         "use_cases_zh": [_truncate(_normalize_terms(v), 140) for v in use_cases_zh][:6],
         "seo_title_en": _truncate(_normalize_terms(seo_title_en), 80),

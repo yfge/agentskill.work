@@ -127,10 +127,10 @@
       - 单次任务最多处理 `ENRICH_BATCH_SIZE` 条
       - 任务互斥锁（Redis lock）避免 beat 重叠导致重复生成
       - Celery retry/backoff（上游抖动时自动重试）
-  - [ ] 5.3 前端：详情页内容增厚（HTML 可见，利于收录）
+  - [x] 5.3 前端：详情页内容增厚（HTML 可见，利于收录）
     - 优先展示 `summary_{lang}`，无则 fallback 到 `description_{lang}`
     - 展示 `key_features_{lang}`、`use_cases_{lang}`（缺失则隐藏该区块）
-  - [ ] 5.4 SEO：metadata 使用 `seo_title_{lang}` / `seo_description_{lang}`（存在时覆盖默认）
+  - [x] 5.4 SEO：metadata 使用 `seo_title_{lang}` / `seo_description_{lang}`（存在时覆盖默认）
   - [ ] 5.5 GEO：同步更新 `llms-full.txt`（补充新字段语义与示例）
   - [x] 5.6 运维：`.env.example` + `docs/operations.md` 补充开关与频率说明
 

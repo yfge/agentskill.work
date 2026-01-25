@@ -28,7 +28,9 @@ def _get_redis(settings: Settings) -> redis.Redis | None:
         return None
 
 
-def _acquire_lock(settings: Settings, ttl_seconds: int) -> tuple[redis.Redis, str] | None:
+def _acquire_lock(
+    settings: Settings, ttl_seconds: int
+) -> tuple[redis.Redis, str] | None:
     client = _get_redis(settings)
     if not client:
         return None
@@ -109,7 +111,9 @@ def skill_enrich() -> int:
 
             if updated:
                 db.commit()
-            logger.info("skill enrich completed: %s/%s updated", updated, len(candidates))
+            logger.info(
+                "skill enrich completed: %s/%s updated", updated, len(candidates)
+            )
             return updated
     except Exception as exc:  # noqa: BLE001
         logger.exception("skill enrich failed: %s", exc)

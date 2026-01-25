@@ -34,6 +34,16 @@ function formatDate(value?: string | null): string | null {
   return date.toISOString().slice(0, 10);
 }
 
+function splitParagraphs(value: string | null | undefined): string[] {
+  if (!value) {
+    return [];
+  }
+  return value
+    .split(/\n{2,}/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+}
+
 async function fetchSkill(owner: string, repo: string): Promise<Skill | null> {
   const base = getApiBase();
   const trimmedBase = base.endsWith("/") ? base.slice(0, -1) : base;
@@ -59,11 +69,23 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
+  const title =
+    lang === "zh"
+      ? skill.seo_title_zh || `${skill.full_name} - Claude Skill - AgentSkill Hub`
+      : skill.seo_title_en || `${skill.full_name} - Claude Skill - AgentSkill Hub`;
   const description =
     lang === "zh"
-      ? normalizeClaudeSkill(skill.description_zh || skill.description) ||
-        "Claude Skill 项目详情"
-      : skill.description || skill.description_zh || "Claude Skill detail";
+      ? normalizeClaudeSkill(
+          skill.seo_description_zh ||
+            skill.summary_zh ||
+            skill.description_zh ||
+            skill.description,
+        ) || "Claude Skill 项目详情"
+      : skill.seo_description_en ||
+        skill.summary_en ||
+        skill.description ||
+        skill.description_zh ||
+        "Claude Skill detail";
 
   const canonical = `https://agentskill.work/${lang}/skills/${encodeURIComponent(
     resolvedParams.owner,
@@ -73,7 +95,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   )}/${encodeURIComponent(resolvedParams.repo)}/opengraph-image`;
 
   return {
-    title: `${skill.full_name} - AgentSkill Hub`,
+    title,
     description,
     alternates: {
       canonical,
@@ -90,7 +112,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       },
     },
     openGraph: {
-      title: `${skill.full_name} - AgentSkill Hub`,
+      title,
       description,
       url: canonical,
       siteName: "AgentSkill Hub",
@@ -101,7 +123,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     },
     twitter: {
       card: "summary_large_image",
-      title: `${skill.full_name} - AgentSkill Hub`,
+      title,
       description,
       images: [ogImagePath],
     },
@@ -121,11 +143,19 @@ export default async function SkillDetailPage({ params }: PageProps) {
   }
 
   const copy = messages[lang];
-  const primaryDescription =
+  const summary =
     lang === "zh"
-      ? normalizeClaudeSkill(skill.description_zh || skill.description)
-      : skill.description || skill.description_zh;
+      ? normalizeClaudeSkill(
+          skill.summary_zh || skill.description_zh || skill.description,
+        )
+      : skill.summary_en || skill.description || skill.description_zh;
+  const heroDescription =
+    lang === "zh"
+      ? normalizeClaudeSkill(skill.seo_description_zh || summary)
+      : skill.seo_description_en || summary;
   const secondaryDescription = lang === "zh" ? skill.description : skill.description_zh;
+  const keyFeatures = lang === "zh" ? skill.key_features_zh : skill.key_features_en;
+  const useCases = lang === "zh" ? skill.use_cases_zh : skill.use_cases_en;
 
   const topics = (skill.topics || "")
     .split(",")
@@ -165,7 +195,7 @@ export default async function SkillDetailPage({ params }: PageProps) {
     "@context": "https://schema.org",
     "@type": "SoftwareSourceCode",
     name: skill.full_name,
-    description: primaryDescription || undefined,
+    description: summary || undefined,
     codeRepository: skill.html_url,
     programmingLanguage: skill.language || undefined,
     dateModified: skill.last_pushed_at || undefined,
@@ -211,7 +241,7 @@ export default async function SkillDetailPage({ params }: PageProps) {
           <p className="detail-eyebrow">Claude Skill</p>
           <h1>{skill.full_name}</h1>
           <p className="detail-description">
-            {primaryDescription || copy.detailNoDescription}
+            {heroDescription || copy.detailNoDescription}
           </p>
         </div>
         <SkillLangSwitch
@@ -270,10 +300,16 @@ export default async function SkillDetailPage({ params }: PageProps) {
 
       <section className="detail-card">
         <h2>{copy.detailSummary}</h2>
-        <p className="detail-description">
-          {primaryDescription || copy.detailNoDescription}
-        </p>
-        {secondaryDescription && secondaryDescription !== primaryDescription && (
+        {splitParagraphs(summary).length > 0 ? (
+          splitParagraphs(summary).map((paragraph) => (
+            <p key={paragraph} className="detail-description">
+              {paragraph}
+            </p>
+          ))
+        ) : (
+          <p className="detail-description">{copy.detailNoDescription}</p>
+        )}
+        {secondaryDescription && secondaryDescription !== summary && (
           <div className="detail-alt">
             <span className="detail-alt-label">
               {lang === "zh" ? copy.detailOriginal : copy.detailTranslated}
@@ -282,6 +318,28 @@ export default async function SkillDetailPage({ params }: PageProps) {
           </div>
         )}
       </section>
+
+      {(keyFeatures?.length || 0) > 0 && (
+        <section className="detail-card">
+          <h2>{copy.detailKeyFeatures}</h2>
+          <ul className="detail-bullets">
+            {(keyFeatures || []).map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {(useCases?.length || 0) > 0 && (
+        <section className="detail-card">
+          <h2>{copy.detailUseCases}</h2>
+          <ul className="detail-bullets">
+            {(useCases || []).map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </section>
+      )}
 
       <section className="detail-card">
         <h2>{copy.detailTopics}</h2>

@@ -400,6 +400,19 @@ a {
   color: var(--muted);
 }
 
+.detail-bullets {
+  margin: 0;
+  padding-left: 18px;
+  color: var(--muted);
+  display: grid;
+  gap: 8px;
+}
+
+.detail-bullets li {
+  margin: 0;
+  line-height: 1.55;
+}
+
 .detail-source {
   margin: 0;
   font-size: 12px;
