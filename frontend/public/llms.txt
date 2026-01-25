@@ -20,11 +20,13 @@ More details for agents/LLMs:
 - stars, forks, language
 - topics (stored as comma-separated string)
 - last_pushed_at (GitHub), fetched_at (last sync)
+- repo_created_at, repo_updated_at (GitHub)
 - html_url, repo_id
 
 ## Pages
 - Home list (zh): https://agentskill.work/zh
 - Home list (en): https://agentskill.work/en
+- Latest list: https://agentskill.work/{lang}/latest
 - Detail page: https://agentskill.work/{lang}/skills/{owner}/{repo}
 
 ## Language
@@ -34,6 +36,7 @@ More details for agents/LLMs:
 ## Data sources and freshness
 - Source: GitHub Search API
 - Sync: scheduled background job (typically hourly)
+- Sync uses two strategies: trending (stars) + latest discovery (created window, sort=updated)
 - Sync may stop early to respect GitHub rate limits
 
 ## SEO and structured data
@@ -47,7 +50,8 @@ More details for agents/LLMs:
 - Base path: https://agentskill.work/api
 - OpenAPI: https://agentskill.work/api/openapi.json
 - List: /skills
-  - query: `q`, `topic`, `language`, `owner`, `limit`, `offset`
+  - query: `q`, `topic`, `language`, `owner`, `sort`, `limit`, `offset`
+  - sort: `stars` (default) | `newest`
 - Detail: /skills/{owner}/{repo}
 - Facets: /facets/topics, /facets/languages, /facets/owners
 - Please avoid large-scale crawling; respect rate limits

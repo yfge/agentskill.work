@@ -204,7 +204,7 @@
 
 ### 12) 最新开源 Skill（Latest）
 
-- [ ] 增加“最新开源的 Claude Skill 项目”能力（列表页 + 首页入口）
+- [x] 增加“最新开源的 Claude Skill 项目”能力（列表页 + 首页入口）
   - 定义（先定口径，避免歧义）：
     - 优先按 GitHub 仓库创建时间（`repo_created_at`）倒序
     - fallback：按站内首次入库时间（`created_at`）倒序（当 GitHub created_at 缺失时）
