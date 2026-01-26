@@ -91,9 +91,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {children}
         <footer className="site-footer">
           <div className="site-footer-inner">
-            <span className="site-footer-powered">
-              Powered by Next.js, FastAPI, Celery
-            </span>
+            <span className="site-footer-copyright">Copyright geyunfei</span>
             <a
               className="site-footer-link"
               href="https://github.com/yfge/agentskill.work"
