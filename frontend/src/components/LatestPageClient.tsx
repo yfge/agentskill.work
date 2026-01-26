@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { LanguageToggle } from "@/components/LanguageToggle";
+import { PageBottomSections } from "@/components/PageBottomSections";
 import { SkillList } from "@/components/SkillList";
 import { fetchSkills } from "@/lib/api";
 import { trackVisit } from "@/lib/metrics";
@@ -219,6 +220,8 @@ export function LatestPageClient({
           ) : null}
         </div>
       )}
+
+      <PageBottomSections lang={lang} />
     </main>
   );
 }
