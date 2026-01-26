@@ -1,4 +1,5 @@
 import { getApiBase } from "@/lib/apiBase";
+import { getSiteOrigin } from "@/lib/site";
 import { SkillListResponse } from "@/types/skill";
 import type { NextRequest } from "next/server";
 
@@ -51,12 +52,14 @@ export async function GET(
     return new Response("Not found", { status: 404 });
   }
   if (/^\d+$/.test(raw)) {
-    return Response.redirect(`https://agentskill.work/sitemap-skills/${raw}.xml`, 308);
+    const siteOrigin = getSiteOrigin();
+    return Response.redirect(`${siteOrigin}/sitemap-skills/${raw}.xml`, 308);
   }
   const match = raw.match(/^(\d+)\.xml$/);
   if (!match) {
     return new Response("Not found", { status: 404 });
   }
+  const siteOrigin = getSiteOrigin();
   const page = Number(match[1]);
   if (!Number.isSafeInteger(page) || page < 1) {
     return new Response("Not found", { status: 404 });
@@ -93,7 +96,7 @@ export async function GET(
 
     for (const lang of LANGS) {
       urls.push({
-        loc: `https://agentskill.work/${lang}/skills/${encodeURIComponent(
+        loc: `${siteOrigin}/${lang}/skills/${encodeURIComponent(
           owner,
         )}/${encodeURIComponent(repo)}`,
         lastmod,

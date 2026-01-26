@@ -1,4 +1,5 @@
 import { getApiBase } from "@/lib/apiBase";
+import { getSiteOrigin } from "@/lib/site";
 
 const REVALIDATE_SECONDS = 60 * 60;
 
@@ -55,6 +56,7 @@ export const dynamic = "force-dynamic";
 
 export async function GET() {
   const today = toDateStamp(new Date());
+  const siteOrigin = getSiteOrigin();
 
   const [topics, languages, owners] = await Promise.all([
     fetchFacetValues("topics", 100),
@@ -68,7 +70,7 @@ export async function GET() {
   for (const value of topics) {
     for (const lang of langs) {
       urls.push({
-        loc: `https://agentskill.work/${lang}/topics/${encodeURIComponent(value)}`,
+        loc: `${siteOrigin}/${lang}/topics/${encodeURIComponent(value)}`,
         lastmod: today,
         changefreq: "weekly",
         priority: "0.6",
@@ -79,7 +81,7 @@ export async function GET() {
   for (const value of languages) {
     for (const lang of langs) {
       urls.push({
-        loc: `https://agentskill.work/${lang}/languages/${encodeURIComponent(value)}`,
+        loc: `${siteOrigin}/${lang}/languages/${encodeURIComponent(value)}`,
         lastmod: today,
         changefreq: "weekly",
         priority: "0.6",
@@ -90,7 +92,7 @@ export async function GET() {
   for (const value of owners) {
     for (const lang of langs) {
       urls.push({
-        loc: `https://agentskill.work/${lang}/owners/${encodeURIComponent(value)}`,
+        loc: `${siteOrigin}/${lang}/owners/${encodeURIComponent(value)}`,
         lastmod: today,
         changefreq: "weekly",
         priority: "0.6",

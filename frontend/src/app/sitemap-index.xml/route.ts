@@ -1,4 +1,5 @@
 import { getApiBase } from "@/lib/apiBase";
+import { getSiteOrigin } from "@/lib/site";
 
 const REVALIDATE_SECONDS = 60 * 60;
 // Keep in sync with backend API max limit (FastAPI validation).
@@ -32,13 +33,14 @@ export async function GET() {
   const today = toDateStamp(new Date());
   const total = await fetchTotalSkills();
   const pages = total > 0 ? Math.ceil(total / SKILLS_PER_SITEMAP) : 0;
+  const siteOrigin = getSiteOrigin();
 
   const urls: string[] = [
-    "https://agentskill.work/sitemap-pages.xml",
-    "https://agentskill.work/sitemap-facets.xml",
+    `${siteOrigin}/sitemap-pages.xml`,
+    `${siteOrigin}/sitemap-facets.xml`,
   ];
   for (let page = 1; page <= pages; page += 1) {
-    urls.push(`https://agentskill.work/sitemap-skills/${page}.xml`);
+    urls.push(`${siteOrigin}/sitemap-skills/${page}.xml`);
   }
 
   const xml =

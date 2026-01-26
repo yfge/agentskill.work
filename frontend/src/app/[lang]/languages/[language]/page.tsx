@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { FacetPageClient } from "@/components/FacetPageClient";
 import { fetchSkillsCached } from "@/lib/apiServer";
 import { messages, type Language } from "@/lib/i18n";
+import { getSiteOrigin } from "@/lib/site";
 
 const PAGE_SIZE = 24;
 
@@ -41,7 +42,8 @@ export async function generateMetadata({
   }
 
   const language = resolvedParams.language;
-  const canonical = `https://agentskill.work/${lang}/languages/${encodeURIComponent(language)}`;
+  const siteOrigin = getSiteOrigin();
+  const canonical = `${siteOrigin}/${lang}/languages/${encodeURIComponent(language)}`;
   const hasQuery = Boolean(first(resolvedSearch.q)?.trim());
 
   const description =
@@ -59,9 +61,9 @@ export async function generateMetadata({
     alternates: {
       canonical,
       languages: {
-        "zh-CN": `https://agentskill.work/zh/languages/${encodeURIComponent(language)}`,
-        "en-US": `https://agentskill.work/en/languages/${encodeURIComponent(language)}`,
-        "x-default": `https://agentskill.work/zh/languages/${encodeURIComponent(language)}`,
+        "zh-CN": `${siteOrigin}/zh/languages/${encodeURIComponent(language)}`,
+        "en-US": `${siteOrigin}/en/languages/${encodeURIComponent(language)}`,
+        "x-default": `${siteOrigin}/zh/languages/${encodeURIComponent(language)}`,
       },
     },
     robots: hasQuery

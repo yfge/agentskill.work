@@ -14,7 +14,7 @@
 ## 已完成（基线能力，已上线）
 
 - [x] 全站基础 SEO：`robots.txt`、`sitemap.xml`、canonical + hreflang（当前基于 `/zh` / `/en`）
-- [x] Canonical Host：统一使用 `agentskill.work`，并在服务器 Nginx 做 `www` -> `apex` 的 308 跳转（避免重复内容与“空站”误抓取）
+- [x] Canonical Host：统一使用 `www.agentskill.work`，并在服务器 Nginx 做 `apex` -> `www` 的 308 跳转（避免重复内容与“空站”误抓取）
 - [x] 首页/详情页结构化数据：WebSite/FAQ/ItemList + SoftwareSourceCode/BreadcrumbList
 - [x] 全站 OG/Twitter 基础卡片：`/opengraph-image`（默认分享图）
 - [x] Site icon：`/favicon.ico`、`/apple-touch-icon.png`
@@ -52,7 +52,7 @@
     - OG 图生成时从自家 API 拉取 skill（绝不直连 GitHub）
     - metadata 的 openGraph.images 改为该动态图片的绝对 URL（包含 `metadataBase`）
   - 注意：
-    - Edge runtime 下取数要稳定（必要时走公网 `https://agentskill.work/api`）
+    - Edge runtime 下取数要稳定（必要时走公网 `https://www.agentskill.work/api`）
     - 失败兜底：拉不到 skill 时 fallback 到全站默认 `/opengraph-image`
   - 验收标准：
     - 分享任意详情页时，社交预览图能正确显示 repo 信息（至少 title 正确，图片不 404）
@@ -61,10 +61,10 @@
 
 - [x] 将单一 `sitemap.xml` 升级为 sitemap index（站点规模化必备）
   - 实现：
-    - `https://agentskill.work/sitemap-index.xml`（sitemap index）
-    - `https://agentskill.work/sitemap-pages.xml`（静态页面）
-    - `https://agentskill.work/sitemap-skills/{n}.xml`（skills 分片，`n` 从 1 开始）
-    - `https://agentskill.work/sitemap.xml` 308 重定向到 index
+    - `https://www.agentskill.work/sitemap-index.xml`（sitemap index）
+    - `https://www.agentskill.work/sitemap-pages.xml`（静态页面）
+    - `https://www.agentskill.work/sitemap-skills/{n}.xml`（skills 分片，`n` 从 1 开始）
+    - `https://www.agentskill.work/sitemap.xml` 308 重定向到 index
   - 目标：
     - 提供 `sitemap-index.xml`，按分页输出 `sitemap-skills-{n}.xml`
     - 每个 url 写 `lastmod`（优先 `last_pushed_at`，fallback `fetched_at`）
@@ -78,7 +78,7 @@
     - 注意：`/sitemap-index.xml` 必须是运行时动态（例如 `export const dynamic = "force-dynamic"`），否则 Next 可能在 build
       阶段预渲染该路由并触发对自家 API 的 fetch，导致 Docker build 时超时失败
   - 验收标准：
-    - `https://agentskill.work/sitemap-index.xml` 存在且可被 robots 引用
+    - `https://www.agentskill.work/sitemap-index.xml` 存在且可被 robots 引用
     - index 中列出的 `sitemap-skills-*.xml` 返回 200 且包含有效 URL 集
 
 ### 4) 长尾入口页：Topic / Language / Owner 聚合页
@@ -94,7 +94,7 @@
     - `/{lang}/languages/{language}`
     - `/{lang}/owners/{owner}`
   - [x] 4.3 SEO 收录：
-    - 新增 `https://agentskill.work/sitemap-facets.xml`（按热门 topic/language/owner 输出聚合页）
+    - 新增 `https://www.agentskill.work/sitemap-facets.xml`（按热门 topic/language/owner 输出聚合页）
     - `sitemap-index.xml` 已包含 `sitemap-facets.xml`
     - 首页/详情页增加可爬取内链（详情页已将 topics/owner/language 变为内链）
   - 页面：

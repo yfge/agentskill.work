@@ -16,6 +16,7 @@ import {
 } from "@/lib/i18n";
 import { normalizeClaudeSkill } from "@/lib/text";
 import { getVisitorId } from "@/lib/visitor";
+import { getSiteOrigin } from "@/lib/site";
 import { Skill } from "@/types/skill";
 
 const PAGE_SIZE = 24;
@@ -87,6 +88,7 @@ export function LatestPageClient({
   };
 
   const copy = messages[lang];
+  const siteOrigin = getSiteOrigin();
 
   const breadcrumbSchema = {
     "@context": "https://schema.org",
@@ -96,7 +98,7 @@ export function LatestPageClient({
         "@type": "ListItem",
         position: 1,
         name: copy.navTrending,
-        item: `https://agentskill.work/${lang}`,
+        item: `${siteOrigin}/${lang}`,
       },
       {
         "@type": "ListItem",
@@ -104,8 +106,8 @@ export function LatestPageClient({
         name: copy.navLatest,
         item:
           initialOffset > 0
-            ? `https://agentskill.work/${lang}/latest?offset=${initialOffset}`
-            : `https://agentskill.work/${lang}/latest`,
+            ? `${siteOrigin}/${lang}/latest?offset=${initialOffset}`
+            : `${siteOrigin}/${lang}/latest`,
       },
     ],
   };
@@ -117,8 +119,8 @@ export function LatestPageClient({
           "@type": "ItemList",
           url:
             initialOffset > 0
-              ? `https://agentskill.work/${lang}/latest?offset=${initialOffset}`
-              : `https://agentskill.work/${lang}/latest`,
+              ? `${siteOrigin}/${lang}/latest?offset=${initialOffset}`
+              : `${siteOrigin}/${lang}/latest`,
           itemListOrder: "https://schema.org/ItemListOrderDescending",
           numberOfItems: total || skills.length,
           startIndex: initialOffset + 1,
@@ -126,10 +128,10 @@ export function LatestPageClient({
             const [owner, repo] = skill.full_name.split("/");
             const detailUrl =
               owner && repo
-                ? `https://agentskill.work/${lang}/skills/${encodeURIComponent(
+                ? `${siteOrigin}/${lang}/skills/${encodeURIComponent(
                     owner,
                   )}/${encodeURIComponent(repo)}`
-                : `https://agentskill.work/${lang}/latest`;
+                : `${siteOrigin}/${lang}/latest`;
             const description =
               lang === "zh"
                 ? normalizeClaudeSkill(skill.description_zh || skill.description)

@@ -2,8 +2,10 @@ import "./globals.css";
 
 import { headers } from "next/headers";
 
+import { getSiteOrigin } from "@/lib/site";
+
 export const metadata = {
-  metadataBase: new URL("https://agentskill.work"),
+  metadataBase: new URL(getSiteOrigin()),
   title: "agentskill.work",
   description:
     "agentskill.work is a curated directory of trending Claude Skill projects on GitHub.",
@@ -33,18 +35,18 @@ export const metadata = {
     },
   },
   alternates: {
-    canonical: "https://agentskill.work/zh",
+    canonical: `${getSiteOrigin()}/zh`,
     languages: {
-      "zh-CN": "https://agentskill.work/zh",
-      "en-US": "https://agentskill.work/en",
-      "x-default": "https://agentskill.work/zh",
+      "zh-CN": `${getSiteOrigin()}/zh`,
+      "en-US": `${getSiteOrigin()}/en`,
+      "x-default": `${getSiteOrigin()}/zh`,
     },
   },
   openGraph: {
     title: "agentskill.work",
     description:
       "agentskill.work is a curated directory of trending Claude Skill projects on GitHub.",
-    url: "https://agentskill.work/zh",
+    url: `${getSiteOrigin()}/zh`,
     siteName: "agentskill.work",
     locale: "zh_CN",
     alternateLocale: ["en_US"],

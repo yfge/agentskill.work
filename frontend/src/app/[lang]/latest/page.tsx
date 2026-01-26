@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { LatestPageClient } from "@/components/LatestPageClient";
 import { fetchSkillsCached } from "@/lib/apiServer";
 import { messages, type Language } from "@/lib/i18n";
+import { getSiteOrigin } from "@/lib/site";
 
 const PAGE_SIZE = 24;
 
@@ -59,9 +60,8 @@ export async function generateMetadata({
   const offset =
     offsetParsed !== null && offsetParsed % PAGE_SIZE === 0 ? offsetParsed : 0;
 
-  const canonical = `https://agentskill.work/${lang}/latest${
-    offset > 0 ? `?offset=${offset}` : ""
-  }`;
+  const siteOrigin = getSiteOrigin();
+  const canonical = `${siteOrigin}/${lang}/latest${offset > 0 ? `?offset=${offset}` : ""}`;
   const title =
     offset > 0
       ? lang === "zh"
@@ -75,15 +75,9 @@ export async function generateMetadata({
     alternates: {
       canonical,
       languages: {
-        "zh-CN": `https://agentskill.work/zh/latest${
-          offset > 0 ? `?offset=${offset}` : ""
-        }`,
-        "en-US": `https://agentskill.work/en/latest${
-          offset > 0 ? `?offset=${offset}` : ""
-        }`,
-        "x-default": `https://agentskill.work/zh/latest${
-          offset > 0 ? `?offset=${offset}` : ""
-        }`,
+        "zh-CN": `${siteOrigin}/zh/latest${offset > 0 ? `?offset=${offset}` : ""}`,
+        "en-US": `${siteOrigin}/en/latest${offset > 0 ? `?offset=${offset}` : ""}`,
+        "x-default": `${siteOrigin}/zh/latest${offset > 0 ? `?offset=${offset}` : ""}`,
       },
     },
     openGraph: {

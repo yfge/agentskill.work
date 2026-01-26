@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { HomePageClient } from "@/components/HomePageClient";
 import { fetchSkillsCached } from "@/lib/apiServer";
 import { messages, type Language } from "@/lib/i18n";
+import { getSiteOrigin } from "@/lib/site";
 
 const PAGE_SIZE = 24;
 
@@ -62,9 +63,8 @@ export async function generateMetadata({
       ? offsetParsed
       : 0;
 
-  const canonical = `https://agentskill.work/${lang}${
-    offset > 0 ? `?offset=${offset}` : ""
-  }`;
+  const siteOrigin = getSiteOrigin();
+  const canonicalUrl = `${siteOrigin}/${lang}${offset > 0 ? `?offset=${offset}` : ""}`;
   const title =
     offset > 0
       ? lang === "zh"
@@ -76,13 +76,11 @@ export async function generateMetadata({
     title,
     description: copy.subtitle,
     alternates: {
-      canonical,
+      canonical: canonicalUrl,
       languages: {
-        "zh-CN": `https://agentskill.work/zh${offset > 0 ? `?offset=${offset}` : ""}`,
-        "en-US": `https://agentskill.work/en${offset > 0 ? `?offset=${offset}` : ""}`,
-        "x-default": `https://agentskill.work/zh${
-          offset > 0 ? `?offset=${offset}` : ""
-        }`,
+        "zh-CN": `${siteOrigin}/zh${offset > 0 ? `?offset=${offset}` : ""}`,
+        "en-US": `${siteOrigin}/en${offset > 0 ? `?offset=${offset}` : ""}`,
+        "x-default": `${siteOrigin}/zh${offset > 0 ? `?offset=${offset}` : ""}`,
       },
     },
     robots: hasQuery
@@ -94,7 +92,7 @@ export async function generateMetadata({
     openGraph: {
       title,
       description: copy.subtitle,
-      url: canonical,
+      url: canonicalUrl,
       siteName: "agentskill.work",
       locale: lang === "en" ? "en_US" : "zh_CN",
       alternateLocale: [lang === "en" ? "zh_CN" : "en_US"],

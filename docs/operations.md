@@ -48,7 +48,7 @@ alembic upgrade head
 
 ## Public API
 
-- Base URL: `https://agentskill.work/api`
+- Base URL: `https://www.agentskill.work/api`
 - OpenAPI: `/api/openapi.json` and `/api/docs`
 - Read endpoints are public (no auth).
 - Write endpoint `POST /api/skills/sync` is disabled by default (requires `SYNC_API_ENABLED=true` + `SYNC_API_TOKEN`).
@@ -77,9 +77,9 @@ The frontend reads these variables at runtime (no rebuild required; just update
 
 **Server Nginx (systemd service)**
 - Config file: `/etc/nginx/conf.d/agentskill.work.conf`
-- Canonical host: `https://agentskill.work`
-- Redirects `https://www.agentskill.work/*` -> `https://agentskill.work/*` (avoid duplicate-content SEO issues)
-- Proxies `https://agentskill.work/*` -> `http://127.0.0.1:8083`
+- Canonical host: `https://www.agentskill.work`
+- Redirects `https://agentskill.work/*` -> `https://www.agentskill.work/*` (avoid duplicate-content SEO issues)
+- Proxies `https://www.agentskill.work/*` -> `http://127.0.0.1:8083`
 - ACME webroot: `/var/www/letsencrypt` for `/.well-known/acme-challenge/`
 
 Example config (server nginx):
@@ -87,29 +87,29 @@ Example config (server nginx):
 server {
     listen 80;
     listen [::]:80;
-    server_name www.agentskill.work;
+    server_name agentskill.work;
 
     location /.well-known/acme-challenge/ {
         root /var/www/letsencrypt;
     }
 
-    return 308 https://agentskill.work$request_uri;
-}
-
-server {
-    listen 443 ssl;
-    listen [::]:443 ssl;
-    server_name www.agentskill.work;
-
-    # ssl_certificate / ssl_certificate_key / include ... are managed by certbot
-
-    return 308 https://agentskill.work$request_uri;
+    return 308 https://www.agentskill.work$request_uri;
 }
 
 server {
     listen 443 ssl;
     listen [::]:443 ssl;
     server_name agentskill.work;
+
+    # ssl_certificate / ssl_certificate_key / include ... are managed by certbot
+
+    return 308 https://www.agentskill.work$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name www.agentskill.work;
 
     location /.well-known/acme-challenge/ {
         root /var/www/letsencrypt;

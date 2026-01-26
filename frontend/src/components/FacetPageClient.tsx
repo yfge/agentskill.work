@@ -13,6 +13,7 @@ import {
   setStoredLanguage,
   type Language,
 } from "@/lib/i18n";
+import { getSiteOrigin } from "@/lib/site";
 import { normalizeClaudeSkill } from "@/lib/text";
 import { getVisitorId } from "@/lib/visitor";
 import type { Skill } from "@/types/skill";
@@ -112,9 +113,10 @@ export function FacetPageClient({
   }, [initialQuery, initialSkills, initialTotal]);
 
   const copy = messages[lang];
+  const siteOrigin = getSiteOrigin();
   const canonical = useMemo(
-    () => `https://agentskill.work/${lang}${path}`,
-    [lang, path],
+    () => `${siteOrigin}/${lang}${path}`,
+    [lang, path, siteOrigin],
   );
   const breadcrumbSchema = useMemo(
     () => ({
@@ -125,7 +127,7 @@ export function FacetPageClient({
           "@type": "ListItem",
           position: 1,
           name: copy.homeLabel,
-          item: `https://agentskill.work/${lang}`,
+          item: `${siteOrigin}/${lang}`,
         },
         {
           "@type": "ListItem",
@@ -135,7 +137,7 @@ export function FacetPageClient({
         },
       ],
     }),
-    [canonical, copy.homeLabel, heading, lang],
+    [canonical, copy.homeLabel, heading, lang, siteOrigin],
   );
 
   const itemListSchema =
@@ -151,10 +153,10 @@ export function FacetPageClient({
             const [owner, repo] = skill.full_name.split("/");
             const detailUrl =
               owner && repo
-                ? `https://agentskill.work/${lang}/skills/${encodeURIComponent(
+                ? `${siteOrigin}/${lang}/skills/${encodeURIComponent(
                     owner,
                   )}/${encodeURIComponent(repo)}`
-                : `https://agentskill.work/${lang}`;
+                : `${siteOrigin}/${lang}`;
             const description =
               lang === "zh"
                 ? normalizeClaudeSkill(skill.description_zh || skill.description)

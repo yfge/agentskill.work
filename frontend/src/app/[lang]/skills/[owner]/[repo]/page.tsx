@@ -6,6 +6,7 @@ import { SkillDetailTracker } from "@/components/SkillDetailTracker";
 import { SkillLangSwitch } from "@/components/SkillLangSwitch";
 import { getApiBase } from "@/lib/apiBase";
 import { messages, type Language } from "@/lib/i18n";
+import { getSiteOrigin } from "@/lib/site";
 import { normalizeClaudeSkill } from "@/lib/text";
 import { Skill } from "@/types/skill";
 
@@ -87,7 +88,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
         skill.description_zh ||
         "Claude Skill detail";
 
-  const canonical = `https://agentskill.work/${lang}/skills/${encodeURIComponent(
+  const siteOrigin = getSiteOrigin();
+  const canonical = `${siteOrigin}/${lang}/skills/${encodeURIComponent(
     resolvedParams.owner,
   )}/${encodeURIComponent(resolvedParams.repo)}`;
   const ogImagePath = `/${lang}/skills/${encodeURIComponent(
@@ -100,13 +102,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     alternates: {
       canonical,
       languages: {
-        "zh-CN": `https://agentskill.work/zh/skills/${encodeURIComponent(
+        "zh-CN": `${siteOrigin}/zh/skills/${encodeURIComponent(
           resolvedParams.owner,
         )}/${encodeURIComponent(resolvedParams.repo)}`,
-        "en-US": `https://agentskill.work/en/skills/${encodeURIComponent(
+        "en-US": `${siteOrigin}/en/skills/${encodeURIComponent(
           resolvedParams.owner,
         )}/${encodeURIComponent(resolvedParams.repo)}`,
-        "x-default": `https://agentskill.work/zh/skills/${encodeURIComponent(
+        "x-default": `${siteOrigin}/zh/skills/${encodeURIComponent(
           resolvedParams.owner,
         )}/${encodeURIComponent(resolvedParams.repo)}`,
       },
@@ -187,7 +189,8 @@ export default async function SkillDetailPage({ params }: PageProps) {
     { label: copy.detailGitHub, value: skill.html_url, href: skill.html_url },
   ];
 
-  const canonical = `https://agentskill.work/${lang}/skills/${encodeURIComponent(
+  const siteOrigin = getSiteOrigin();
+  const canonical = `${siteOrigin}/${lang}/skills/${encodeURIComponent(
     resolvedParams.owner,
   )}/${encodeURIComponent(resolvedParams.repo)}`;
 
@@ -226,7 +229,7 @@ export default async function SkillDetailPage({ params }: PageProps) {
         "@type": "ListItem",
         position: 1,
         name: copy.homeLabel,
-        item: `https://agentskill.work/${lang}`,
+        item: `${siteOrigin}/${lang}`,
       },
       {
         "@type": "ListItem",

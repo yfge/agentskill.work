@@ -10,33 +10,33 @@ Important term policy:
 - Keep the proper term "Claude Skill" as-is. Do NOT translate it (e.g., do not write "claude 技能").
 
 Canonical host policy:
-- Canonical host: https://agentskill.work
-- https://www.agentskill.work redirects to https://agentskill.work
+- Canonical host: https://www.agentskill.work
+- https://agentskill.work redirects to https://www.agentskill.work
 
 ## Site URLs
 
-- Home (Chinese): https://agentskill.work/zh
-- Home (English): https://agentskill.work/en
-- Latest list: https://agentskill.work/{lang}/latest
-- Skill detail: https://agentskill.work/{lang}/skills/{owner}/{repo}
+- Home (Chinese): https://www.agentskill.work/zh
+- Home (English): https://www.agentskill.work/en
+- Latest list: https://www.agentskill.work/{lang}/latest
+- Skill detail: https://www.agentskill.work/{lang}/skills/{owner}/{repo}
 - GitHub repo (source of truth): https://github.com/{owner}/{repo}
 
 ## Sitemaps / robots (SEO)
 
-- Sitemap index: https://agentskill.work/sitemap-index.xml
-- Sitemap alias: https://agentskill.work/sitemap.xml (redirects to index)
-- Facet sitemap (topics/languages/owners): https://agentskill.work/sitemap-facets.xml
-- Robots: https://agentskill.work/robots.txt
-- Site verification file (WeChat): https://agentskill.work/e5e588a3b46a049f7e2354fa3ba02fde.txt
+- Sitemap index: https://www.agentskill.work/sitemap-index.xml
+- Sitemap alias: https://www.agentskill.work/sitemap.xml (redirects to index)
+- Facet sitemap (topics/languages/owners): https://www.agentskill.work/sitemap-facets.xml
+- Robots: https://www.agentskill.work/robots.txt
+- Site verification file (WeChat): https://www.agentskill.work/e5e588a3b46a049f7e2354fa3ba02fde.txt
 
 ## Public API
 
 Base URL:
-- https://agentskill.work/api
+- https://www.agentskill.work/api
 
 OpenAPI:
-- https://agentskill.work/api/openapi.json
-- https://agentskill.work/api/docs
+- https://www.agentskill.work/api/openapi.json
+- https://www.agentskill.work/api/docs
 
 Auth / rate guidance:
 - Read endpoints are public (no auth).

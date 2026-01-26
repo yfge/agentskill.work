@@ -1,3 +1,5 @@
+import { getSiteOrigin } from "@/lib/site";
+
 const REVALIDATE_SECONDS = 60 * 60;
 
 function toDateStamp(value: Date): string {
@@ -25,27 +27,28 @@ export const revalidate = 3600;
 
 export function GET() {
   const today = toDateStamp(new Date());
+  const siteOrigin = getSiteOrigin();
   const urls: UrlEntry[] = [
     {
-      loc: "https://agentskill.work/zh",
+      loc: `${siteOrigin}/zh`,
       lastmod: today,
       changefreq: "hourly",
       priority: "0.9",
     },
     {
-      loc: "https://agentskill.work/en",
+      loc: `${siteOrigin}/en`,
       lastmod: today,
       changefreq: "hourly",
       priority: "0.9",
     },
     {
-      loc: "https://agentskill.work/zh/latest",
+      loc: `${siteOrigin}/zh/latest`,
       lastmod: today,
       changefreq: "hourly",
       priority: "0.7",
     },
     {
-      loc: "https://agentskill.work/en/latest",
+      loc: `${siteOrigin}/en/latest`,
       lastmod: today,
       changefreq: "hourly",
       priority: "0.7",
