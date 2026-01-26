@@ -63,7 +63,7 @@ function langFromAcceptLanguage(value: string | null | undefined): Lang {
   return best?.lang ?? "en";
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const lang =
     langFromPathname(pathname) ??

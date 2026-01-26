@@ -75,8 +75,8 @@ export const metadata = {
   ],
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const langHeader = headers().get("x-agentskill-lang");
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const langHeader = (await headers()).get("x-agentskill-lang");
   const htmlLang = langHeader === "en" ? "en" : "zh-CN";
   const googleSiteVerification = process.env.GOOGLE_SITE_VERIFICATION;
   const bingSiteVerification = process.env.BING_SITE_VERIFICATION;
