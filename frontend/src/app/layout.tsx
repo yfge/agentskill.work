@@ -89,6 +89,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         {children}
+        <footer className="site-footer">
+          <div className="site-footer-inner">
+            <span className="site-footer-powered">
+              Powered by Next.js, FastAPI, Celery
+            </span>
+            <a
+              className="site-footer-link"
+              href="https://github.com/yfge/agentskill.work"
+              target="_blank"
+              rel="noreferrer"
+            >
+              GitHub
+            </a>
+          </div>
+        </footer>
         <script
           defer
           src="https://umami.agentskill.work/script.js"
