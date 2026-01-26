@@ -52,4 +52,3 @@ export function PageBottomSections({ lang }: { lang: Language }) {
     </>
   );
 }
-
