@@ -14,6 +14,7 @@
 ## 已完成（基线能力，已上线）
 
 - [x] 全站基础 SEO：`robots.txt`、`sitemap.xml`、canonical + hreflang（当前基于 `/zh` / `/en`）
+- [x] Canonical Host：统一使用 `agentskill.work`，并在服务器 Nginx 做 `www` -> `apex` 的 308 跳转（避免重复内容与“空站”误抓取）
 - [x] 首页/详情页结构化数据：WebSite/FAQ/ItemList + SoftwareSourceCode/BreadcrumbList
 - [x] 全站 OG/Twitter 基础卡片：`/opengraph-image`（默认分享图）
 - [x] Site icon：`/favicon.ico`、`/apple-touch-icon.png`

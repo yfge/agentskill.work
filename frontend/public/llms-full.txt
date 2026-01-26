@@ -9,6 +9,10 @@ GitHub metadata and is stored locally for fast search, paging, and SEO-friendly 
 Important term policy:
 - Keep the proper term "Claude Skill" as-is. Do NOT translate it (e.g., do not write "claude 技能").
 
+Canonical host policy:
+- Canonical host: https://agentskill.work
+- https://www.agentskill.work redirects to https://agentskill.work
+
 ## Site URLs
 
 - Home (Chinese): https://agentskill.work/zh

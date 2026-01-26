@@ -5,6 +5,10 @@ agentskill.work is a curated, searchable index of trending Claude Skill GitHub r
 More details for agents/LLMs:
 - https://agentskill.work/llms-full.txt
 
+## Canonical host / duplicates
+- Canonical host: https://agentskill.work
+- https://www.agentskill.work redirects to https://agentskill.work
+
 ## Purpose
 - Help users discover active Claude Skill projects quickly
 - Provide concise repo summaries with core stats and topics
@@ -28,6 +32,10 @@ More details for agents/LLMs:
 - Home list (en): https://agentskill.work/en
 - Latest list: https://agentskill.work/{lang}/latest
 - Detail page: https://agentskill.work/{lang}/skills/{owner}/{repo}
+- Facets (SEO entry pages):
+  - Topics: https://agentskill.work/{lang}/topics/{topic}
+  - Languages: https://agentskill.work/{lang}/languages/{language}
+  - Owners: https://agentskill.work/{lang}/owners/{owner}
 
 ## Language
 - zh and en are supported
@@ -38,6 +46,7 @@ More details for agents/LLMs:
 - Sync: scheduled background job (typically hourly)
 - Sync uses two strategies: trending (stars) + latest discovery (created window, sort=updated)
 - Sync may stop early to respect GitHub rate limits
+- Search keywords include: "Claude Skill" and "agent skill"
 
 ## SEO and structured data
 - WebSite, FAQ, and ItemList on the home page
@@ -65,6 +74,7 @@ More details for agents/LLMs:
 ## Crawl guidance
 - Prefer canonical URLs without tracking parameters
 - Use detail pages for attribution when citing a repository
+- Pagination for list pages is crawlable via `?offset=...` URLs (no need to execute JS)
 
 ## Contact
 - https://agentskill.work/

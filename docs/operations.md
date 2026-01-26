@@ -77,7 +77,9 @@ The frontend reads these variables at runtime (no rebuild required; just update
 
 **Server Nginx (systemd service)**
 - Config file: `/etc/nginx/conf.d/agentskill.work.conf`
-- Proxies `https://agentskill.work` and `https://www.agentskill.work` to `http://127.0.0.1:8083`
+- Canonical host: `https://agentskill.work`
+- Redirects `https://www.agentskill.work/*` -> `https://agentskill.work/*` (avoid duplicate-content SEO issues)
+- Proxies `https://agentskill.work/*` -> `http://127.0.0.1:8083`
 - ACME webroot: `/var/www/letsencrypt` for `/.well-known/acme-challenge/`
 
 Example config (server nginx):
@@ -85,7 +87,29 @@ Example config (server nginx):
 server {
     listen 80;
     listen [::]:80;
-    server_name agentskill.work www.agentskill.work;
+    server_name www.agentskill.work;
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/letsencrypt;
+    }
+
+    return 308 https://agentskill.work$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name www.agentskill.work;
+
+    # ssl_certificate / ssl_certificate_key / include ... are managed by certbot
+
+    return 308 https://agentskill.work$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    server_name agentskill.work;
 
     location /.well-known/acme-challenge/ {
         root /var/www/letsencrypt;
