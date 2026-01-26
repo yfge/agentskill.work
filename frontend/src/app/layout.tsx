@@ -1,5 +1,7 @@
 import "./globals.css";
 
+import { headers } from "next/headers";
+
 export const metadata = {
   metadataBase: new URL("https://agentskill.work"),
   title: "agentskill.work",
@@ -74,12 +76,14 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const langHeader = headers().get("x-agentskill-lang");
+  const htmlLang = langHeader === "en" ? "en" : "zh-CN";
   const googleSiteVerification = process.env.GOOGLE_SITE_VERIFICATION;
   const bingSiteVerification = process.env.BING_SITE_VERIFICATION;
   const year = new Date().getFullYear();
 
   return (
-    <html lang="zh-CN">
+    <html lang={htmlLang}>
       <head>
         {googleSiteVerification ? (
           <meta name="google-site-verification" content={googleSiteVerification} />

@@ -23,6 +23,7 @@
 - [x] Analytics：Umami script 已全站注入
 - [x] Site footer：© 2026 geyunfei · GitHub · MIT License（全站）
 - [x] 默认语言：访问 `/`（或 legacy 旧路由无 lang/hl）时按浏览器 `Accept-Language` 自动选择 `/zh` 或 `/en`
+- [x] `<html lang>`：根据 URL 前缀（/en /zh）设置正确的 lang（避免英文页输出 zh-CN，影响 SEO/可访问性）
 - [x] 首页列表可抓取分页入口：`/{lang}?offset=...`（Load more 为 `<a>`，无 JS/爬虫也可跟进）
 
 ## 待办（SEO / GEO 优化 Backlog）
