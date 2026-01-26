@@ -81,6 +81,7 @@ The frontend reads these variables at runtime (no rebuild required; just update
 - Redirects `https://agentskill.work/*` -> `https://www.agentskill.work/*` (avoid duplicate-content SEO issues)
 - Proxies `https://www.agentskill.work/*` -> `http://127.0.0.1:8083`
 - ACME webroot: `/var/www/letsencrypt` for `/.well-known/acme-challenge/`
+- WeChat verification file: keep `https://agentskill.work/e5e588a3b46a049f7e2354fa3ba02fde.txt` reachable (200) while still redirecting other paths to `www`
 
 Example config (server nginx):
 ```nginx
@@ -88,6 +89,23 @@ server {
     listen 80;
     listen [::]:80;
     server_name agentskill.work;
+
+    location /.well-known/acme-challenge/ {
+        root /var/www/letsencrypt;
+    }
+
+    location = /e5e588a3b46a049f7e2354fa3ba02fde.txt {
+        default_type text/plain;
+        return 200 "c60a38d7ceb897d1071c1ff5c493a7ce42be4595";
+    }
+
+    return 308 https://www.agentskill.work$request_uri;
+}
+
+server {
+    listen 80;
+    listen [::]:80;
+    server_name www.agentskill.work;
 
     location /.well-known/acme-challenge/ {
         root /var/www/letsencrypt;
@@ -102,6 +120,11 @@ server {
     server_name agentskill.work;
 
     # ssl_certificate / ssl_certificate_key / include ... are managed by certbot
+
+    location = /e5e588a3b46a049f7e2354fa3ba02fde.txt {
+        default_type text/plain;
+        return 200 "c60a38d7ceb897d1071c1ff5c493a7ce42be4595";
+    }
 
     return 308 https://www.agentskill.work$request_uri;
 }

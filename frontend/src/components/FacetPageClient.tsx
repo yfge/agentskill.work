@@ -14,7 +14,7 @@ import {
   type Language,
 } from "@/lib/i18n";
 import { getSiteOrigin } from "@/lib/site";
-import { normalizeClaudeSkill } from "@/lib/text";
+import { toSnippet } from "@/lib/text";
 import { getVisitorId } from "@/lib/visitor";
 import type { Skill } from "@/types/skill";
 
@@ -157,10 +157,12 @@ export function FacetPageClient({
                     owner,
                   )}/${encodeURIComponent(repo)}`
                 : `${siteOrigin}/${lang}`;
-            const description =
+            const description = toSnippet(
               lang === "zh"
-                ? normalizeClaudeSkill(skill.description_zh || skill.description)
-                : skill.description;
+                ? skill.description_zh || skill.description
+                : skill.description || skill.description_zh,
+              200,
+            );
             return {
               "@type": "ListItem",
               position: index + 1,
@@ -170,7 +172,7 @@ export function FacetPageClient({
                 name: skill.full_name,
                 url: detailUrl,
                 codeRepository: skill.html_url,
-                description: description || undefined,
+                description,
                 programmingLanguage: skill.language || undefined,
                 keywords: skill.topics || undefined,
               },

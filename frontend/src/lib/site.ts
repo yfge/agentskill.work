@@ -12,4 +12,3 @@ export function absoluteUrl(pathname: string): string {
   }
   return `${site}${pathname}`;
 }
-

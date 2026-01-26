@@ -14,7 +14,7 @@ import {
   setStoredLanguage,
   type Language,
 } from "@/lib/i18n";
-import { normalizeClaudeSkill } from "@/lib/text";
+import { normalizeClaudeSkill, toSnippet } from "@/lib/text";
 import { getVisitorId } from "@/lib/visitor";
 import { getSiteOrigin } from "@/lib/site";
 import { Skill } from "@/types/skill";
@@ -132,10 +132,12 @@ export function LatestPageClient({
                     owner,
                   )}/${encodeURIComponent(repo)}`
                 : `${siteOrigin}/${lang}/latest`;
-            const description =
+            const description = toSnippet(
               lang === "zh"
-                ? normalizeClaudeSkill(skill.description_zh || skill.description)
-                : skill.description || skill.description_zh;
+                ? skill.description_zh || skill.description
+                : skill.description || skill.description_zh,
+              200,
+            );
             return {
               "@type": "ListItem",
               position: initialOffset + index + 1,
@@ -144,7 +146,7 @@ export function LatestPageClient({
                 name: skill.full_name,
                 url: detailUrl,
                 codeRepository: skill.html_url,
-                description: description || undefined,
+                description,
                 programmingLanguage: skill.language || undefined,
                 keywords: skill.topics || undefined,
               },

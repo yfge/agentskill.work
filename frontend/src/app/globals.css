@@ -160,6 +160,7 @@ a {
   color: var(--muted);
   font-size: 14px;
   line-height: 1.55;
+  max-height: calc(1.55em * 3);
   overflow-wrap: anywhere;
   display: -webkit-box;
   -webkit-line-clamp: 3;
