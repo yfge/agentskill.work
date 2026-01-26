@@ -1,6 +1,6 @@
 # Tasks (SEO + GEO)
 
-> Last updated: 2026-01-25
+> Last updated: 2026-01-26
 
 目标：把 agentskill.work 做成“可持续增长”的流量站，重点提升收录质量、长尾覆盖、分享转化（微信/社交卡片）和 LLM 可理解性。
 
@@ -16,6 +16,7 @@
 - [x] 全站基础 SEO：`robots.txt`、`sitemap.xml`、canonical + hreflang（当前基于 `/zh` / `/en`）
 - [x] 首页/详情页结构化数据：WebSite/FAQ/ItemList + SoftwareSourceCode/BreadcrumbList
 - [x] 全站 OG/Twitter 基础卡片：`/opengraph-image`（默认分享图）
+- [x] Site icon：`/favicon.ico`、`/apple-touch-icon.png`
 - [x] 微信校验文件：`/e5e588a3b46a049f7e2354fa3ba02fde.txt`（可公网访问）
 - [x] GEO 基础文件：`/llms.txt`（已补充 usage/attribution）
 - [x] Analytics：Umami script 已全站注入

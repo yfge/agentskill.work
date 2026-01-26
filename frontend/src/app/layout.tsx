@@ -5,6 +5,13 @@ export const metadata = {
   title: "agentskill.work",
   description:
     "agentskill.work is a curated directory of trending Claude Skill projects on GitHub.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/favicon-32x32.png", type: "image/png", sizes: "32x32" },
+    ],
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+  },
   applicationName: "agentskill.work",
   category: "technology",
   creator: "agentskill.work",
