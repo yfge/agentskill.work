@@ -311,9 +311,10 @@ a {
   display: flex;
   gap: 12px;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   color: var(--muted);
   font-size: 12px;
+  text-align: center;
 }
 
 .site-footer-copyright {

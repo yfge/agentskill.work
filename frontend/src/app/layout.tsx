@@ -76,6 +76,7 @@ export const metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const googleSiteVerification = process.env.GOOGLE_SITE_VERIFICATION;
   const bingSiteVerification = process.env.BING_SITE_VERIFICATION;
+  const year = new Date().getFullYear();
 
   return (
     <html lang="zh-CN">
@@ -91,15 +92,26 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {children}
         <footer className="site-footer">
           <div className="site-footer-inner">
-            <span className="site-footer-copyright">Copyright geyunfei</span>
-            <a
-              className="site-footer-link"
-              href="https://github.com/yfge/agentskill.work"
-              target="_blank"
-              rel="noreferrer"
-            >
-              GitHub
-            </a>
+            <span className="site-footer-copyright">
+              © {year} geyunfei <span aria-hidden="true">·</span>{" "}
+              <a
+                className="site-footer-link"
+                href="https://github.com/yfge/agentskill.work"
+                target="_blank"
+                rel="noreferrer"
+              >
+                GitHub
+              </a>{" "}
+              <span aria-hidden="true">·</span>{" "}
+              <a
+                className="site-footer-link"
+                href="https://github.com/yfge/agentskill.work/blob/main/LICENSE"
+                target="_blank"
+                rel="noreferrer"
+              >
+                MIT License
+              </a>
+            </span>
           </div>
         </footer>
         <script
