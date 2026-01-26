@@ -24,7 +24,7 @@ Canonical host policy:
 ## Sitemaps / robots (SEO)
 
 - Sitemap index: https://www.agentskill.work/sitemap-index.xml
-- Sitemap alias: https://www.agentskill.work/sitemap.xml (redirects to index)
+- Sitemap alias: https://www.agentskill.work/sitemap.xml (same as sitemap index)
 - Facet sitemap (topics/languages/owners): https://www.agentskill.work/sitemap-facets.xml
 - Robots: https://www.agentskill.work/robots.txt
 - Site verification file (WeChat): https://www.agentskill.work/e5e588a3b46a049f7e2354fa3ba02fde.txt

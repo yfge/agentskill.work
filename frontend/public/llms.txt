@@ -52,7 +52,7 @@ More details for agents/LLMs:
 - WebSite, FAQ, and ItemList on the home page
 - SoftwareSourceCode and BreadcrumbList on detail pages
 - Sitemap index: https://www.agentskill.work/sitemap-index.xml
-- Sitemap alias: https://www.agentskill.work/sitemap.xml (redirects to index)
+- Sitemap alias: https://www.agentskill.work/sitemap.xml (same as sitemap index)
 - Robots: https://www.agentskill.work/robots.txt
 
 ## API (public)

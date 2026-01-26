@@ -14,7 +14,8 @@
 ## 已完成（基线能力，已上线）
 
 - [x] 全站基础 SEO：`robots.txt`、`sitemap.xml`、canonical + hreflang（当前基于 `/zh` / `/en`）
-- [x] Canonical Host：统一使用 `www.agentskill.work`，并在服务器 Nginx 做 `apex` -> `www` 的 308 跳转（避免重复内容与“空站”误抓取）
+- [x] Canonical Host：统一使用 `www.agentskill.work`，并在服务器 Nginx 做 `apex` -> `www` 的 301 跳转（避免重复内容与“空站”误抓取）
+  - 兼容性：为避免部分抓取器不跟随跨域跳转，`apex` 上的 `sitemap/robots/llms` 端点也直接返回 200（内容仍指向 canonical host）
 - [x] 首页/详情页结构化数据：WebSite/FAQ/ItemList + SoftwareSourceCode/BreadcrumbList
 - [x] 全站 OG/Twitter 基础卡片：`/opengraph-image`（默认分享图）
 - [x] Site icon：`/favicon.ico`、`/apple-touch-icon.png`
@@ -65,7 +66,7 @@
     - `https://www.agentskill.work/sitemap-index.xml`（sitemap index）
     - `https://www.agentskill.work/sitemap-pages.xml`（静态页面）
     - `https://www.agentskill.work/sitemap-skills/{n}.xml`（skills 分片，`n` 从 1 开始）
-    - `https://www.agentskill.work/sitemap.xml` 308 重定向到 index
+    - `https://www.agentskill.work/sitemap.xml` 直接返回 sitemap index（200），便于兼容不跟随重定向的抓取器
   - 目标：
     - 提供 `sitemap-index.xml`，按分页输出 `sitemap-skills-{n}.xml`
     - 每个 url 写 `lastmod`（优先 `last_pushed_at`，fallback `fetched_at`）

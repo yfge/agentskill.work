@@ -79,6 +79,7 @@ The frontend reads these variables at runtime (no rebuild required; just update
 - Config file: `/etc/nginx/conf.d/agentskill.work.conf`
 - Canonical host: `https://www.agentskill.work`
 - Redirects `https://agentskill.work/*` -> `https://www.agentskill.work/*` (avoid duplicate-content SEO issues)
+- For crawler compatibility, `apex` serves machine-readable endpoints (`/sitemap*`, `/robots.txt`, `/llms*.txt`) with 200 (content points to canonical host)
 - Proxies `https://www.agentskill.work/*` -> `http://127.0.0.1:8083`
 - ACME webroot: `/var/www/letsencrypt` for `/.well-known/acme-challenge/`
 - WeChat verification file: keep `https://agentskill.work/e5e588a3b46a049f7e2354fa3ba02fde.txt` reachable (200) while still redirecting other paths to `www`
@@ -99,7 +100,19 @@ server {
         return 200 "c60a38d7ceb897d1071c1ff5c493a7ce42be4595";
     }
 
-    return 308 https://www.agentskill.work$request_uri;
+    # Avoid cross-host redirect issues for sitemap/robots/llms fetchers.
+    location = /robots.txt { proxy_pass http://127.0.0.1:8083; proxy_http_version 1.1; proxy_set_header Host www.agentskill.work; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; proxy_set_header Upgrade $http_upgrade; proxy_set_header Connection "upgrade"; }
+    location = /llms.txt { proxy_pass http://127.0.0.1:8083; proxy_http_version 1.1; proxy_set_header Host www.agentskill.work; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; proxy_set_header Upgrade $http_upgrade; proxy_set_header Connection "upgrade"; }
+    location = /llms-full.txt { proxy_pass http://127.0.0.1:8083; proxy_http_version 1.1; proxy_set_header Host www.agentskill.work; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; proxy_set_header Upgrade $http_upgrade; proxy_set_header Connection "upgrade"; }
+    location = /sitemap.xml { proxy_pass http://127.0.0.1:8083; proxy_http_version 1.1; proxy_set_header Host www.agentskill.work; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; proxy_set_header Upgrade $http_upgrade; proxy_set_header Connection "upgrade"; }
+    location = /sitemap-index.xml { proxy_pass http://127.0.0.1:8083; proxy_http_version 1.1; proxy_set_header Host www.agentskill.work; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; proxy_set_header Upgrade $http_upgrade; proxy_set_header Connection "upgrade"; }
+    location = /sitemap-pages.xml { proxy_pass http://127.0.0.1:8083; proxy_http_version 1.1; proxy_set_header Host www.agentskill.work; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; proxy_set_header Upgrade $http_upgrade; proxy_set_header Connection "upgrade"; }
+    location = /sitemap-facets.xml { proxy_pass http://127.0.0.1:8083; proxy_http_version 1.1; proxy_set_header Host www.agentskill.work; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; proxy_set_header Upgrade $http_upgrade; proxy_set_header Connection "upgrade"; }
+    location ^~ /sitemap-skills/ { proxy_pass http://127.0.0.1:8083; proxy_http_version 1.1; proxy_set_header Host www.agentskill.work; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; proxy_set_header Upgrade $http_upgrade; proxy_set_header Connection "upgrade"; }
+
+    location / {
+        return 301 https://www.agentskill.work$request_uri;
+    }
 }
 
 server {
@@ -111,7 +124,9 @@ server {
         root /var/www/letsencrypt;
     }
 
-    return 308 https://www.agentskill.work$request_uri;
+    location / {
+        return 301 https://www.agentskill.work$request_uri;
+    }
 }
 
 server {
@@ -126,7 +141,19 @@ server {
         return 200 "c60a38d7ceb897d1071c1ff5c493a7ce42be4595";
     }
 
-    return 308 https://www.agentskill.work$request_uri;
+    # Avoid cross-host redirect issues for sitemap/robots/llms fetchers.
+    location = /robots.txt { proxy_pass http://127.0.0.1:8083; proxy_http_version 1.1; proxy_set_header Host www.agentskill.work; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; proxy_set_header Upgrade $http_upgrade; proxy_set_header Connection "upgrade"; }
+    location = /llms.txt { proxy_pass http://127.0.0.1:8083; proxy_http_version 1.1; proxy_set_header Host www.agentskill.work; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; proxy_set_header Upgrade $http_upgrade; proxy_set_header Connection "upgrade"; }
+    location = /llms-full.txt { proxy_pass http://127.0.0.1:8083; proxy_http_version 1.1; proxy_set_header Host www.agentskill.work; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; proxy_set_header Upgrade $http_upgrade; proxy_set_header Connection "upgrade"; }
+    location = /sitemap.xml { proxy_pass http://127.0.0.1:8083; proxy_http_version 1.1; proxy_set_header Host www.agentskill.work; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; proxy_set_header Upgrade $http_upgrade; proxy_set_header Connection "upgrade"; }
+    location = /sitemap-index.xml { proxy_pass http://127.0.0.1:8083; proxy_http_version 1.1; proxy_set_header Host www.agentskill.work; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; proxy_set_header Upgrade $http_upgrade; proxy_set_header Connection "upgrade"; }
+    location = /sitemap-pages.xml { proxy_pass http://127.0.0.1:8083; proxy_http_version 1.1; proxy_set_header Host www.agentskill.work; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; proxy_set_header Upgrade $http_upgrade; proxy_set_header Connection "upgrade"; }
+    location = /sitemap-facets.xml { proxy_pass http://127.0.0.1:8083; proxy_http_version 1.1; proxy_set_header Host www.agentskill.work; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; proxy_set_header Upgrade $http_upgrade; proxy_set_header Connection "upgrade"; }
+    location ^~ /sitemap-skills/ { proxy_pass http://127.0.0.1:8083; proxy_http_version 1.1; proxy_set_header Host www.agentskill.work; proxy_set_header X-Real-IP $remote_addr; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Forwarded-Proto $scheme; proxy_set_header Upgrade $http_upgrade; proxy_set_header Connection "upgrade"; }
+
+    location / {
+        return 301 https://www.agentskill.work$request_uri;
+    }
 }
 
 server {
