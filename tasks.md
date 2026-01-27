@@ -22,6 +22,7 @@
 - [x] 微信校验文件：`/e5e588a3b46a049f7e2354fa3ba02fde.txt`（可公网访问）
 - [x] GEO 基础文件：`/llms.txt`（已补充 usage/attribution）
 - [x] Analytics：Umami script 已全站注入
+- [x] Ads：已集成 Google AdSense loader script（全站注入于 `<head>`，便于广告平台验证/投放）
 - [x] Site footer：© 2026 geyunfei · GitHub · MIT License（全站）
 - [x] 默认语言：访问 `/`（或 legacy 旧路由无 lang/hl）时按浏览器 `Accept-Language` 自动选择 `/zh` 或 `/en`
 - [x] `<html lang>`：根据 URL 前缀（/en /zh）设置正确的 lang（避免英文页输出 zh-CN，影响 SEO/可访问性）
