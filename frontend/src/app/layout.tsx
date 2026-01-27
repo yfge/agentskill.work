@@ -93,6 +93,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         {bingSiteVerification ? (
           <meta name="msvalidate.01" content={bingSiteVerification} />
         ) : null}
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6394607607868553"
+          crossOrigin="anonymous"
+        ></script>
       </head>
       <body>
         {children}
