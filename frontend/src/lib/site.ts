@@ -1,4 +1,4 @@
-const DEFAULT_SITE_ORIGIN = "https://www.agentskill.work";
+const DEFAULT_SITE_ORIGIN = "https://agentskill.work";
 
 export function getSiteOrigin(): string {
   const raw = process.env.NEXT_PUBLIC_SITE_ORIGIN || DEFAULT_SITE_ORIGIN;
