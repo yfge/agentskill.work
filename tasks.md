@@ -23,6 +23,7 @@
 - [x] Analytics：Umami script 已全站注入
 - [x] Ads：已集成 Google AdSense loader script（全站注入于 `<head>`，便于广告平台验证/投放）
 - [x] Ads.txt：已添加 `/ads.txt`（AdSense 授权声明）
+- [x] Ads meta：已添加 `<meta name="google-adsense-account" ...>`（AdSense 账号验证）
 - [x] Site footer：© 2026 geyunfei · GitHub · MIT License（全站）
 - [x] 默认语言：访问 `/`（或 legacy 旧路由无 lang/hl）时按浏览器 `Accept-Language` 自动选择 `/zh` 或 `/en`
 - [x] `<html lang>`：根据 URL 前缀（/en /zh）设置正确的 lang（避免英文页输出 zh-CN，影响 SEO/可访问性）

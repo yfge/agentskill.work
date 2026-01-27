@@ -87,6 +87,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang={htmlLang}>
       <head>
+        <meta name="google-adsense-account" content="ca-pub-6394607607868553" />
         {googleSiteVerification ? (
           <meta name="google-site-verification" content={googleSiteVerification} />
         ) : null}
