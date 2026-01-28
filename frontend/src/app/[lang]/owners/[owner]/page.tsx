@@ -30,6 +30,20 @@ function first(value: string | string[] | undefined): string | undefined {
   return value;
 }
 
+function parseOffset(value: string | undefined): number | null {
+  if (!value) {
+    return 0;
+  }
+  if (!/^\d+$/.test(value)) {
+    return null;
+  }
+  const parsed = Number(value);
+  if (!Number.isSafeInteger(parsed) || parsed < 0) {
+    return null;
+  }
+  return parsed;
+}
+
 export async function generateMetadata({
   params,
   searchParams,
@@ -43,17 +57,30 @@ export async function generateMetadata({
 
   const owner = resolvedParams.owner;
   const siteOrigin = getSiteOrigin();
-  const canonical = `${siteOrigin}/${lang}/owners/${encodeURIComponent(owner)}`;
   const hasQuery = Boolean(first(resolvedSearch.q)?.trim());
+  const offsetValue = first(resolvedSearch.offset);
+  const offsetParsed = parseOffset(offsetValue);
+  const offset =
+    !hasQuery && offsetParsed !== null && offsetParsed % PAGE_SIZE === 0
+      ? offsetParsed
+      : 0;
+
+  const basePath = `/${lang}/owners/${encodeURIComponent(owner)}`;
+  const canonical = `${siteOrigin}${basePath}${offset > 0 ? `?offset=${offset}` : ""}`;
 
   const description =
     lang === "zh"
       ? `查看 ${owner} 创建的 Claude Skill 项目。`
       : `Browse Claude Skill projects created by ${owner}.`;
 
-  const title = `${
-    lang === "zh" ? `拥有者：${owner}` : `Owner: ${owner}`
-  } - Claude Skill - agentskill.work`;
+  const pageNum = Math.floor(offset / PAGE_SIZE) + 1;
+  const baseTitle = lang === "zh" ? `拥有者：${owner}` : `Owner: ${owner}`;
+  const title =
+    offset > 0
+      ? lang === "zh"
+        ? `${baseTitle} - 第 ${pageNum} 页 - Claude Skill`
+        : `${baseTitle} - Page ${pageNum} - Claude Skill`
+      : `${baseTitle} - Claude Skill - agentskill.work`;
 
   return {
     title,
@@ -61,9 +88,9 @@ export async function generateMetadata({
     alternates: {
       canonical,
       languages: {
-        "zh-CN": `${siteOrigin}/zh/owners/${encodeURIComponent(owner)}`,
-        "en-US": `${siteOrigin}/en/owners/${encodeURIComponent(owner)}`,
-        "x-default": `${siteOrigin}/zh/owners/${encodeURIComponent(owner)}`,
+        "zh-CN": `${siteOrigin}/zh/owners/${encodeURIComponent(owner)}${offset > 0 ? `?offset=${offset}` : ""}`,
+        "en-US": `${siteOrigin}/en/owners/${encodeURIComponent(owner)}${offset > 0 ? `?offset=${offset}` : ""}`,
+        "x-default": `${siteOrigin}/zh/owners/${encodeURIComponent(owner)}${offset > 0 ? `?offset=${offset}` : ""}`,
       },
     },
     robots: hasQuery
@@ -101,11 +128,23 @@ export default async function OwnerPage({ params, searchParams }: PageProps) {
 
   const owner = resolvedParams.owner;
   const initialQuery = (first(resolvedSearch.q) || "").trim();
+  const offsetValue = first(resolvedSearch.offset);
+  const offsetParsed = parseOffset(offsetValue);
+  const initialOffset =
+    !initialQuery && offsetParsed !== null && offsetParsed % PAGE_SIZE === 0
+      ? offsetParsed
+      : 0;
+
   const data = await fetchSkillsCached(initialQuery, {
     owner,
     limit: PAGE_SIZE,
-    offset: 0,
+    offset: initialOffset,
   });
+
+  if (!initialQuery && initialOffset > 0 && data.items.length === 0) {
+    notFound();
+  }
+
   const copy = messages[lang];
 
   const heading = `${copy.detailOwner}: ${owner}`;
@@ -125,6 +164,7 @@ export default async function OwnerPage({ params, searchParams }: PageProps) {
       initialQuery={initialQuery}
       initialSkills={data.items}
       initialTotal={data.total}
+      initialOffset={initialOffset}
     />
   );
 }

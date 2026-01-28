@@ -42,6 +42,7 @@ export function FacetPageClient({
   initialQuery = "",
   initialSkills = [],
   initialTotal = 0,
+  initialOffset = 0,
 }: {
   lang?: Language;
   path: string;
@@ -51,6 +52,7 @@ export function FacetPageClient({
   initialQuery?: string;
   initialSkills?: Skill[];
   initialTotal?: number;
+  initialOffset?: number;
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -62,7 +64,7 @@ export function FacetPageClient({
   const [error, setError] = useState<string | null>(null);
   const [lang, setLang] = useState<Language>(initialLang);
   const [total, setTotal] = useState(initialTotal);
-  const [offset, setOffset] = useState(0);
+  const [offset, setOffset] = useState(initialOffset);
   const [activeQuery, setActiveQuery] = useState(initialQuery);
 
   useEffect(() => {
@@ -108,9 +110,9 @@ export function FacetPageClient({
     setQuery(initialQuery);
     setSkills(initialSkills);
     setTotal(initialTotal);
-    setOffset(0);
+    setOffset(initialOffset);
     setActiveQuery(initialQuery.trim());
-  }, [initialQuery, initialSkills, initialTotal]);
+  }, [initialQuery, initialSkills, initialTotal, initialOffset]);
 
   const copy = messages[lang];
   const siteOrigin = getSiteOrigin();

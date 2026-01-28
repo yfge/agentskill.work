@@ -30,6 +30,20 @@ function first(value: string | string[] | undefined): string | undefined {
   return value;
 }
 
+function parseOffset(value: string | undefined): number | null {
+  if (!value) {
+    return 0;
+  }
+  if (!/^\d+$/.test(value)) {
+    return null;
+  }
+  const parsed = Number(value);
+  if (!Number.isSafeInteger(parsed) || parsed < 0) {
+    return null;
+  }
+  return parsed;
+}
+
 export async function generateMetadata({
   params,
   searchParams,
@@ -43,17 +57,30 @@ export async function generateMetadata({
 
   const topic = resolvedParams.topic;
   const siteOrigin = getSiteOrigin();
-  const canonical = `${siteOrigin}/${lang}/topics/${encodeURIComponent(topic)}`;
   const hasQuery = Boolean(first(resolvedSearch.q)?.trim());
+  const offsetValue = first(resolvedSearch.offset);
+  const offsetParsed = parseOffset(offsetValue);
+  const offset =
+    !hasQuery && offsetParsed !== null && offsetParsed % PAGE_SIZE === 0
+      ? offsetParsed
+      : 0;
+
+  const basePath = `/${lang}/topics/${encodeURIComponent(topic)}`;
+  const canonical = `${siteOrigin}${basePath}${offset > 0 ? `?offset=${offset}` : ""}`;
 
   const description =
     lang === "zh"
-      ? `查看与话题 “${topic}” 相关的 Claude Skill 项目。`
+      ? `查看与话题 "${topic}" 相关的 Claude Skill 项目。`
       : `Browse Claude Skill projects tagged with "${topic}".`;
 
-  const title = `${
-    lang === "zh" ? `话题：${topic}` : `Topic: ${topic}`
-  } - Claude Skill - agentskill.work`;
+  const pageNum = Math.floor(offset / PAGE_SIZE) + 1;
+  const baseTitle = lang === "zh" ? `话题：${topic}` : `Topic: ${topic}`;
+  const title =
+    offset > 0
+      ? lang === "zh"
+        ? `${baseTitle} - 第 ${pageNum} 页 - Claude Skill`
+        : `${baseTitle} - Page ${pageNum} - Claude Skill`
+      : `${baseTitle} - Claude Skill - agentskill.work`;
 
   return {
     title,
@@ -61,9 +88,9 @@ export async function generateMetadata({
     alternates: {
       canonical,
       languages: {
-        "zh-CN": `${siteOrigin}/zh/topics/${encodeURIComponent(topic)}`,
-        "en-US": `${siteOrigin}/en/topics/${encodeURIComponent(topic)}`,
-        "x-default": `${siteOrigin}/zh/topics/${encodeURIComponent(topic)}`,
+        "zh-CN": `${siteOrigin}/zh/topics/${encodeURIComponent(topic)}${offset > 0 ? `?offset=${offset}` : ""}`,
+        "en-US": `${siteOrigin}/en/topics/${encodeURIComponent(topic)}${offset > 0 ? `?offset=${offset}` : ""}`,
+        "x-default": `${siteOrigin}/zh/topics/${encodeURIComponent(topic)}${offset > 0 ? `?offset=${offset}` : ""}`,
       },
     },
     robots: hasQuery
@@ -101,17 +128,29 @@ export default async function TopicPage({ params, searchParams }: PageProps) {
 
   const topic = resolvedParams.topic;
   const initialQuery = (first(resolvedSearch.q) || "").trim();
+  const offsetValue = first(resolvedSearch.offset);
+  const offsetParsed = parseOffset(offsetValue);
+  const initialOffset =
+    !initialQuery && offsetParsed !== null && offsetParsed % PAGE_SIZE === 0
+      ? offsetParsed
+      : 0;
+
   const data = await fetchSkillsCached(initialQuery, {
     topic,
     limit: PAGE_SIZE,
-    offset: 0,
+    offset: initialOffset,
   });
+
+  if (!initialQuery && initialOffset > 0 && data.items.length === 0) {
+    notFound();
+  }
+
   const copy = messages[lang];
 
   const heading = `${copy.detailTopics}: ${topic}`;
   const intro =
     lang === "zh"
-      ? `浏览话题 “${topic}” 下的 Claude Skill 项目。`
+      ? `浏览话题 "${topic}" 下的 Claude Skill 项目。`
       : `Browse Claude Skill projects under the "${topic}" topic.`;
   const path = `/topics/${encodeURIComponent(topic)}`;
 
@@ -125,6 +164,7 @@ export default async function TopicPage({ params, searchParams }: PageProps) {
       initialQuery={initialQuery}
       initialSkills={data.items}
       initialTotal={data.total}
+      initialOffset={initialOffset}
     />
   );
 }

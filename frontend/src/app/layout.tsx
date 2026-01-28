@@ -1,6 +1,7 @@
 import "./globals.css";
 
 import { headers } from "next/headers";
+import Link from "next/link";
 
 import { getSiteOrigin } from "@/lib/site";
 
@@ -122,7 +123,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 rel="noreferrer"
               >
                 MIT License
-              </a>
+              </a>{" "}
+              <span aria-hidden="true">·</span>{" "}
+              <Link className="site-footer-link" href="/zh/privacy">
+                Privacy
+              </Link>
             </span>
           </div>
         </footer>

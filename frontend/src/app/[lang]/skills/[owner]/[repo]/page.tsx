@@ -56,6 +56,40 @@ async function fetchSkill(owner: string, repo: string): Promise<Skill | null> {
   return res.json();
 }
 
+function formatStars(stars: number): string {
+  if (stars >= 1000) {
+    return `${(stars / 1000).toFixed(1).replace(/\.0$/, "")}k`;
+  }
+  return String(stars);
+}
+
+function getFirstUseCase(skill: Skill, lang: "zh" | "en"): string | null {
+  const useCases = lang === "zh" ? skill.use_cases_zh : skill.use_cases_en;
+  if (useCases && useCases.length > 0) {
+    const first = useCases[0].slice(0, 30);
+    return first.length < useCases[0].length ? `${first}...` : first;
+  }
+  const features = lang === "zh" ? skill.key_features_zh : skill.key_features_en;
+  if (features && features.length > 0) {
+    const first = features[0].slice(0, 30);
+    return first.length < features[0].length ? `${first}...` : first;
+  }
+  return null;
+}
+
+function generateTitle(skill: Skill, lang: "zh" | "en"): string {
+  const seoTitle = lang === "zh" ? skill.seo_title_zh : skill.seo_title_en;
+  if (seoTitle) {
+    return seoTitle;
+  }
+  const stars = formatStars(skill.stars);
+  const useCase = getFirstUseCase(skill, lang);
+  if (useCase) {
+    return `${skill.full_name} — Claude Skill | ⭐${stars} | ${useCase}`;
+  }
+  return `${skill.full_name} — Claude Skill | ⭐${stars}`;
+}
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const resolvedParams = await params;
   const lang = resolveLanguage(resolvedParams.lang);
@@ -70,10 +104,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
-  const title =
-    lang === "zh"
-      ? skill.seo_title_zh || `${skill.full_name} - Claude Skill - agentskill.work`
-      : skill.seo_title_en || `${skill.full_name} - Claude Skill - agentskill.work`;
+  const title = generateTitle(skill, lang);
   const description =
     lang === "zh"
       ? normalizeClaudeSkill(

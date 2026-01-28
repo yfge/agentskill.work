@@ -53,6 +53,18 @@ export function GET() {
       changefreq: "hourly",
       priority: "0.7",
     },
+    {
+      loc: `${siteOrigin}/zh/privacy`,
+      lastmod: today,
+      changefreq: "monthly",
+      priority: "0.3",
+    },
+    {
+      loc: `${siteOrigin}/en/privacy`,
+      lastmod: today,
+      changefreq: "monthly",
+      priority: "0.3",
+    },
   ];
 
   const xml =

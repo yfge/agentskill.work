@@ -30,6 +30,20 @@ function first(value: string | string[] | undefined): string | undefined {
   return value;
 }
 
+function parseOffset(value: string | undefined): number | null {
+  if (!value) {
+    return 0;
+  }
+  if (!/^\d+$/.test(value)) {
+    return null;
+  }
+  const parsed = Number(value);
+  if (!Number.isSafeInteger(parsed) || parsed < 0) {
+    return null;
+  }
+  return parsed;
+}
+
 export async function generateMetadata({
   params,
   searchParams,
@@ -43,17 +57,30 @@ export async function generateMetadata({
 
   const language = resolvedParams.language;
   const siteOrigin = getSiteOrigin();
-  const canonical = `${siteOrigin}/${lang}/languages/${encodeURIComponent(language)}`;
   const hasQuery = Boolean(first(resolvedSearch.q)?.trim());
+  const offsetValue = first(resolvedSearch.offset);
+  const offsetParsed = parseOffset(offsetValue);
+  const offset =
+    !hasQuery && offsetParsed !== null && offsetParsed % PAGE_SIZE === 0
+      ? offsetParsed
+      : 0;
+
+  const basePath = `/${lang}/languages/${encodeURIComponent(language)}`;
+  const canonical = `${siteOrigin}${basePath}${offset > 0 ? `?offset=${offset}` : ""}`;
 
   const description =
     lang === "zh"
       ? `查看主要语言为 ${language} 的 Claude Skill 项目。`
       : `Browse Claude Skill projects whose primary language is ${language}.`;
 
-  const title = `${
-    lang === "zh" ? `语言：${language}` : `Language: ${language}`
-  } - Claude Skill - agentskill.work`;
+  const pageNum = Math.floor(offset / PAGE_SIZE) + 1;
+  const baseTitle = lang === "zh" ? `语言：${language}` : `Language: ${language}`;
+  const title =
+    offset > 0
+      ? lang === "zh"
+        ? `${baseTitle} - 第 ${pageNum} 页 - Claude Skill`
+        : `${baseTitle} - Page ${pageNum} - Claude Skill`
+      : `${baseTitle} - Claude Skill - agentskill.work`;
 
   return {
     title,
@@ -61,9 +88,9 @@ export async function generateMetadata({
     alternates: {
       canonical,
       languages: {
-        "zh-CN": `${siteOrigin}/zh/languages/${encodeURIComponent(language)}`,
-        "en-US": `${siteOrigin}/en/languages/${encodeURIComponent(language)}`,
-        "x-default": `${siteOrigin}/zh/languages/${encodeURIComponent(language)}`,
+        "zh-CN": `${siteOrigin}/zh/languages/${encodeURIComponent(language)}${offset > 0 ? `?offset=${offset}` : ""}`,
+        "en-US": `${siteOrigin}/en/languages/${encodeURIComponent(language)}${offset > 0 ? `?offset=${offset}` : ""}`,
+        "x-default": `${siteOrigin}/zh/languages/${encodeURIComponent(language)}${offset > 0 ? `?offset=${offset}` : ""}`,
       },
     },
     robots: hasQuery
@@ -101,11 +128,23 @@ export default async function LanguageFacetPage({ params, searchParams }: PagePr
 
   const language = resolvedParams.language;
   const initialQuery = (first(resolvedSearch.q) || "").trim();
+  const offsetValue = first(resolvedSearch.offset);
+  const offsetParsed = parseOffset(offsetValue);
+  const initialOffset =
+    !initialQuery && offsetParsed !== null && offsetParsed % PAGE_SIZE === 0
+      ? offsetParsed
+      : 0;
+
   const data = await fetchSkillsCached(initialQuery, {
     language,
     limit: PAGE_SIZE,
-    offset: 0,
+    offset: initialOffset,
   });
+
+  if (!initialQuery && initialOffset > 0 && data.items.length === 0) {
+    notFound();
+  }
+
   const copy = messages[lang];
 
   const heading = `${copy.detailLanguage}: ${language}`;
@@ -125,6 +164,7 @@ export default async function LanguageFacetPage({ params, searchParams }: PagePr
       initialQuery={initialQuery}
       initialSkills={data.items}
       initialTotal={data.total}
+      initialOffset={initialOffset}
     />
   );
 }
