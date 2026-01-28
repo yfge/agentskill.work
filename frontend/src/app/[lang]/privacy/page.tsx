@@ -92,7 +92,7 @@ const content = {
     sections: [
       {
         heading: "Overview",
-        body: "agentskill.work (\"this site\") respects and protects user privacy. This privacy policy explains how we collect, use, and protect your information.",
+        body: 'agentskill.work ("this site") respects and protects user privacy. This privacy policy explains how we collect, use, and protect your information.',
       },
       {
         heading: "Information We Collect",
@@ -143,7 +143,7 @@ const content = {
       },
       {
         heading: "Policy Updates",
-        body: "We may update this privacy policy from time to time. Updated policies will be posted on this page with an updated \"Last updated\" date.",
+        body: 'We may update this privacy policy from time to time. Updated policies will be posted on this page with an updated "Last updated" date.',
       },
       {
         heading: "Contact Us",

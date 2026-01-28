@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
+import { BackButton } from "@/components/BackButton";
 import { SkillDetailTracker } from "@/components/SkillDetailTracker";
 import { SkillLangSwitch } from "@/components/SkillLangSwitch";
 import { getApiBase } from "@/lib/apiBase";
@@ -314,9 +315,9 @@ export default async function SkillDetailPage({ params }: PageProps) {
             ))}
           </div>
           <div className="detail-actions">
-            <Link className="button" href={`/${lang}`}>
+            <BackButton className="button" fallbackHref={`/${lang}`}>
               {copy.backToList}
-            </Link>
+            </BackButton>
             <a
               className="button primary"
               href={skill.html_url}
