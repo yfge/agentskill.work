@@ -81,7 +81,7 @@ const content = {
       },
       {
         heading: "联系我们",
-        body: "如有任何隐私相关问题，请通过 GitHub Issues 联系我们：https://github.com/anthropics/claude-code/issues",
+        body: "如有任何隐私相关问题，请通过 GitHub Issues 联系我们：https://github.com/yfge/agentskill.work/issues",
       },
     ],
     backToHome: "返回首页",
@@ -147,7 +147,7 @@ const content = {
       },
       {
         heading: "Contact Us",
-        body: "For any privacy-related questions, please contact us via GitHub Issues: https://github.com/anthropics/claude-code/issues",
+        body: "For any privacy-related questions, please contact us via GitHub Issues: https://github.com/yfge/agentskill.work/issues",
       },
     ],
     backToHome: "Back to Home",
