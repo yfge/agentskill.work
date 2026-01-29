@@ -8,6 +8,7 @@ import { PageBottomSections } from "@/components/PageBottomSections";
 import { SkillList } from "@/components/SkillList";
 import { fetchSkills } from "@/lib/api";
 import { trackVisit } from "@/lib/metrics";
+import { trackSearch } from "@/lib/umami";
 import {
   defaultLanguage,
   messages,
@@ -225,7 +226,11 @@ export function HomePageClient({
         className="search"
         onSubmit={(event) => {
           event.preventDefault();
-          loadSkills(query.trim());
+          const trimmed = query.trim();
+          if (trimmed) {
+            trackSearch(trimmed);
+          }
+          loadSkills(trimmed);
         }}
       >
         <input

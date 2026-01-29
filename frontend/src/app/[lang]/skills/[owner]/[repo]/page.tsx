@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
 import { BackButton } from "@/components/BackButton";
+import { GitHubLink } from "@/components/GitHubLink";
 import { SkillDetailTracker } from "@/components/SkillDetailTracker";
 import { SkillLangSwitch } from "@/components/SkillLangSwitch";
 import { getApiBase } from "@/lib/apiBase";
@@ -318,14 +319,13 @@ export default async function SkillDetailPage({ params }: PageProps) {
             <BackButton className="button" fallbackHref={`/${lang}`}>
               {copy.backToList}
             </BackButton>
-            <a
+            <GitHubLink
               className="button primary"
               href={skill.html_url}
-              target="_blank"
-              rel="noreferrer"
+              repoFullName={skill.full_name}
             >
               {copy.viewOnGitHub}
-            </a>
+            </GitHubLink>
           </div>
         </section>
 
