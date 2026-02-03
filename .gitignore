@@ -68,3 +68,4 @@ tmp/
 # Celery beat local schedule db
 backend/celerybeat-schedule
 backend/celerybeat-schedule.*
+skills/
