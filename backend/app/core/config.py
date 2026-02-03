@@ -11,6 +11,13 @@ class Settings(BaseSettings):
     database_url: str = "sqlite+pysqlite:///./agentskill.db"
     redis_url: str = "redis://localhost:6379/0"
 
+    # Database connection pool settings
+    db_pool_size: int = 20
+    db_pool_max_overflow: int = 10
+    db_pool_recycle: int = 3600
+    db_pool_timeout: int = 30
+    db_echo: bool = False
+
     github_token: str | None = None
     github_search_query: str = (
         '"claude skill" OR "agent skill" OR openclaw in:name,description,topics'

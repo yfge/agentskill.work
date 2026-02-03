@@ -27,8 +27,10 @@ def track_visit(settings: Settings, visitor_id: str | None) -> None:
     try:
         pipe = client.pipeline()
         pipe.incr(PV_KEY, 1)
+        pipe.expire(PV_KEY, 86400 * 365)  # Retain PV for 1 year
         if visitor_id:
             pipe.sadd(UV_KEY, visitor_id)
+            pipe.expire(UV_KEY, 86400 * 30)  # Retain UV for 30 days
         pipe.execute()
     except Exception as exc:  # noqa: BLE001
         logger.warning("track visit failed: %s", exc)
@@ -55,9 +57,13 @@ def track_skill_visit(
         return
     try:
         pipe = client.pipeline()
-        pipe.incr(SKILL_PV_KEY.format(skill_id=skill_id), 1)
+        pv_key = SKILL_PV_KEY.format(skill_id=skill_id)
+        uv_key = SKILL_UV_KEY.format(skill_id=skill_id)
+        pipe.incr(pv_key, 1)
+        pipe.expire(pv_key, 86400 * 365)  # Retain skill PV for 1 year
         if visitor_id:
-            pipe.sadd(SKILL_UV_KEY.format(skill_id=skill_id), visitor_id)
+            pipe.sadd(uv_key, visitor_id)
+            pipe.expire(uv_key, 86400 * 30)  # Retain skill UV for 30 days
         pipe.execute()
     except Exception as exc:  # noqa: BLE001
         logger.warning("track skill visit failed: %s", exc)

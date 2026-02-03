@@ -7,6 +7,7 @@ from app.api.router import api_router
 from app.core.config import get_settings
 from app.core.database import engine
 from app.db.base import Base
+from app.middleware.timing import TimingMiddleware
 
 
 def create_app() -> FastAPI:
@@ -26,6 +27,10 @@ def create_app() -> FastAPI:
 
     app.include_router(api_router, prefix="/api")
 
+    # Add timing middleware for performance monitoring
+    app.add_middleware(TimingMiddleware)
+
+    # Add CORS middleware
     app.add_middleware(
         CORSMiddleware,
         allow_origins=settings.cors_origin_list,

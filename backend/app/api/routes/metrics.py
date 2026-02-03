@@ -1,5 +1,6 @@
-from fastapi import APIRouter, Header
+from fastapi import APIRouter, Header, Response
 
+from app.core.cache import cache_control
 from app.core.config import get_settings
 from app.schemas.metrics import MetricsOut
 from app.services.metrics_service import get_metrics, track_skill_visit, track_visit
@@ -24,7 +25,8 @@ def track_skill_metrics(
 
 
 @router.get("", response_model=MetricsOut)
-def read_metrics() -> MetricsOut:
+@cache_control(300)  # Cache for 5 minutes
+def read_metrics(response: Response) -> MetricsOut:
     settings = get_settings()
     pv, uv = get_metrics(settings)
     return MetricsOut(pv=pv, uv=uv)

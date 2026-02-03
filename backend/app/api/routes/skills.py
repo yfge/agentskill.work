@@ -1,8 +1,9 @@
 from typing import Literal
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
 from sqlalchemy.orm import Session
 
+from app.core.cache import cache_control
 from app.core.config import get_settings
 from app.core.database import get_db
 from app.schemas.skill import SkillList, SkillOut
@@ -37,7 +38,9 @@ def list_skills(
 
 
 @router.get("/{owner}/{repo}", response_model=SkillOut)
+@cache_control(86400)  # Cache for 24 hours
 def read_skill(
+    response: Response,
     owner: str,
     repo: str,
     db: Session = Depends(get_db),  # noqa: B008
