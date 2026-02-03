@@ -220,6 +220,7 @@ export function HomePageClient({
           {copy.navTrending}
         </a>
         <a href={`/${lang}/latest`}>{copy.navLatest}</a>
+        <a href={`/${lang}/openclaw`}>{copy.navOpenClaw}</a>
       </nav>
 
       <form

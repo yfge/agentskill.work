@@ -13,7 +13,7 @@ class Settings(BaseSettings):
 
     github_token: str | None = None
     github_search_query: str = (
-        '("claude skill" OR "agent skill") in:name,description,topics'
+        '"claude skill" OR "agent skill" OR openclaw in:name,description,topics'
     )
     github_search_per_page: int = 30
     github_max_pages: int = 5

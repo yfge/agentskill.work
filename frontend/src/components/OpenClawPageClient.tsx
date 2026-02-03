@@ -4,22 +4,23 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { LanguageToggle } from "@/components/LanguageToggle";
-import { PageBottomSections } from "@/components/PageBottomSections";
 import { SkillList } from "@/components/SkillList";
 import { fetchSkills } from "@/lib/api";
 import { trackVisit } from "@/lib/metrics";
+import { trackSearch } from "@/lib/umami";
 import {
   defaultLanguage,
   messages,
   setStoredLanguage,
   type Language,
 } from "@/lib/i18n";
-import { normalizeClaudeSkill, toSnippet } from "@/lib/text";
+import { toSnippet } from "@/lib/text";
 import { getVisitorId } from "@/lib/visitor";
 import { getSiteOrigin } from "@/lib/site";
 import { Skill } from "@/types/skill";
 
 const PAGE_SIZE = 24;
+const BASE_QUERY = "openclaw";
 
 function withoutLangParams(params: URLSearchParams): URLSearchParams {
   const next = new URLSearchParams(params.toString());
@@ -28,13 +29,23 @@ function withoutLangParams(params: URLSearchParams): URLSearchParams {
   return next;
 }
 
-export function LatestPageClient({
+function combineQuery(baseQuery: string, userQuery: string): string {
+  const trimmed = userQuery.trim();
+  if (!trimmed) {
+    return baseQuery;
+  }
+  return `${baseQuery} ${trimmed}`;
+}
+
+export function OpenClawPageClient({
   lang: initialLang = defaultLanguage,
+  initialQuery = "",
   initialSkills = [],
   initialTotal = 0,
   initialOffset = 0,
 }: {
   lang?: Language;
+  initialQuery?: string;
   initialSkills?: Skill[];
   initialTotal?: number;
   initialOffset?: number;
@@ -42,6 +53,7 @@ export function LatestPageClient({
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  const [query, setQuery] = useState(initialQuery);
   const [skills, setSkills] = useState<Skill[]>(initialSkills);
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
@@ -49,6 +61,7 @@ export function LatestPageClient({
   const [lang, setLang] = useState<Language>(initialLang);
   const [total, setTotal] = useState(initialTotal);
   const [offset, setOffset] = useState(initialOffset);
+  const [activeQuery, setActiveQuery] = useState(initialQuery.trim());
 
   useEffect(() => {
     setStoredLanguage(lang);
@@ -56,29 +69,31 @@ export function LatestPageClient({
   }, [lang]);
 
   useEffect(() => {
-    setSkills(initialSkills);
-    setTotal(initialTotal);
-    setOffset(initialOffset);
-  }, [initialSkills, initialTotal, initialOffset]);
-
-  useEffect(() => {
     const id = getVisitorId();
     trackVisit(id).catch(() => null);
   }, []);
 
-  const loadMore = async () => {
+  const loadSkills = async (value: string, nextOffset = 0, append = false) => {
     try {
-      setLoadingMore(true);
+      if (append) {
+        setLoadingMore(true);
+      } else {
+        setLoading(true);
+      }
       setError(null);
-      const nextOffset = offset + PAGE_SIZE;
-      const data = await fetchSkills("", {
+      const combinedQuery = combineQuery(BASE_QUERY, value);
+      const data = await fetchSkills(combinedQuery, {
         limit: PAGE_SIZE,
         offset: nextOffset,
-        sort: "newest",
       });
       setTotal(data.total);
       setOffset(nextOffset);
-      setSkills((prev) => [...prev, ...data.items]);
+      if (append) {
+        setSkills((prev) => [...prev, ...data.items]);
+      } else {
+        setSkills(data.items);
+        setActiveQuery(value);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load");
     } finally {
@@ -86,6 +101,14 @@ export function LatestPageClient({
       setLoadingMore(false);
     }
   };
+
+  useEffect(() => {
+    setQuery(initialQuery);
+    setSkills(initialSkills);
+    setTotal(initialTotal);
+    setOffset(initialOffset);
+    setActiveQuery(initialQuery.trim());
+  }, [initialQuery, initialSkills, initialTotal, initialOffset]);
 
   const copy = messages[lang];
   const siteOrigin = getSiteOrigin();
@@ -103,11 +126,11 @@ export function LatestPageClient({
       {
         "@type": "ListItem",
         position: 2,
-        name: copy.navLatest,
+        name: copy.navOpenClaw,
         item:
           initialOffset > 0
-            ? `${siteOrigin}/${lang}/latest?offset=${initialOffset}`
-            : `${siteOrigin}/${lang}/latest`,
+            ? `${siteOrigin}/${lang}/openclaw?offset=${initialOffset}`
+            : `${siteOrigin}/${lang}/openclaw`,
       },
     ],
   };
@@ -118,12 +141,12 @@ export function LatestPageClient({
           "@context": "https://schema.org",
           "@type": "ItemList",
           url:
-            initialOffset > 0
-              ? `${siteOrigin}/${lang}/latest?offset=${initialOffset}`
-              : `${siteOrigin}/${lang}/latest`,
+            activeQuery || initialOffset <= 0
+              ? `${siteOrigin}/${lang}/openclaw`
+              : `${siteOrigin}/${lang}/openclaw?offset=${initialOffset}`,
           itemListOrder: "https://schema.org/ItemListOrderDescending",
           numberOfItems: total || skills.length,
-          startIndex: initialOffset + 1,
+          startIndex: activeQuery ? 1 : initialOffset + 1,
           itemListElement: skills.map((skill, index) => {
             const [owner, repo] = skill.full_name.split("/");
             const detailUrl =
@@ -131,7 +154,7 @@ export function LatestPageClient({
                 ? `${siteOrigin}/${lang}/skills/${encodeURIComponent(
                     owner,
                   )}/${encodeURIComponent(repo)}`
-                : `${siteOrigin}/${lang}/latest`;
+                : `${siteOrigin}/${lang}/openclaw`;
             const description = toSnippet(
               lang === "zh"
                 ? skill.description_zh || skill.description
@@ -140,7 +163,7 @@ export function LatestPageClient({
             );
             return {
               "@type": "ListItem",
-              position: initialOffset + index + 1,
+              position: (activeQuery ? 0 : initialOffset) + index + 1,
               item: {
                 "@type": "SoftwareSourceCode",
                 name: skill.full_name,
@@ -170,8 +193,8 @@ export function LatestPageClient({
 
       <section className="hero">
         <div className="hero-text">
-          <h1>{copy.latestTitle}</h1>
-          <p>{copy.latestSubtitle}</p>
+          <h1>{copy.openclawTitle}</h1>
+          <p>{copy.openclawSubtitle}</p>
         </div>
         <div className="hero-actions">
           <LanguageToggle
@@ -184,7 +207,7 @@ export function LatestPageClient({
                 new URLSearchParams(searchParams.toString()),
               );
               const qs = params.toString();
-              router.replace(`/${next}/latest${qs ? `?${qs}` : ""}`);
+              router.replace(`/${next}/openclaw${qs ? `?${qs}` : ""}`);
             }}
           />
         </div>
@@ -192,11 +215,30 @@ export function LatestPageClient({
 
       <nav className="browse-nav" aria-label="Browse">
         <a href={`/${lang}`}>{copy.navTrending}</a>
-        <a href={`/${lang}/latest`} aria-current="page">
-          {copy.navLatest}
+        <a href={`/${lang}/latest`}>{copy.navLatest}</a>
+        <a href={`/${lang}/openclaw`} aria-current="page">
+          {copy.navOpenClaw}
         </a>
-        <a href={`/${lang}/openclaw`}>{copy.navOpenClaw}</a>
       </nav>
+
+      <form
+        className="search"
+        onSubmit={(event) => {
+          event.preventDefault();
+          const trimmed = query.trim();
+          if (trimmed) {
+            trackSearch(`openclaw:${trimmed}`);
+          }
+          loadSkills(trimmed);
+        }}
+      >
+        <input
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder={copy.searchPlaceholder}
+        />
+        <button type="submit">{copy.search}</button>
+      </form>
 
       {loading && <p className="status">{copy.loading}</p>}
       {error && <p className="status">{copy.error}</p>}
@@ -211,22 +253,30 @@ export function LatestPageClient({
             {copy.countLabel} {skills.length}/{total}
           </span>
           {skills.length < total ? (
-            <a
-              className="pagination-link"
-              href={`/${lang}/latest?offset=${offset + PAGE_SIZE}`}
-              onClick={(event) => {
-                event.preventDefault();
-                loadMore();
-              }}
-              aria-disabled={loadingMore ? "true" : undefined}
-            >
-              {loadingMore ? copy.loading : copy.loadMore}
-            </a>
+            activeQuery ? (
+              <button
+                type="button"
+                onClick={() => loadSkills(activeQuery, offset + PAGE_SIZE, true)}
+                disabled={loadingMore}
+              >
+                {loadingMore ? copy.loading : copy.loadMore}
+              </button>
+            ) : (
+              <a
+                className="pagination-link"
+                href={`/${lang}/openclaw?offset=${offset + PAGE_SIZE}`}
+                onClick={(event) => {
+                  event.preventDefault();
+                  loadSkills(activeQuery, offset + PAGE_SIZE, true);
+                }}
+                aria-disabled={loadingMore ? "true" : undefined}
+              >
+                {loadingMore ? copy.loading : copy.loadMore}
+              </a>
+            )
           ) : null}
         </div>
       )}
-
-      <PageBottomSections lang={lang} />
     </main>
   );
 }

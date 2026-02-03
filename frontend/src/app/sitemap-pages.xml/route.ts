@@ -54,6 +54,18 @@ export function GET() {
       priority: "0.7",
     },
     {
+      loc: `${siteOrigin}/zh/openclaw`,
+      lastmod: today,
+      changefreq: "hourly",
+      priority: "0.7",
+    },
+    {
+      loc: `${siteOrigin}/en/openclaw`,
+      lastmod: today,
+      changefreq: "hourly",
+      priority: "0.7",
+    },
+    {
       loc: `${siteOrigin}/zh/privacy`,
       lastmod: today,
       changefreq: "monthly",
