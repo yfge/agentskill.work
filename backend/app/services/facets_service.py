@@ -45,21 +45,44 @@ def list_top_languages(db: Session, limit: int) -> list[tuple[str, int]]:
 
 
 def list_top_owners(db: Session, limit: int) -> list[tuple[str, int]]:
-    """List top owners using SQL SUBSTRING_INDEX for optimal performance."""
-    # Use SQL function to extract owner prefix before '/'
-    stmt = (
-        select(
-            func.substring_index(Skill.full_name, "/", 1).label("owner"),
-            func.count().label("count"),
+    """
+    List top owners using SQL extraction for optimal performance.
+
+    Note: Uses database-specific functions for owner extraction.
+    - MySQL: SUBSTRING_INDEX
+    - SQLite/PostgreSQL: Uses Python processing for compatibility
+    """
+    # Get database dialect
+    dialect_name = db.bind.dialect.name if db.bind else "sqlite"
+
+    if dialect_name == "mysql":
+        # MySQL-specific: Use SUBSTRING_INDEX
+        stmt = (
+            select(
+                func.substring_index(Skill.full_name, "/", 1).label("owner"),
+                func.count().label("count"),
+            )
+            .where(Skill.full_name.isnot(None))
+            .where(Skill.full_name != "")
+            .group_by("owner")
+            .order_by(func.count().desc())
+            .limit(limit)
         )
-        .where(Skill.full_name.isnot(None))
-        .where(Skill.full_name != "")
-        .group_by("owner")
-        .order_by(func.count().desc())
-        .limit(limit)
-    )
-    result = db.execute(stmt).all()
-    return [(row.owner, row.count) for row in result]
+        result = db.execute(stmt).all()
+        return [(row.owner, row.count) for row in result]
+    else:
+        # SQLite/PostgreSQL/Others: Use Python processing (fallback)
+        rows = db.execute(select(Skill.full_name)).scalars().all()
+        counter: Counter[str] = Counter()
+        for full_name in rows:
+            name = _normalize(full_name)
+            if not name:
+                continue
+            owner = name.split("/", 1)[0].strip()
+            if not owner:
+                continue
+            counter[owner] += 1
+        return counter.most_common(limit)
 
 
 def list_top_topics(

@@ -7,6 +7,7 @@ Create Date: 2026-02-04
 """
 
 from alembic import op
+from sqlalchemy import inspect
 
 # revision identifiers, used by Alembic.
 revision = "0005_add_performance_indexes"
@@ -29,17 +30,27 @@ def upgrade() -> None:
         "ix_skills_updated_id", "skills", ["repo_updated_at", "id"], unique=False
     )
 
-    # Full-text index for description search (MySQL)
-    # Note: This uses MySQL-specific syntax. For PostgreSQL, use gin/gist indexes instead.
-    op.execute(
-        "ALTER TABLE skills ADD FULLTEXT INDEX ft_skills_description "
-        "(description, description_zh)"
-    )
+    # Full-text index for description search (MySQL only)
+    # Note: SQLite and PostgreSQL use different full-text search mechanisms
+    conn = op.get_bind()
+    dialect_name = conn.dialect.name
+
+    if dialect_name == "mysql":
+        op.execute(
+            "ALTER TABLE skills ADD FULLTEXT INDEX ft_skills_description "
+            "(description, description_zh)"
+        )
+    # For SQLite, FTS requires a virtual table (can be added separately if needed)
+    # For PostgreSQL, would use GIN indexes with tsvector
 
 
 def downgrade() -> None:
-    # Drop full-text index
-    op.execute("ALTER TABLE skills DROP INDEX ft_skills_description")
+    # Drop full-text index (MySQL only)
+    conn = op.get_bind()
+    dialect_name = conn.dialect.name
+
+    if dialect_name == "mysql":
+        op.execute("ALTER TABLE skills DROP INDEX ft_skills_description")
 
     # Drop composite indexes
     op.drop_index("ix_skills_updated_id", table_name="skills")
