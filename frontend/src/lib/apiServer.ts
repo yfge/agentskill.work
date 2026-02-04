@@ -1,7 +1,17 @@
 import { getApiBase } from "@/lib/apiBase";
 import type { SkillListResponse } from "@/types/skill";
 
-const DEFAULT_REVALIDATE_SECONDS = 600;
+/**
+ * Revalidation times for different data types (ISR strategy)
+ */
+export const REVALIDATION_TIMES = {
+  skills: 600, // 10 minutes - skill listings change frequently
+  facets: 3600, // 1 hour - topics/languages change slowly
+  metrics: 300, // 5 minutes - visitor metrics update often
+  skillDetail: 86400, // 24 hours - individual skill data is stable
+} as const;
+
+const DEFAULT_REVALIDATE_SECONDS = REVALIDATION_TIMES.skills;
 
 export async function fetchSkillsCached(
   query: string,

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { LanguageToggle } from "@/components/LanguageToggle";
@@ -73,34 +73,37 @@ export function OpenClawPageClient({
     trackVisit(id).catch(() => null);
   }, []);
 
-  const loadSkills = async (value: string, nextOffset = 0, append = false) => {
-    try {
-      if (append) {
-        setLoadingMore(true);
-      } else {
-        setLoading(true);
+  const loadSkills = useCallback(
+    async (value: string, nextOffset = 0, append = false) => {
+      try {
+        if (append) {
+          setLoadingMore(true);
+        } else {
+          setLoading(true);
+        }
+        setError(null);
+        const combinedQuery = combineQuery(BASE_QUERY, value);
+        const data = await fetchSkills(combinedQuery, {
+          limit: PAGE_SIZE,
+          offset: nextOffset,
+        });
+        setTotal(data.total);
+        setOffset(nextOffset);
+        if (append) {
+          setSkills((prev) => [...prev, ...data.items]);
+        } else {
+          setSkills(data.items);
+          setActiveQuery(value);
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to load");
+      } finally {
+        setLoading(false);
+        setLoadingMore(false);
       }
-      setError(null);
-      const combinedQuery = combineQuery(BASE_QUERY, value);
-      const data = await fetchSkills(combinedQuery, {
-        limit: PAGE_SIZE,
-        offset: nextOffset,
-      });
-      setTotal(data.total);
-      setOffset(nextOffset);
-      if (append) {
-        setSkills((prev) => [...prev, ...data.items]);
-      } else {
-        setSkills(data.items);
-        setActiveQuery(value);
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load");
-    } finally {
-      setLoading(false);
-      setLoadingMore(false);
-    }
-  };
+    },
+    [],
+  );
 
   useEffect(() => {
     setQuery(initialQuery);
@@ -113,70 +116,75 @@ export function OpenClawPageClient({
   const copy = messages[lang];
   const siteOrigin = getSiteOrigin();
 
-  const breadcrumbSchema = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: copy.navTrending,
-        item: `${siteOrigin}/${lang}`,
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: copy.navOpenClaw,
-        item:
-          initialOffset > 0
-            ? `${siteOrigin}/${lang}/openclaw?offset=${initialOffset}`
-            : `${siteOrigin}/${lang}/openclaw`,
-      },
-    ],
-  };
+  const breadcrumbSchema = useMemo(
+    () => ({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        {
+          "@type": "ListItem",
+          position: 1,
+          name: copy.navTrending,
+          item: `${siteOrigin}/${lang}`,
+        },
+        {
+          "@type": "ListItem",
+          position: 2,
+          name: copy.navOpenClaw,
+          item:
+            initialOffset > 0
+              ? `${siteOrigin}/${lang}/openclaw?offset=${initialOffset}`
+              : `${siteOrigin}/${lang}/openclaw`,
+        },
+      ],
+    }),
+    [copy.navTrending, copy.navOpenClaw, siteOrigin, lang, initialOffset],
+  );
 
-  const itemListSchema =
-    !loading && !error && skills.length > 0
-      ? {
-          "@context": "https://schema.org",
-          "@type": "ItemList",
-          url:
-            activeQuery || initialOffset <= 0
-              ? `${siteOrigin}/${lang}/openclaw`
-              : `${siteOrigin}/${lang}/openclaw?offset=${initialOffset}`,
-          itemListOrder: "https://schema.org/ItemListOrderDescending",
-          numberOfItems: total || skills.length,
-          startIndex: activeQuery ? 1 : initialOffset + 1,
-          itemListElement: skills.map((skill, index) => {
-            const [owner, repo] = skill.full_name.split("/");
-            const detailUrl =
-              owner && repo
-                ? `${siteOrigin}/${lang}/skills/${encodeURIComponent(
-                    owner,
-                  )}/${encodeURIComponent(repo)}`
-                : `${siteOrigin}/${lang}/openclaw`;
-            const description = toSnippet(
-              lang === "zh"
-                ? skill.description_zh || skill.description
-                : skill.description || skill.description_zh,
-              200,
-            );
-            return {
-              "@type": "ListItem",
-              position: (activeQuery ? 0 : initialOffset) + index + 1,
-              item: {
-                "@type": "SoftwareSourceCode",
-                name: skill.full_name,
-                url: detailUrl,
-                codeRepository: skill.html_url,
-                description,
-                programmingLanguage: skill.language || undefined,
-                keywords: skill.topics || undefined,
-              },
-            };
-          }),
-        }
-      : null;
+  const itemListSchema = useMemo(() => {
+    if (!loading && !error && skills.length > 0) {
+      return {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        url:
+          activeQuery || initialOffset <= 0
+            ? `${siteOrigin}/${lang}/openclaw`
+            : `${siteOrigin}/${lang}/openclaw?offset=${initialOffset}`,
+        itemListOrder: "https://schema.org/ItemListOrderDescending",
+        numberOfItems: total || skills.length,
+        startIndex: activeQuery ? 1 : initialOffset + 1,
+        itemListElement: skills.map((skill, index) => {
+          const [owner, repo] = skill.full_name.split("/");
+          const detailUrl =
+            owner && repo
+              ? `${siteOrigin}/${lang}/skills/${encodeURIComponent(
+                  owner,
+                )}/${encodeURIComponent(repo)}`
+              : `${siteOrigin}/${lang}/openclaw`;
+          const description = toSnippet(
+            lang === "zh"
+              ? skill.description_zh || skill.description
+              : skill.description || skill.description_zh,
+            200,
+          );
+          return {
+            "@type": "ListItem",
+            position: (activeQuery ? 0 : initialOffset) + index + 1,
+            item: {
+              "@type": "SoftwareSourceCode",
+              name: skill.full_name,
+              url: detailUrl,
+              codeRepository: skill.html_url,
+              description,
+              programmingLanguage: skill.language || undefined,
+              keywords: skill.topics || undefined,
+            },
+          };
+        }),
+      };
+    }
+    return null;
+  }, [loading, error, skills, activeQuery, initialOffset, siteOrigin, lang, total]);
 
   return (
     <main className="container">

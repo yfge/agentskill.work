@@ -143,46 +143,48 @@ export function FacetPageClient({
     [canonical, copy.homeLabel, heading, lang, siteOrigin],
   );
 
-  const itemListSchema =
-    !loading && !error && skills.length > 0
-      ? {
-          "@context": "https://schema.org",
-          "@type": "ItemList",
-          url: canonical,
-          itemListOrder: "https://schema.org/ItemListOrderDescending",
-          numberOfItems: total || skills.length,
-          startIndex: 1,
-          itemListElement: skills.map((skill, index) => {
-            const [owner, repo] = skill.full_name.split("/");
-            const detailUrl =
-              owner && repo
-                ? `${siteOrigin}/${lang}/skills/${encodeURIComponent(
-                    owner,
-                  )}/${encodeURIComponent(repo)}`
-                : `${siteOrigin}/${lang}`;
-            const description = toSnippet(
-              lang === "zh"
-                ? skill.description_zh || skill.description
-                : skill.description || skill.description_zh,
-              200,
-            );
-            return {
-              "@type": "ListItem",
-              position: index + 1,
+  const itemListSchema = useMemo(() => {
+    if (!loading && !error && skills.length > 0) {
+      return {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        url: canonical,
+        itemListOrder: "https://schema.org/ItemListOrderDescending",
+        numberOfItems: total || skills.length,
+        startIndex: 1,
+        itemListElement: skills.map((skill, index) => {
+          const [owner, repo] = skill.full_name.split("/");
+          const detailUrl =
+            owner && repo
+              ? `${siteOrigin}/${lang}/skills/${encodeURIComponent(
+                  owner,
+                )}/${encodeURIComponent(repo)}`
+              : `${siteOrigin}/${lang}`;
+          const description = toSnippet(
+            lang === "zh"
+              ? skill.description_zh || skill.description
+              : skill.description || skill.description_zh,
+            200,
+          );
+          return {
+            "@type": "ListItem",
+            position: index + 1,
+            url: detailUrl,
+            item: {
+              "@type": "SoftwareSourceCode",
+              name: skill.full_name,
               url: detailUrl,
-              item: {
-                "@type": "SoftwareSourceCode",
-                name: skill.full_name,
-                url: detailUrl,
-                codeRepository: skill.html_url,
-                description,
-                programmingLanguage: skill.language || undefined,
-                keywords: skill.topics || undefined,
-              },
-            };
-          }),
-        }
-      : null;
+              codeRepository: skill.html_url,
+              description,
+              programmingLanguage: skill.language || undefined,
+              keywords: skill.topics || undefined,
+            },
+          };
+        }),
+      };
+    }
+    return null;
+  }, [loading, error, skills, canonical, siteOrigin, lang, total]);
 
   return (
     <main className="container">

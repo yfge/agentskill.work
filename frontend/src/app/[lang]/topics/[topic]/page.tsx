@@ -2,11 +2,14 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { FacetPageClient } from "@/components/FacetPageClient";
-import { fetchSkillsCached } from "@/lib/apiServer";
+import { fetchSkillsCached, REVALIDATION_TIMES } from "@/lib/apiServer";
 import { messages, type Language } from "@/lib/i18n";
 import { getSiteOrigin } from "@/lib/site";
 
 const PAGE_SIZE = 24;
+
+// Enable ISR (Incremental Static Regeneration) with 1 hour revalidation
+export const revalidate = REVALIDATION_TIMES.facets;
 
 type PageProps = {
   params: Promise<{ lang: string; topic: string }>;

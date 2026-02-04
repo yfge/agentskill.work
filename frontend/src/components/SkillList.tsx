@@ -1,9 +1,11 @@
+import { memo } from "react";
+
 import { Language } from "@/lib/i18n";
 import { normalizeClaudeSkill } from "@/lib/text";
 import { Skill } from "@/types/skill";
 import { SkillCard } from "@/components/SkillCard";
 
-export function SkillList({
+export const SkillList = memo(function SkillList({
   skills,
   lang,
   emptyLabel,
@@ -32,4 +34,4 @@ export function SkillList({
       ))}
     </div>
   );
-}
+});

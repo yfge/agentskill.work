@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 import { LanguageToggle } from "@/components/LanguageToggle";
@@ -60,33 +60,50 @@ export function HomePageClient({
     document.documentElement.lang = lang === "en" ? "en" : "zh-CN";
   }, [lang]);
 
-  const loadSkills = async (value: string, nextOffset = 0, append = false) => {
-    try {
-      if (append) {
-        setLoadingMore(true);
-      } else {
-        setLoading(true);
+  const handleLanguageChange = useCallback(
+    (next: Language) => {
+      setLang(next);
+      setStoredLanguage(next);
+      document.documentElement.lang = next === "en" ? "en" : "zh-CN";
+      const params = withoutLangParams(
+        new URLSearchParams(searchParams.toString()),
+      );
+      const qs = params.toString();
+      router.replace(`/${next}${qs ? `?${qs}` : ""}`);
+    },
+    [router, searchParams],
+  );
+
+  const loadSkills = useCallback(
+    async (value: string, nextOffset = 0, append = false) => {
+      try {
+        if (append) {
+          setLoadingMore(true);
+        } else {
+          setLoading(true);
+        }
+        setError(null);
+        const data = await fetchSkills(value, {
+          limit: PAGE_SIZE,
+          offset: nextOffset,
+        });
+        setTotal(data.total);
+        setOffset(nextOffset);
+        if (append) {
+          setSkills((prev) => [...prev, ...data.items]);
+        } else {
+          setSkills(data.items);
+          setActiveQuery(value);
+        }
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Failed to load");
+      } finally {
+        setLoading(false);
+        setLoadingMore(false);
       }
-      setError(null);
-      const data = await fetchSkills(value, {
-        limit: PAGE_SIZE,
-        offset: nextOffset,
-      });
-      setTotal(data.total);
-      setOffset(nextOffset);
-      if (append) {
-        setSkills((prev) => [...prev, ...data.items]);
-      } else {
-        setSkills(data.items);
-        setActiveQuery(value);
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load");
-    } finally {
-      setLoading(false);
-      setLoadingMore(false);
-    }
-  };
+    },
+    [],
+  );
 
   useEffect(() => {
     setQuery(initialQuery);
@@ -103,79 +120,87 @@ export function HomePageClient({
 
   const copy = messages[lang];
   const siteOrigin = getSiteOrigin();
-  const schema = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    name: "agentskill.work",
-    url: siteOrigin,
-    description: copy.subtitle,
-    inLanguage: ["zh-CN", "en-US"],
-    about: "Claude Skill projects on GitHub",
-    publisher: {
-      "@type": "Organization",
+  const schema = useMemo(
+    () => ({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
       name: "agentskill.work",
       url: siteOrigin,
-    },
-    potentialAction: {
-      "@type": "SearchAction",
-      target: `${siteOrigin}/${lang}?q={search_term_string}`,
-      "query-input": "required name=search_term_string",
-    },
-  };
-  const faqSchema = {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: copy.faqItems.map((item) => ({
-      "@type": "Question",
-      name: item.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: item.answer,
+      description: copy.subtitle,
+      inLanguage: ["zh-CN", "en-US"],
+      about: "Claude Skill projects on GitHub",
+      publisher: {
+        "@type": "Organization",
+        name: "agentskill.work",
+        url: siteOrigin,
       },
-    })),
-  };
-  const itemListSchema =
-    !loading && !error && skills.length > 0
-      ? {
-          "@context": "https://schema.org",
-          "@type": "ItemList",
-          url:
-            activeQuery || initialOffset <= 0
-              ? `${siteOrigin}/${lang}`
-              : `${siteOrigin}/${lang}?offset=${initialOffset}`,
-          itemListOrder: "https://schema.org/ItemListOrderDescending",
-          numberOfItems: total || skills.length,
-          startIndex: activeQuery ? 1 : initialOffset + 1,
-          itemListElement: skills.map((skill, index) => {
-            const [owner, repo] = skill.full_name.split("/");
-            const detailUrl =
-              owner && repo
-                ? `${siteOrigin}/${lang}/skills/${encodeURIComponent(
-                    owner,
-                  )}/${encodeURIComponent(repo)}`
-                : `${siteOrigin}/${lang}`;
-            const description = toSnippet(
-              lang === "zh"
-                ? skill.description_zh || skill.description
-                : skill.description || skill.description_zh,
-              200,
-            );
-            return {
-              "@type": "ListItem",
-              position: (activeQuery ? 0 : initialOffset) + index + 1,
-              item: {
-                "@type": "SoftwareSourceCode",
-                name: skill.full_name,
-                url: detailUrl,
-                codeRepository: skill.html_url,
-                description,
-                programmingLanguage: skill.language || undefined,
-                keywords: skill.topics || undefined,
-              },
-            };
-          }),
-        }
-      : null;
+      potentialAction: {
+        "@type": "SearchAction",
+        target: `${siteOrigin}/${lang}?q={search_term_string}`,
+        "query-input": "required name=search_term_string",
+      },
+    }),
+    [siteOrigin, copy.subtitle, lang],
+  );
+  const faqSchema = useMemo(
+    () => ({
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: copy.faqItems.map((item) => ({
+        "@type": "Question",
+        name: item.question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: item.answer,
+        },
+      })),
+    }),
+    [copy.faqItems],
+  );
+  const itemListSchema = useMemo(() => {
+    if (!loading && !error && skills.length > 0) {
+      return {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        url:
+          activeQuery || initialOffset <= 0
+            ? `${siteOrigin}/${lang}`
+            : `${siteOrigin}/${lang}?offset=${initialOffset}`,
+        itemListOrder: "https://schema.org/ItemListOrderDescending",
+        numberOfItems: total || skills.length,
+        startIndex: activeQuery ? 1 : initialOffset + 1,
+        itemListElement: skills.map((skill, index) => {
+          const [owner, repo] = skill.full_name.split("/");
+          const detailUrl =
+            owner && repo
+              ? `${siteOrigin}/${lang}/skills/${encodeURIComponent(
+                  owner,
+                )}/${encodeURIComponent(repo)}`
+              : `${siteOrigin}/${lang}`;
+          const description = toSnippet(
+            lang === "zh"
+              ? skill.description_zh || skill.description
+              : skill.description || skill.description_zh,
+            200,
+          );
+          return {
+            "@type": "ListItem",
+            position: (activeQuery ? 0 : initialOffset) + index + 1,
+            item: {
+              "@type": "SoftwareSourceCode",
+              name: skill.full_name,
+              url: detailUrl,
+              codeRepository: skill.html_url,
+              description,
+              programmingLanguage: skill.language || undefined,
+              keywords: skill.topics || undefined,
+            },
+          };
+        }),
+      };
+    }
+    return null;
+  }, [loading, error, skills, activeQuery, initialOffset, siteOrigin, lang, total]);
 
   return (
     <main className="container">
@@ -199,19 +224,7 @@ export function HomePageClient({
           <p>{copy.subtitle}</p>
         </div>
         <div className="hero-actions">
-          <LanguageToggle
-            lang={lang}
-            onChange={(next) => {
-              setLang(next);
-              setStoredLanguage(next);
-              document.documentElement.lang = next === "en" ? "en" : "zh-CN";
-              const params = withoutLangParams(
-                new URLSearchParams(searchParams.toString()),
-              );
-              const qs = params.toString();
-              router.replace(`/${next}${qs ? `?${qs}` : ""}`);
-            }}
-          />
+          <LanguageToggle lang={lang} onChange={handleLanguageChange} />
         </div>
       </section>
 

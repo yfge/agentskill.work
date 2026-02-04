@@ -1,3 +1,4 @@
+import { memo } from "react";
 import Link from "next/link";
 
 import { messages, type Language } from "@/lib/i18n";
@@ -5,7 +6,7 @@ import { getSkillDetailPath } from "@/lib/skills";
 import { toSnippet } from "@/lib/text";
 import { Skill } from "@/types/skill";
 
-export function SkillCard({
+export const SkillCard = memo(function SkillCard({
   skill,
   descriptionOverride,
   lang,
@@ -34,4 +35,4 @@ export function SkillCard({
       </div>
     </Link>
   );
-}
+});

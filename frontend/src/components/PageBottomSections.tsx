@@ -1,8 +1,14 @@
 "use client";
 
+import { memo } from "react";
+
 import { messages, type Language } from "@/lib/i18n";
 
-export function PageBottomSections({ lang }: { lang: Language }) {
+export const PageBottomSections = memo(function PageBottomSections({
+  lang,
+}: {
+  lang: Language;
+}) {
   const copy = messages[lang];
 
   return (
@@ -51,4 +57,4 @@ export function PageBottomSections({ lang }: { lang: Language }) {
       </section>
     </>
   );
-}
+});
