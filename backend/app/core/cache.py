@@ -1,7 +1,8 @@
 """Cache control utilities for HTTP responses."""
 
+from collections.abc import Callable
 from functools import wraps
-from typing import Any, Callable
+from typing import Any
 
 from fastapi import Response
 

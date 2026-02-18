@@ -65,9 +65,7 @@ export function HomePageClient({
       setLang(next);
       setStoredLanguage(next);
       document.documentElement.lang = next === "en" ? "en" : "zh-CN";
-      const params = withoutLangParams(
-        new URLSearchParams(searchParams.toString()),
-      );
+      const params = withoutLangParams(new URLSearchParams(searchParams.toString()));
       const qs = params.toString();
       router.replace(`/${next}${qs ? `?${qs}` : ""}`);
     },
