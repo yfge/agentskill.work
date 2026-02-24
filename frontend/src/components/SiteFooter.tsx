@@ -85,6 +85,9 @@ export async function SiteFooter({ lang = "zh" }: { lang?: Language }) {
               <a href="/llms.txt">llms.txt</a>
             </li>
             <li>
+              <a href="/feed.xml">RSS Feed</a>
+            </li>
+            <li>
               <Link href={`/${lang}/privacy`}>{copy.footerPrivacy}</Link>
             </li>
             <li>

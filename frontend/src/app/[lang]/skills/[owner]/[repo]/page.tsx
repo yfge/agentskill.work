@@ -229,6 +229,13 @@ export default async function SkillDetailPage({ params }: PageProps) {
     resolvedParams.owner,
   )}/${encodeURIComponent(resolvedParams.repo)}`;
 
+  // Map stars to a 1–5 rating using logarithmic scale
+  // 1 star → ~1.0, 10 → ~2.3, 100 → ~3.6, 1000 → ~4.8, 10000 → 5.0
+  const ratingValue =
+    skill.stars > 0
+      ? Math.min(5, Math.max(1, 1 + (4 * Math.log10(skill.stars)) / Math.log10(10000)))
+      : undefined;
+
   const schema = {
     "@context": "https://schema.org",
     "@type": "SoftwareSourceCode",
@@ -250,6 +257,15 @@ export default async function SkillDetailPage({ params }: PageProps) {
       url: `https://github.com/${encodeURIComponent(resolvedParams.owner)}`,
     },
     keywords: skill.topics || undefined,
+    ...(ratingValue !== undefined && {
+      aggregateRating: {
+        "@type": "AggregateRating",
+        ratingValue: Math.round(ratingValue * 10) / 10,
+        bestRating: 5,
+        worstRating: 1,
+        ratingCount: skill.stars,
+      },
+    }),
     interactionStatistic: [
       {
         "@type": "InteractionCounter",

@@ -36,7 +36,6 @@ export const metadata = {
     },
   },
   alternates: {
-    canonical: `${getSiteOrigin()}/zh`,
     languages: {
       "zh-CN": `${getSiteOrigin()}/zh`,
       "en-US": `${getSiteOrigin()}/en`,
@@ -88,6 +87,15 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html lang={htmlLang}>
       <head>
+        <link rel="preconnect" href="https://pagead2.googlesyndication.com" />
+        <link rel="preconnect" href="https://umami.agentskill.work" />
+        <link rel="dns-prefetch" href="https://github.com" />
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title="agentskill.work RSS Feed"
+          href="/feed.xml"
+        />
         <meta name="google-adsense-account" content="ca-pub-6394607607868553" />
         {googleSiteVerification ? (
           <meta name="google-site-verification" content={googleSiteVerification} />
