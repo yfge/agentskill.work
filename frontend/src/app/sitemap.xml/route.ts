@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { getApiBase } from "@/lib/apiBase";
 import { getSiteOrigin } from "@/lib/site";
 
@@ -29,7 +30,6 @@ async function fetchTotalSkills(): Promise<number> {
   return Number.isFinite(data.total) ? data.total : 0;
 }
 
-export const dynamic = "force-dynamic";
 
 export async function GET() {
   const today = toDateStamp(new Date());

@@ -9,7 +9,7 @@ import { getSiteOrigin } from "@/lib/site";
 const PAGE_SIZE = 24;
 
 // Enable ISR (Incremental Static Regeneration) with 1 hour revalidation
-export const revalidate = REVALIDATION_TIMES.facets;
+export const revalidate = 3600;
 
 type PageProps = {
   params: Promise<{ lang: string; language: string }>;

@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { getApiBase } from "@/lib/apiBase";
 import { getSiteOrigin } from "@/lib/site";
 
@@ -84,7 +85,6 @@ function addFacetUrls(
   }
 }
 
-export const dynamic = "force-dynamic";
 
 export async function GET() {
   const today = toDateStamp(new Date());

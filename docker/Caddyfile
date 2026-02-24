@@ -1,0 +1,5 @@
+agentskill.work {
+  encode gzip
+  reverse_proxy /api/* agentskill-backend:8000
+  reverse_proxy agentskill-frontend:3000
+}

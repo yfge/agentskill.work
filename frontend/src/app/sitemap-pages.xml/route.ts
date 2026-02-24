@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { getSiteOrigin } from "@/lib/site";
 
 const REVALIDATE_SECONDS = 60 * 60;
@@ -23,7 +24,6 @@ function renderUrl(entry: UrlEntry): string {
   return `  <url>${parts.join("")}</url>`;
 }
 
-export const revalidate = 3600;
 
 export function GET() {
   const today = toDateStamp(new Date());

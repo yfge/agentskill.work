@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { getApiBase } from "@/lib/apiBase";
 import { getSiteOrigin } from "@/lib/site";
 import { SkillListResponse } from "@/types/skill";
@@ -39,7 +40,6 @@ function renderUrl(entry: UrlEntry): string {
   return `  <url>${parts.join("")}</url>`;
 }
 
-export const revalidate = 3600;
 
 export async function GET(
   _request: NextRequest,
