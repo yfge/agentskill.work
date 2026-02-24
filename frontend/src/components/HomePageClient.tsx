@@ -35,12 +35,16 @@ export function HomePageClient({
   initialSkills = [],
   initialTotal = 0,
   initialOffset = 0,
+  hotTopics = [],
+  popularLanguages = [],
 }: {
   lang?: Language;
   initialQuery?: string;
   initialSkills?: Skill[];
   initialTotal?: number;
   initialOffset?: number;
+  hotTopics?: string[];
+  popularLanguages?: string[];
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -233,6 +237,39 @@ export function HomePageClient({
         <a href={`/${lang}/latest`}>{copy.navLatest}</a>
         <a href={`/${lang}/openclaw`}>{copy.navOpenClaw}</a>
       </nav>
+
+      {(hotTopics.length > 0 || popularLanguages.length > 0) && (
+        <div className="quick-facets">
+          {hotTopics.length > 0 && (
+            <div className="quick-facets-row">
+              <span className="quick-facets-label">{copy.hotTopics}</span>
+              {hotTopics.map((topic) => (
+                <a
+                  key={topic}
+                  className="quick-facets-pill"
+                  href={`/${lang}/topics/${encodeURIComponent(topic)}`}
+                >
+                  {topic}
+                </a>
+              ))}
+            </div>
+          )}
+          {popularLanguages.length > 0 && (
+            <div className="quick-facets-row">
+              <span className="quick-facets-label">{copy.popularLanguages}</span>
+              {popularLanguages.map((language) => (
+                <a
+                  key={language}
+                  className="quick-facets-pill"
+                  href={`/${lang}/languages/${encodeURIComponent(language)}`}
+                >
+                  {language}
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       <form
         className="search"

@@ -22,6 +22,8 @@ export interface Skill {
   language?: string | null;
   topics?: string | null;
   last_pushed_at?: string | null;
+  repo_created_at?: string | null;
+  repo_updated_at?: string | null;
   fetched_at: string;
 }
 

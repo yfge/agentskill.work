@@ -1,5 +1,14 @@
 import { getApiBase } from "@/lib/apiBase";
-import type { SkillListResponse } from "@/types/skill";
+import type { Skill, SkillListResponse } from "@/types/skill";
+
+export interface FacetItem {
+  value: string;
+  count: number;
+}
+
+export interface FacetListResponse {
+  items: FacetItem[];
+}
 
 /**
  * Revalidation times for different data types (ISR strategy)
@@ -64,4 +73,42 @@ export async function fetchSkillsCached(
   }
 
   return response.json();
+}
+
+export async function fetchFacetsCached(
+  type: "topics" | "languages" | "owners",
+  limit: number = 50,
+): Promise<FacetListResponse> {
+  const base = getApiBase();
+  const trimmedBase = base.endsWith("/") ? base.slice(0, -1) : base;
+  const url = `${trimmedBase}/facets/${type}?limit=${limit}`;
+  const response = await fetch(url, {
+    next: { revalidate: REVALIDATION_TIMES.facets },
+  });
+  if (!response.ok) {
+    return { items: [] };
+  }
+  return response.json();
+}
+
+export async function fetchRelatedSkillsCached(
+  owner: string,
+  repo: string,
+  limit: number = 6,
+): Promise<Skill[]> {
+  const base = getApiBase();
+  const trimmedBase = base.endsWith("/") ? base.slice(0, -1) : base;
+  const url = `${trimmedBase}/skills/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}/related?limit=${limit}`;
+  try {
+    const response = await fetch(url, {
+      next: { revalidate: REVALIDATION_TIMES.facets },
+    });
+    if (!response.ok) {
+      return [];
+    }
+    const data: SkillListResponse = await response.json();
+    return data.items;
+  } catch {
+    return [];
+  }
 }

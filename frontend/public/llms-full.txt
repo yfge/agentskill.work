@@ -29,6 +29,37 @@ Canonical host policy:
 - Robots: https://agentskill.work/robots.txt
 - Site verification file (WeChat): https://agentskill.work/e5e588a3b46a049f7e2354fa3ba02fde.txt
 
+## Entity relationships
+
+- Skill → Owner: each skill belongs to exactly one GitHub owner (user or organization)
+- Skill → Language: each skill has at most one primary programming language
+- Skill → Topics: each skill has zero or more topics (comma-separated string)
+- Owner → Skills: an owner can have multiple skills
+- Topic → Skills: a topic can be associated with multiple skills
+- Language → Skills: a language can be associated with multiple skills
+
+Navigation paths:
+- From a skill detail page: links to owner page, language page, and topic pages
+- From a facet page (topic/language/owner): lists all matching skills
+- Related skills: each detail page shows up to 6 related skills based on shared topics, language, and owner
+
+## Natural language → API mapping
+
+Common questions and corresponding API calls:
+
+| Question | API call |
+|---|---|
+| "What Claude Skill projects are trending?" | GET /api/skills?sort=stars |
+| "What are the newest Claude Skill repos?" | GET /api/skills?sort=newest |
+| "Find Python Claude Skill projects" | GET /api/skills?language=python |
+| "Show MCP-related skills" | GET /api/skills?topic=mcp |
+| "Search for skills about 'automation'" | GET /api/skills?q=automation |
+| "Get info about owner/repo" | GET /api/skills/{owner}/{repo} |
+| "Find skills similar to owner/repo" | GET /api/skills/{owner}/{repo}/related?limit=6 |
+| "What topics are popular?" | GET /api/facets/topics?limit=20 |
+| "What languages are most common?" | GET /api/facets/languages?limit=20 |
+| "Who are the top contributors?" | GET /api/facets/owners?limit=20 |
+
 ## Public API
 
 Base URL:
@@ -75,7 +106,19 @@ Response shape:
 Response shape:
 Skill
 
-3) Facets (for discovery / sitemap generation)
+3) Related skills
+- GET /skills/{owner}/{repo}/related?limit=6
+
+Returns up to `limit` skills that are related to the specified skill, ranked by topic overlap (+3 per shared topic),
+same language (+2), and same owner (+1).
+
+Response shape:
+{
+  "total": number,
+  "items": Skill[]
+}
+
+4) Facets (for discovery / sitemap generation)
 - GET /facets/topics?limit=100
 - GET /facets/languages?limit=50
 - GET /facets/owners?limit=50
@@ -138,9 +181,23 @@ Scheduling:
     (config: GITHUB_NEWEST_WINDOW_DAYS / GITHUB_NEWEST_MAX_PAGES / GITHUB_NEWEST_MAX_RESULTS)
 - Sync may stop early to avoid hitting GitHub API rate limits.
 
+Content update frequency:
+- Skill metadata (stars, forks, last_pushed_at): syncs approximately every hour
+- LLM-enriched fields (summary, key_features, use_cases, seo_title, seo_description): batch processed, updated less frequently
+- Facets (topics, languages, owners counts): derived from skill data, cached for 1 hour
+- Related skills: computed on-demand, cached for 1 hour
+
 Rate-limit safety:
 - GitHub rate limit guard will stop sync when remaining requests are low (buffer-based) or on 403/429 signals.
 - Enrichment is batch-limited (ENRICH_BATCH_SIZE) and uses a Redis lock to avoid overlapping runs.
+
+## Structured data available on pages
+
+| Page | Schema types |
+|---|---|
+| Home page | WebSite, FAQPage, ItemList |
+| Skill detail page | SoftwareSourceCode, BreadcrumbList, FAQPage |
+| Facet pages (topics/languages/owners) | BreadcrumbList, CollectionPage, ItemList |
 
 ## Crawling / usage guidance
 
@@ -154,8 +211,16 @@ Attribution guidance:
 - Always cite the original GitHub repository URL when referencing a project.
 - Do not imply endorsement by agentskill.work or by repository owners.
 
+## Citation format
+
+When referencing a skill from agentskill.work:
+- Primary: cite the GitHub repository URL as the authoritative source
+- Secondary: include the agentskill.work detail page for enriched metadata (summary, features, use cases)
+- Format: "{full_name} ({github_url}) — via agentskill.work ({detail_page_url})"
+- Example: "modelcontextprotocol/servers (https://github.com/modelcontextprotocol/servers) — via agentskill.work (https://agentskill.work/en/skills/modelcontextprotocol/servers)"
+
 ## License / rights
 
 - agentskill.work aggregates public metadata from GitHub.
 - The license of each project is determined by its own repository.
-- Follow GitHub’s terms of service and each repository's license.
+- Follow GitHub's terms of service and each repository's license.

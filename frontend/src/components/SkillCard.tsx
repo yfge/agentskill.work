@@ -22,17 +22,38 @@ export const SkillCard = memo(function SkillCard({
     lang && messages[lang]?.detailNoDescription
       ? messages[lang].detailNoDescription
       : "No description yet.";
+  const topics = (skill.topics || "")
+    .split(",")
+    .map((t) => t.trim())
+    .filter(Boolean)
+    .slice(0, 3);
   return (
-    <Link className="card" href={detailHref}>
-      <div>
-        <h3>{skill.full_name}</h3>
-        <p>{description || noDescription}</p>
-      </div>
-      <div className="meta">
-        <span>⭐ {skill.stars}</span>
-        <span>🍴 {skill.forks}</span>
-        <span>{skill.language || "Unknown"}</span>
-      </div>
-    </Link>
+    <div className="card">
+      <Link className="card-link" href={detailHref}>
+        <div>
+          <h3>{skill.full_name}</h3>
+          <p>{description || noDescription}</p>
+        </div>
+        <div className="meta">
+          <span>⭐ {skill.stars}</span>
+          <span>🍴 {skill.forks}</span>
+          <span>{skill.language || "Unknown"}</span>
+        </div>
+      </Link>
+      {topics.length > 0 && lang && (
+        <div className="card-topics">
+          {topics.map((topic) => (
+            <Link
+              key={topic}
+              className="card-topic"
+              href={`/${lang}/topics/${encodeURIComponent(topic)}`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {topic}
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
   );
 });

@@ -1,8 +1,8 @@
 import "./globals.css";
 
 import { headers } from "next/headers";
-import Link from "next/link";
 
+import { SiteFooter } from "@/components/SiteFooter";
 import { getSiteOrigin } from "@/lib/site";
 
 export const metadata = {
@@ -83,7 +83,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const htmlLang = langHeader === "en" ? "en" : "zh-CN";
   const googleSiteVerification = process.env.GOOGLE_SITE_VERIFICATION;
   const bingSiteVerification = process.env.BING_SITE_VERIFICATION;
-  const year = new Date().getFullYear();
+  const footerLang = langHeader === "en" ? ("en" as const) : ("zh" as const);
 
   return (
     <html lang={htmlLang}>
@@ -103,34 +103,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body>
         {children}
-        <footer className="site-footer">
-          <div className="site-footer-inner">
-            <span className="site-footer-copyright">
-              © {year} geyunfei <span aria-hidden="true">·</span>{" "}
-              <a
-                className="site-footer-link"
-                href="https://github.com/yfge/agentskill.work"
-                target="_blank"
-                rel="noreferrer"
-              >
-                GitHub
-              </a>{" "}
-              <span aria-hidden="true">·</span>{" "}
-              <a
-                className="site-footer-link"
-                href="https://github.com/yfge/agentskill.work/blob/main/LICENSE"
-                target="_blank"
-                rel="noreferrer"
-              >
-                MIT License
-              </a>{" "}
-              <span aria-hidden="true">·</span>{" "}
-              <Link className="site-footer-link" href="/zh/privacy">
-                Privacy
-              </Link>
-            </span>
-          </div>
-        </footer>
+        <SiteFooter lang={footerLang} />
         <script
           defer
           src="https://umami.agentskill.work/script.js"

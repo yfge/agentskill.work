@@ -8,7 +8,11 @@ from app.core.config import get_settings
 from app.core.database import get_db
 from app.schemas.skill import SkillList, SkillOut
 from app.services.github_service import sync_github_skills
-from app.services.skill_service import get_skill_by_full_name, search_skills
+from app.services.skill_service import (
+    get_related_skills,
+    get_skill_by_full_name,
+    search_skills,
+)
 
 router = APIRouter(prefix="/skills", tags=["skills"])
 
@@ -50,6 +54,23 @@ def read_skill(
     if not skill:
         raise HTTPException(status_code=404, detail="Skill not found")
     return skill
+
+
+@router.get("/{owner}/{repo}/related", response_model=SkillList)
+@cache_control(3600)  # Cache for 1 hour
+def related_skills(
+    response: Response,
+    owner: str,
+    repo: str,
+    limit: int = Query(6, ge=1, le=20),
+    db: Session = Depends(get_db),  # noqa: B008
+) -> SkillList:
+    full_name = f"{owner}/{repo}"
+    skill = get_skill_by_full_name(db, full_name)
+    if not skill:
+        raise HTTPException(status_code=404, detail="Skill not found")
+    items = get_related_skills(db, skill, limit=limit)
+    return SkillList(total=len(items), items=items)
 
 
 @router.post("/sync")

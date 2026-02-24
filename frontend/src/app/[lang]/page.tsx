@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { HomePageClient } from "@/components/HomePageClient";
-import { fetchSkillsCached } from "@/lib/apiServer";
+import { fetchFacetsCached, fetchSkillsCached } from "@/lib/apiServer";
 import { messages, type Language } from "@/lib/i18n";
 import { getSiteOrigin } from "@/lib/site";
 
@@ -122,10 +122,14 @@ export default async function LanguageHomePage({ params, searchParams }: PagePro
     !initialQuery && offsetParsed !== null && offsetParsed % PAGE_SIZE === 0
       ? offsetParsed
       : 0;
-  const data = await fetchSkillsCached(initialQuery, {
-    limit: PAGE_SIZE,
-    offset: initialOffset,
-  });
+  const [data, topicsData, languagesData] = await Promise.all([
+    fetchSkillsCached(initialQuery, {
+      limit: PAGE_SIZE,
+      offset: initialOffset,
+    }),
+    fetchFacetsCached("topics", 8),
+    fetchFacetsCached("languages", 6),
+  ]);
   if (!initialQuery && initialOffset > 0 && data.items.length === 0) {
     notFound();
   }
@@ -136,6 +140,8 @@ export default async function LanguageHomePage({ params, searchParams }: PagePro
       initialSkills={data.items}
       initialTotal={data.total}
       initialOffset={initialOffset}
+      hotTopics={topicsData.items.map((t) => t.value)}
+      popularLanguages={languagesData.items.map((l) => l.value)}
     />
   );
 }

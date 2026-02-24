@@ -1,9 +1,11 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
 import { BackButton } from "@/components/BackButton";
 import { GitHubLink } from "@/components/GitHubLink";
+import { RelatedSkills } from "@/components/RelatedSkills";
 import { SkillDetailTracker } from "@/components/SkillDetailTracker";
 import { SkillLangSwitch } from "@/components/SkillLangSwitch";
 import { getApiBase } from "@/lib/apiBase";
@@ -240,6 +242,13 @@ export default async function SkillDetailPage({ params }: PageProps) {
     codeRepository: skill.html_url,
     programmingLanguage: skill.language || undefined,
     dateModified: skill.last_pushed_at || undefined,
+    dateCreated: skill.repo_created_at || undefined,
+    datePublished: skill.repo_created_at || undefined,
+    author: {
+      "@type": "Person",
+      name: resolvedParams.owner,
+      url: `https://github.com/${encodeURIComponent(resolvedParams.owner)}`,
+    },
     keywords: skill.topics || undefined,
     interactionStatistic: [
       {
@@ -254,6 +263,62 @@ export default async function SkillDetailPage({ params }: PageProps) {
       },
     ],
   };
+
+  // FAQ schema — generated from key_features, use_cases, summary, language
+  const faqEntries: { question: string; answer: string }[] = [];
+  if (keyFeatures && keyFeatures.length > 0) {
+    faqEntries.push({
+      question:
+        lang === "zh"
+          ? `${skill.full_name} 有哪些主要特性？`
+          : `What are the key features of ${skill.full_name}?`,
+      answer: keyFeatures.join("; "),
+    });
+  }
+  if (useCases && useCases.length > 0) {
+    faqEntries.push({
+      question:
+        lang === "zh"
+          ? `${skill.full_name} 有哪些使用场景？`
+          : `What are the use cases of ${skill.full_name}?`,
+      answer: useCases.join("; "),
+    });
+  }
+  if (summary) {
+    faqEntries.push({
+      question:
+        lang === "zh" ? `${skill.full_name} 是什么？` : `What is ${skill.full_name}?`,
+      answer: summary,
+    });
+  }
+  if (skill.language) {
+    faqEntries.push({
+      question:
+        lang === "zh"
+          ? `${skill.full_name} 使用什么编程语言？`
+          : `What programming language does ${skill.full_name} use?`,
+      answer:
+        lang === "zh"
+          ? `${skill.full_name} 主要使用 ${skill.language} 编写。`
+          : `${skill.full_name} is primarily written in ${skill.language}.`,
+    });
+  }
+  const faqSchema =
+    faqEntries.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faqEntries.map((entry) => ({
+            "@type": "Question",
+            name: entry.question,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: entry.answer,
+            },
+          })),
+        }
+      : null;
+
   const breadcrumbSchema = {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
@@ -284,133 +349,145 @@ export default async function SkillDetailPage({ params }: PageProps) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
       <nav className="breadcrumbs" aria-label="Breadcrumb">
         <Link href={`/${lang}`}>{copy.homeLabel}</Link>
         <span>/</span>
         <span>{skill.full_name}</span>
       </nav>
-      <div className="detail-header">
-        <div className="detail-title">
-          <p className="detail-eyebrow">Claude Skill</p>
-          <h1>{skill.full_name}</h1>
-          <p className="detail-description">
-            {heroDescription || copy.detailNoDescription}
-          </p>
-        </div>
-        <SkillLangSwitch
-          owner={resolvedParams.owner}
-          repo={resolvedParams.repo}
-          initialLang={lang}
-        />
-      </div>
 
-      <div className="detail-grid">
-        <section className="detail-card">
-          <h2>{copy.detailOverview}</h2>
-          <div className="stat-grid">
-            {stats.map((stat) => (
-              <div key={stat.label} className="stat">
-                <span className="stat-label">{stat.label}</span>
-                <strong className="stat-value">{stat.value}</strong>
-              </div>
-            ))}
-          </div>
-          <div className="detail-actions">
-            <BackButton className="button" fallbackHref={`/${lang}`}>
-              {copy.backToList}
-            </BackButton>
-            <GitHubLink
-              className="button primary"
-              href={skill.html_url}
-              repoFullName={skill.full_name}
-            >
-              {copy.viewOnGitHub}
-            </GitHubLink>
-          </div>
-        </section>
-
-        <section className="detail-card">
-          <h2>{copy.detailRepoInfo}</h2>
-          <div className="detail-list">
-            {repoFacts.map((fact) => (
-              <div key={fact.label} className="detail-list-row">
-                <span className="detail-list-label">{fact.label}</span>
-                <span className="detail-list-value">
-                  {fact.href ? (
-                    <a href={fact.href} target="_blank" rel="noreferrer">
-                      {fact.value}
-                    </a>
-                  ) : (
-                    fact.value
-                  )}
-                </span>
-              </div>
-            ))}
-          </div>
-        </section>
-      </div>
-
-      <section className="detail-card">
-        <h2>{copy.detailSummary}</h2>
-        {splitParagraphs(summary).length > 0 ? (
-          splitParagraphs(summary).map((paragraph) => (
-            <p key={paragraph} className="detail-description">
-              {paragraph}
+      <article itemScope itemType="https://schema.org/SoftwareSourceCode">
+        <div className="detail-header">
+          <div className="detail-title">
+            <p className="detail-eyebrow">Claude Skill</p>
+            <h1 itemProp="name">{skill.full_name}</h1>
+            <p className="detail-description" itemProp="description">
+              {heroDescription || copy.detailNoDescription}
             </p>
-          ))
-        ) : (
-          <p className="detail-description">{copy.detailNoDescription}</p>
-        )}
-        {secondaryDescription && secondaryDescription !== summary && (
-          <div className="detail-alt">
-            <span className="detail-alt-label">
-              {lang === "zh" ? copy.detailOriginal : copy.detailTranslated}
-            </span>
-            <p>{secondaryDescription}</p>
           </div>
+          <SkillLangSwitch
+            owner={resolvedParams.owner}
+            repo={resolvedParams.repo}
+            initialLang={lang}
+          />
+        </div>
+        {skill.language && (
+          <meta itemProp="programmingLanguage" content={skill.language} />
         )}
-      </section>
 
-      {(keyFeatures?.length || 0) > 0 && (
-        <section className="detail-card">
-          <h2>{copy.detailKeyFeatures}</h2>
-          <ul className="detail-bullets">
-            {(keyFeatures || []).map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      {(useCases?.length || 0) > 0 && (
-        <section className="detail-card">
-          <h2>{copy.detailUseCases}</h2>
-          <ul className="detail-bullets">
-            {(useCases || []).map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-        </section>
-      )}
-
-      <section className="detail-card">
-        <h2>{copy.detailTopics}</h2>
-        {topics.length > 0 ? (
-          <div className="detail-topics">
-            {topics.map((topic) => (
-              <Link
-                key={topic}
-                className="detail-topic"
-                href={`/${lang}/topics/${encodeURIComponent(topic)}`}
+        <div className="detail-grid">
+          <section className="detail-card">
+            <h2>{copy.detailOverview}</h2>
+            <div className="stat-grid">
+              {stats.map((stat) => (
+                <div key={stat.label} className="stat">
+                  <span className="stat-label">{stat.label}</span>
+                  <strong className="stat-value">{stat.value}</strong>
+                </div>
+              ))}
+            </div>
+            <div className="detail-actions">
+              <BackButton className="button" fallbackHref={`/${lang}`}>
+                {copy.backToList}
+              </BackButton>
+              <GitHubLink
+                className="button primary"
+                href={skill.html_url}
+                repoFullName={skill.full_name}
               >
-                {topic}
-              </Link>
-            ))}
-          </div>
-        ) : (
-          <p className="status">{copy.detailNoTopics}</p>
+                {copy.viewOnGitHub}
+              </GitHubLink>
+            </div>
+          </section>
+
+          <section className="detail-card">
+            <h2>{copy.detailRepoInfo}</h2>
+            <div className="detail-list">
+              {repoFacts.map((fact) => (
+                <div key={fact.label} className="detail-list-row">
+                  <span className="detail-list-label">{fact.label}</span>
+                  <span className="detail-list-value">
+                    {fact.href ? (
+                      <a href={fact.href} target="_blank" rel="noreferrer">
+                        {fact.value}
+                      </a>
+                    ) : (
+                      fact.value
+                    )}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </section>
+        </div>
+
+        <section className="detail-card">
+          <h2>{copy.detailSummary}</h2>
+          {splitParagraphs(summary).length > 0 ? (
+            splitParagraphs(summary).map((paragraph) => (
+              <p key={paragraph} className="detail-description">
+                {paragraph}
+              </p>
+            ))
+          ) : (
+            <p className="detail-description">{copy.detailNoDescription}</p>
+          )}
+          {secondaryDescription && secondaryDescription !== summary && (
+            <div className="detail-alt">
+              <span className="detail-alt-label">
+                {lang === "zh" ? copy.detailOriginal : copy.detailTranslated}
+              </span>
+              <p>{secondaryDescription}</p>
+            </div>
+          )}
+        </section>
+
+        {(keyFeatures?.length || 0) > 0 && (
+          <section className="detail-card">
+            <h2>{copy.detailKeyFeatures}</h2>
+            <ul className="detail-bullets">
+              {(keyFeatures || []).map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </section>
         )}
-      </section>
+
+        {(useCases?.length || 0) > 0 && (
+          <section className="detail-card">
+            <h2>{copy.detailUseCases}</h2>
+            <ul className="detail-bullets">
+              {(useCases || []).map((item) => (
+                <li key={item}>{item}</li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        <section className="detail-card">
+          <h2>{copy.detailTopics}</h2>
+          {topics.length > 0 ? (
+            <div className="detail-topics">
+              {topics.map((topic) => (
+                <Link
+                  key={topic}
+                  className="detail-topic"
+                  href={`/${lang}/topics/${encodeURIComponent(topic)}`}
+                >
+                  {topic}
+                </Link>
+              ))}
+            </div>
+          ) : (
+            <p className="status">{copy.detailNoTopics}</p>
+          )}
+        </section>
+      </article>
 
       <section className="detail-card">
         <h2>{copy.detailExplore}</h2>
@@ -431,6 +508,14 @@ export default async function SkillDetailPage({ params }: PageProps) {
           )}
         </div>
       </section>
+
+      <Suspense>
+        <RelatedSkills
+          owner={resolvedParams.owner}
+          repo={resolvedParams.repo}
+          lang={lang}
+        />
+      </Suspense>
 
       <p className="detail-source">
         {copy.detailSource}

@@ -46,14 +46,28 @@ More details for agents/LLMs:
 - Sync: scheduled background job (typically hourly)
 - Sync uses two strategies: trending (stars) + latest discovery (created window, sort=updated)
 - Sync may stop early to respect GitHub rate limits
-- Search keywords include: "Claude Skill" and "agent skill"
+- Content update frequency: skill metadata syncs hourly; LLM-enriched fields update on a slower batch schedule
 
 ## SEO and structured data
 - WebSite, FAQ, and ItemList on the home page
-- SoftwareSourceCode and BreadcrumbList on detail pages
+- SoftwareSourceCode, BreadcrumbList, and FAQPage on detail pages
+- CollectionPage on facet pages (topics, languages, owners)
 - Sitemap index: https://agentskill.work/sitemap-index.xml
 - Sitemap alias: https://agentskill.work/sitemap.xml (same as sitemap index)
 - Robots: https://agentskill.work/robots.txt
+
+## Entity relationships
+- A Skill belongs to one Owner (GitHub user/org)
+- A Skill has one primary Language (nullable)
+- A Skill has zero or more Topics (comma-separated)
+- Topics, Languages, and Owners each have a facet page listing related skills
+
+## Example queries
+- "Find Claude Skill projects written in Python": GET /api/skills?language=python
+- "List the latest open-source Claude Skills": GET /api/skills?sort=newest
+- "Show skills related to mcp": GET /api/skills?topic=mcp
+- "Get details for a specific skill": GET /api/skills/{owner}/{repo}
+- "Find related skills": GET /api/skills/{owner}/{repo}/related?limit=6
 
 ## API (public)
 - Base path: https://agentskill.work/api
@@ -62,14 +76,21 @@ More details for agents/LLMs:
   - query: `q`, `topic`, `language`, `owner`, `sort`, `limit`, `offset`
   - sort: `stars` (default) | `newest`
 - Detail: /skills/{owner}/{repo}
+- Related: /skills/{owner}/{repo}/related?limit=6
 - Facets: /facets/topics, /facets/languages, /facets/owners
 - Please avoid large-scale crawling; respect rate limits
 
 ## Data usage and attribution
 - Metadata is aggregated from GitHub; the source of truth is each repository
-- Follow GitHub’s terms and each repo’s own license
+- Follow GitHub's terms and each repo's own license
 - When citing a project, link to the GitHub repo and/or the detail page
 - Do not imply endorsement by agentskill.work or the repository owners
+
+## Citation format
+When referencing a skill from agentskill.work:
+- Include the GitHub repository URL as the primary source
+- Optionally include the agentskill.work detail page URL for additional context
+- Example: "modelcontextprotocol/servers (https://github.com/modelcontextprotocol/servers) — via agentskill.work"
 
 ## Crawl guidance
 - Prefer canonical URLs without tracking parameters

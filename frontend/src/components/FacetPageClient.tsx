@@ -143,6 +143,22 @@ export function FacetPageClient({
     [canonical, copy.homeLabel, heading, lang, siteOrigin],
   );
 
+  const collectionSchema = useMemo(
+    () => ({
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      name: heading,
+      description: intro,
+      url: canonical,
+      isPartOf: {
+        "@type": "WebSite",
+        name: "agentskill.work",
+        url: siteOrigin,
+      },
+    }),
+    [heading, intro, canonical, siteOrigin],
+  );
+
   const itemListSchema = useMemo(() => {
     if (!loading && !error && skills.length > 0) {
       return {
@@ -191,6 +207,10 @@ export function FacetPageClient({
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema) }}
       />
       {itemListSchema && (
         <script
