@@ -122,13 +122,14 @@ export default async function LanguageHomePage({ params, searchParams }: PagePro
     !initialQuery && offsetParsed !== null && offsetParsed % PAGE_SIZE === 0
       ? offsetParsed
       : 0;
-  const [data, topicsData, languagesData] = await Promise.all([
+  const [data, topicsData, languagesData, featuredData] = await Promise.all([
     fetchSkillsCached(initialQuery, {
       limit: PAGE_SIZE,
       offset: initialOffset,
     }),
     fetchFacetsCached("topics", 8),
     fetchFacetsCached("languages", 6),
+    !initialQuery ? fetchSkillsCached("", { sort: "stars", limit: 6 }) : Promise.resolve({ items: [], total: 0 }),
   ]);
   if (!initialQuery && initialOffset > 0 && data.items.length === 0) {
     notFound();
@@ -142,6 +143,7 @@ export default async function LanguageHomePage({ params, searchParams }: PagePro
       initialOffset={initialOffset}
       hotTopics={topicsData.items.map((t) => t.value)}
       popularLanguages={languagesData.items.map((l) => l.value)}
+      featuredSkills={featuredData.items}
     />
   );
 }

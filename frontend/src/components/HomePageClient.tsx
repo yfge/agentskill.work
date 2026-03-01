@@ -38,6 +38,7 @@ export function HomePageClient({
   initialOffset = 0,
   hotTopics = [],
   popularLanguages = [],
+  featuredSkills = [],
 }: {
   lang?: Language;
   initialQuery?: string;
@@ -46,6 +47,7 @@ export function HomePageClient({
   initialOffset?: number;
   hotTopics?: string[];
   popularLanguages?: string[];
+  featuredSkills?: Skill[];
 }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -291,7 +293,7 @@ export function HomePageClient({
         <button type="submit">{copy.search}</button>
       </form>
 
-      {!activeQuery && <FeaturedSkills lang={lang} />}
+      {!activeQuery && <FeaturedSkills lang={lang} initialSkills={featuredSkills} />}
 
       {loading && <p className="status">{copy.loading}</p>}
       {error && <p className="status">{copy.error}</p>}
@@ -312,7 +314,7 @@ export function HomePageClient({
               ))}
             </div>
           )}
-          <FeaturedSkills lang={lang} />
+          <FeaturedSkills lang={lang} initialSkills={featuredSkills} />
         </div>
       )}
 
