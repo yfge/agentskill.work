@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
+import { FeaturedSkills } from "@/components/FeaturedSkills";
 import { LanguageToggle } from "@/components/LanguageToggle";
 import { PageBottomSections } from "@/components/PageBottomSections";
 import { SkillList } from "@/components/SkillList";
@@ -289,6 +290,8 @@ export function HomePageClient({
         />
         <button type="submit">{copy.search}</button>
       </form>
+
+      {!activeQuery && <FeaturedSkills lang={lang} />}
 
       {loading && <p className="status">{copy.loading}</p>}
       {error && <p className="status">{copy.error}</p>}
