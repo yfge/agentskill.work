@@ -304,6 +304,16 @@ export default async function SkillDetailPage({ params }: PageProps) {
           : `${skill.full_name} is primarily written in ${skill.language}.`,
     });
   }
+  faqEntries.push({
+    question:
+      lang === "zh"
+        ? `如何安装 ${skill.full_name}？`
+        : `How to install ${skill.full_name}?`,
+    answer:
+      lang === "zh"
+        ? `运行命令：openclaw install ${skill.full_name}`
+        : `Run: openclaw install ${skill.full_name}`,
+  });
   const faqSchema =
     faqEntries.length > 0
       ? {
