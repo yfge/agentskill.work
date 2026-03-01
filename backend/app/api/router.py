@@ -1,9 +1,10 @@
 from fastapi import APIRouter
 
-from app.api.routes import facets, health, metrics, skills
+from app.api.routes import facets, health, metrics, skills, stats
 
 api_router = APIRouter()
 api_router.include_router(health.router)
 api_router.include_router(metrics.router)
 api_router.include_router(skills.router)
 api_router.include_router(facets.router)
+api_router.include_router(stats.router)
