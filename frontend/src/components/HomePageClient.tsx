@@ -296,8 +296,24 @@ export function HomePageClient({
       {loading && <p className="status">{copy.loading}</p>}
       {error && <p className="status">{copy.error}</p>}
 
-      {!loading && !error && (
+      {!loading && !error && skills.length > 0 && (
         <SkillList skills={skills} lang={lang} emptyLabel={copy.empty} />
+      )}
+
+      {!loading && !error && skills.length === 0 && (
+        <div className="no-results-guide">
+          <h3>{lang === "zh" ? "没找到？试试这些热门 Skills 👇" : "Nothing found? Try these popular Skills 👇"}</h3>
+          {hotTopics.length > 0 && (
+            <div className="quick-facets-row" style={{ justifyContent: "center", marginBottom: 16 }}>
+              {hotTopics.map((topic) => (
+                <a key={topic} className="quick-facets-pill" href={`/${lang}/topics/${encodeURIComponent(topic)}`}>
+                  {topic}
+                </a>
+              ))}
+            </div>
+          )}
+          <FeaturedSkills lang={lang} />
+        </div>
       )}
 
       {!loading && !error && skills.length > 0 && (
