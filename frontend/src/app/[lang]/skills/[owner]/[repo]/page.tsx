@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 
 import { BackButton } from "@/components/BackButton";
+import { InstallCTA } from "@/components/InstallCTA";
 import { GitHubLink } from "@/components/GitHubLink";
 import { RelatedSkills } from "@/components/RelatedSkills";
 import { SkillDetailTracker } from "@/components/SkillDetailTracker";
@@ -425,6 +426,8 @@ export default async function SkillDetailPage({ params }: PageProps) {
             </div>
           </section>
         </div>
+
+        <InstallCTA fullName={skill.full_name} htmlUrl={skill.html_url} lang={lang} />
 
         <section className="detail-card">
           <h2>{copy.detailSummary}</h2>
