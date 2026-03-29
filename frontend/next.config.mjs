@@ -38,12 +38,59 @@ const nextConfig = {
   },
 
   async redirects() {
+    // Slug redirects for repos that were renamed on GitHub.
+    // Each entry covers both /en/ and /zh/ variants.
+    // Add new entries here whenever a tracked repo is renamed.
+    const renamedRepos = [
+      // BytePioneer-AI/moltbot-china → openclaw-china
+      {
+        old: "BytePioneer-AI/moltbot-china",
+        new: "BytePioneer-AI/openclaw-china",
+      },
+      // DingTalk-Real-AI: connector renamed
+      {
+        old: "DingTalk-Real-AI/dingtalk-moltbot-connector",
+        new: "DingTalk-Real-AI/dingtalk-openclaw-connector",
+      },
+      // miaoxworld: installer renamed
+      {
+        old: "miaoxworld/ClawdBotInstaller",
+        new: "miaoxworld/OpenClawInstaller",
+      },
+      // openclaw: ansible repo renamed
+      {
+        old: "openclaw/clawdbot-ansible",
+        new: "openclaw/openclaw-ansible",
+      },
+      // VoltAgent: awesome-claude-skills → awesome-openclaw-skills
+      {
+        old: "VoltAgent/awesome-claude-skills",
+        new: "VoltAgent/awesome-openclaw-skills",
+      },
+      // gavrielc/nanoclaw repo transferred to qwibitai
+      {
+        old: "gavrielc/nanoclaw",
+        new: "qwibitai/nanoclaw",
+      },
+    ];
+
+    const skillRedirects = renamedRepos.flatMap(({ old: oldSlug, new: newSlug }) => {
+      const [oldOwner, oldRepo] = oldSlug.split("/");
+      const [newOwner, newRepo] = newSlug.split("/");
+      return ["en", "zh"].map((lang) => ({
+        source: `/${lang}/skills/${oldOwner}/${oldRepo}`,
+        destination: `/${lang}/skills/${newOwner}/${newRepo}`,
+        permanent: true,
+      }));
+    });
+
     return [
       {
         source: "/:path+/",
         destination: "/:path+",
         permanent: true,
       },
+      ...skillRedirects,
     ];
   },
 };
