@@ -92,12 +92,13 @@ export async function generateMetadata({
         "x-default": `${siteOrigin}/zh/openclaw${offset > 0 ? `?offset=${offset}` : ""}`,
       },
     },
-    robots: hasQuery
-      ? {
-          index: false,
-          follow: true,
-        }
-      : undefined,
+    robots:
+      hasQuery || offset > 0
+        ? {
+            index: false,
+            follow: true,
+          }
+        : undefined,
     openGraph: {
       title,
       description: copy.openclawSubtitle,

@@ -63,7 +63,6 @@ function addFacetUrls(
 ): void {
   const langs = ["zh", "en"] as const;
   for (const item of items) {
-    const totalPages = Math.ceil(item.count / PAGE_SIZE);
     for (const lang of langs) {
       const basePath = `${siteOrigin}/${lang}/${pathPrefix}/${encodeURIComponent(item.value)}`;
       urls.push({
@@ -72,15 +71,6 @@ function addFacetUrls(
         changefreq: "weekly",
         priority: "0.6",
       });
-      for (let page = 2; page <= totalPages; page++) {
-        const offset = (page - 1) * PAGE_SIZE;
-        urls.push({
-          loc: `${basePath}?offset=${offset}`,
-          lastmod: today,
-          changefreq: "weekly",
-          priority: "0.5",
-        });
-      }
     }
   }
 }
