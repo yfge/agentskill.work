@@ -30,12 +30,88 @@ https://agentskill.work/en/skills/justlovemaki/OpenClaw-Docker-CN-IM
   -> 308 /en/skills/justlovemaki/openclaw-china-docker -> 200
 ```
 
+### 3/15 前后 Performance 对比
+
+已通过 GSC 页面拉取两段数据：
+
+| 时间段 | 点击 | 曝光 | CTR | 平均排名 |
+| --- | ---: | ---: | ---: | ---: |
+| 2026-03-01 ~ 2026-03-15 | 461 | 约数万（图表峰值 4,500/日） | — | — |
+| 2026-03-16 ~ 2026-04-23 | 16 | 2,052 | 0.8% | 7.6 |
+
+结论：下滑不是单页 404 导致的小问题，而是多个已获得点击的页面/查询在 3/15 后集体失速。
+
+#### 3/1~3/15 Top queries
+
+```text
+memory-lancedb-pro                         13 clicks / 1,182 impressions
+tenacitos github                           12 / 198
+tenacitos openclaw                          7 / 258
+openclaw zero token                         7 / 61
+openclaw live2d                             4 / 21
+tenacitos                                   3 / 111
+aaron-he-zhu/seo-geo-claude-skills          3 / 28
+nanobot skill                               3 / 27
+visual explainer claude skill               3 / 17
+memory lancedb pro                          2 / 246
+```
+
+#### 3/16~4/23 Top queries
+
+```text
+memory-lancedb-pro                          1 / 36
+openviking claude code                      1 / 3
+claude code wordpress skill                 1 / 1
+visual explainer skill claude               1 / 1
+aionui                                      1 / 1
+blader humanizer claude                     0 / 134
+carlosazaustre/tenacitos github             0 / 14
+tenacitos github                            0 / 11
+lossless claw                               0 / 10
+carlosazaustre tenacitos github             0 / 9
+```
+
+#### 3/1~3/15 Top pages and current status
+
+```text
+/en/skills/win4r/memory-lancedb-pro                 40 clicks / 9,058 impressions -> 308 /en/skills/CortexReach/memory-lancedb-pro -> 200
+/en/skills/carlosazaustre/tenacitOS                 38 / 2,320 -> 200
+/zh/skills/linuxhsj/openclaw-zero-token             14 / 214 -> 200
+/en/skills/abhi1693/openclaw-mission-control        13 / 1,803 -> 200
+/en/skills/vuejs-ai/skills                           9 / 146 -> 200
+/en/skills/crshdn/mission-control                    8 / 628 -> 200
+/zh/skills/rookiestar28/ComfyUI-OpenClaw             8 / 83 -> 200
+/en/skills/nicobailon/visual-explainer               7 / 174 -> 200
+/zh/skills/AlexsJones/llmfit                         7 / 136 -> 200
+/zh/skills/bubbuild/bub                              7 / 27 -> 200
+```
+
+#### 3/16~4/23 Top pages
+
+```text
+/en/skills/volcengine/OpenViking                     2 / 29
+/en/skills/FreedomIntelligence/OpenClaw-Medical-Skills 1 / 50
+/en/skills/BlockRunAI/ClawRouter                     1 / 17
+/zh/skills/win4r/memory-lancedb-pro                  1 / 12
+/en/skills/trailofbits/skills                        1 / 9
+/en                                                   1 / 8
+/en/skills/rookiestar28/ComfyUI-OpenClaw              1 / 6
+/en/skills/nicobailon/visual-explainer                1 / 5
+/zh/skills/quoroom-ai/room                            1 / 4
+/zh/skills/bubbuild/bub                               1 / 4
+```
+
 ### 下一步
 
-1. 从 GSC Performance 导出 3/1-3/15 与 3/16-4/27 的 query/page 数据，按跌幅排序，优先检查点击/展示掉得最多的旧 URL。
-2. 对高价值旧 URL 分类：canonical `200`、GitHub rename `308`、搜索 fallback `308`、仍异常。
-3. 对仍异常的旧 URL 增加持久 redirect 映射或补齐 GitHub sync 覆盖。
-4. 对修复后的高价值 URL 在 GSC URL Inspection 中请求重新编入索引。
+1. 优先在 GSC URL Inspection 对上述 3/1~3/15 Top pages 请求重新编入索引，尤其是：
+   - `/en/skills/CortexReach/memory-lancedb-pro`
+   - `/en/skills/carlosazaustre/tenacitOS`
+   - `/zh/skills/linuxhsj/openclaw-zero-token`
+   - `/en/skills/abhi1693/openclaw-mission-control`
+   - `/en/skills/crshdn/mission-control`
+2. 针对高点击查询补强页面内容和内链：`memory-lancedb-pro`、`tenacitos`、`openclaw zero token`、`openclaw mission control`。
+3. 为被 308 的旧 GitHub URL 保持长期 redirect；不要短期移除。
+4. 继续观察 GSC 验证结果，重点看 `未找到 (404)`、`软 404` 和 `已抓取 - 尚未编入索引` 是否在 1~2 周内下降。
 
 ## 当前状态
 
