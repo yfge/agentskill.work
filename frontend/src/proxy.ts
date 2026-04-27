@@ -5,6 +5,55 @@ type Lang = "en" | "zh";
 
 const LANG_HEADER = "x-agentskill-lang";
 
+const FACET_PREFIXES = new Set(["languages", "topics", "owners"]);
+
+function safelyDecodeURIComponent(value: string): string | null {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return null;
+  }
+}
+
+function fullyDecodePathSegment(value: string): string {
+  let current = value;
+  for (let index = 0; index < 8; index += 1) {
+    if (!current.includes("%")) {
+      break;
+    }
+    const decoded = safelyDecodeURIComponent(current);
+    if (!decoded || decoded === current) {
+      break;
+    }
+    current = decoded;
+  }
+  return current;
+}
+
+function canonicalizePathname(pathname: string): string | null {
+  const parts = pathname.split("/");
+  const offset = parts[1] === "en" || parts[1] === "zh" ? 2 : 1;
+  const prefix = parts[offset];
+  if (!prefix || !FACET_PREFIXES.has(prefix)) {
+    return null;
+  }
+
+  const rawSegment = parts[offset + 1];
+  if (!rawSegment) {
+    return null;
+  }
+
+  const decodedSegment = fullyDecodePathSegment(rawSegment);
+  const encodedSegment = encodeURIComponent(decodedSegment);
+  if (rawSegment === encodedSegment) {
+    return null;
+  }
+
+  const nextParts = [...parts];
+  nextParts[offset + 1] = encodedSegment;
+  return nextParts.join("/");
+}
+
 function langFromPathname(pathname: string): Lang | null {
   if (pathname === "/en" || pathname.startsWith("/en/")) {
     return "en";
@@ -65,6 +114,13 @@ function langFromAcceptLanguage(value: string | null | undefined): Lang {
 
 export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+  const canonicalPathname = canonicalizePathname(pathname);
+  if (canonicalPathname) {
+    const url = request.nextUrl.clone();
+    url.pathname = canonicalPathname;
+    return NextResponse.redirect(url, 308);
+  }
+
   const lang =
     langFromPathname(pathname) ??
     langFromAcceptLanguage(request.headers.get("accept-language"));
