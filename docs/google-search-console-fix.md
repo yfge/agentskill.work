@@ -86,6 +86,31 @@ carlosazaustre tenacitos github             0 / 9
 /zh/skills/bubbuild/bub                              7 / 27 -> 200
 ```
 
+#### URL Inspection / Request indexing run
+
+2026-04-27 18:57 后，已对上述高跌幅页面执行 URL Inspection。结果：全部显示 `网址已收录到 Google` / `网页已编入索引`，并点击了 `请求编入索引`。
+
+```text
+/en/skills/CortexReach/memory-lancedb-pro            indexed; request indexing clicked
+/en/skills/carlosazaustre/tenacitOS                  indexed; request indexing clicked
+/zh/skills/linuxhsj/openclaw-zero-token              indexed; request indexing clicked
+/en/skills/abhi1693/openclaw-mission-control         indexed; request indexing clicked
+/en/skills/crshdn/mission-control                    indexed; request indexing clicked
+/en/skills/vuejs-ai/skills                           indexed; request indexing clicked
+/zh/skills/rookiestar28/ComfyUI-OpenClaw             indexed; request indexing clicked
+/en/skills/nicobailon/visual-explainer               indexed; request indexing clicked
+/zh/skills/AlexsJones/llmfit                         indexed; request indexing clicked
+/zh/skills/bubbuild/bub                              indexed; request indexing clicked
+```
+
+Observed technical signals in URL Inspection for these pages:
+
+- HTTPS valid.
+- Page is indexable / indexed.
+- Canonical and rendered HTML are accessible.
+- Breadcrumb (`路径`) structured data valid.
+- FAQ structured data valid.
+
 #### 3/16~4/23 Top pages
 
 ```text
