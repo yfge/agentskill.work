@@ -61,6 +61,38 @@ async function fetchSkill(owner: string, repo: string): Promise<Skill | null> {
   return res.json();
 }
 
+type GitHubRepository = {
+  full_name?: string;
+  html_url?: string;
+};
+
+async function resolveGitHubRepositoryRedirect(
+  owner: string,
+  repo: string,
+): Promise<{ owner: string; repo: string } | null> {
+  const url = `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}`;
+  const res = await fetch(url, {
+    headers: {
+      Accept: "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28",
+    },
+    next: { revalidate: 86400 },
+  });
+  if (!res.ok) {
+    return null;
+  }
+
+  const data = (await res.json()) as GitHubRepository;
+  const [resolvedOwner, resolvedRepo] = (data.full_name || "").split("/");
+  if (!resolvedOwner || !resolvedRepo) {
+    return null;
+  }
+  if (resolvedOwner === owner && resolvedRepo === repo) {
+    return null;
+  }
+  return { owner: resolvedOwner, repo: resolvedRepo };
+}
+
 function formatStars(stars: number): string {
   if (stars >= 1000) {
     return `${(stars / 1000).toFixed(1).replace(/\.0$/, "")}k`;
@@ -177,6 +209,18 @@ export default async function SkillDetailPage({ params }: PageProps) {
 
   const skill = await fetchSkill(resolvedParams.owner, resolvedParams.repo);
   if (!skill) {
+    const renamedRepo = await resolveGitHubRepositoryRedirect(
+      resolvedParams.owner,
+      resolvedParams.repo,
+    );
+    if (renamedRepo) {
+      permanentRedirect(
+        `/${lang}/skills/${encodeURIComponent(renamedRepo.owner)}/${encodeURIComponent(
+          renamedRepo.repo,
+        )}`,
+      );
+    }
+
     const query = `${resolvedParams.owner}/${resolvedParams.repo}`;
     permanentRedirect(`/${lang}?q=${encodeURIComponent(query)}`);
   }
