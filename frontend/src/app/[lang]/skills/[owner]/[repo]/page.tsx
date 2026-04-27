@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import type { Metadata } from "next";
 
 import { BackButton } from "@/components/BackButton";
@@ -177,7 +177,8 @@ export default async function SkillDetailPage({ params }: PageProps) {
 
   const skill = await fetchSkill(resolvedParams.owner, resolvedParams.repo);
   if (!skill) {
-    notFound();
+    const query = `${resolvedParams.owner}/${resolvedParams.repo}`;
+    permanentRedirect(`/${lang}?q=${encodeURIComponent(query)}`);
   }
 
   const copy = messages[lang];
