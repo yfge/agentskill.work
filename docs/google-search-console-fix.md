@@ -1,5 +1,42 @@
 # Google Search Console 索引问题修复指南
 
+## 2026-04-27 恢复执行记录
+
+### 已完成
+
+- 修复已下架/找不到的 skill 详情页：不再返回 404，改为 `308` 到对应语言首页搜索结果页。
+  - commit: `49d9989 fix: redirect missing skill pages to search`
+- 修复 GitHub 仓库改名/迁移导致的旧详情页失效：旧 `owner/repo` URL 会先解析 GitHub redirect，再 `308` 到新的 canonical skill 详情页。
+  - commit: `826d239 fix: resolve renamed skill repositories`
+- 扩大 GitHub sync 覆盖面：线上 skill 数从 `438` 增加到 `916`。
+- Sitemap 扩容：`sitemap.xml` 当前包含 `12` 个 sitemap，合计 `2,192` 个 URL；线上批量回测全部 `200`。
+- GSC 站点地图页面确认：`https://agentskill.work/sitemap.xml` 状态为“成功”，上次读取 `2026年4月27日`，已发现网页 `1,218`。
+- GSC 验证已启动：`未找到 (404)`、`软 404`、`已抓取 - 尚未编入索引`、`网页会自动重定向`、`备用网页（有适当的规范标记）` 等可处理项均已开始验证。
+
+### 已验证的旧 URL 跳转
+
+```text
+https://agentskill.work/en/skills/EverMind-AI/EverMemOS
+  -> 308 /en/skills/EverMind-AI/EverOS -> 200
+https://agentskill.work/en/skills/sseanliu/VisionClaw
+  -> 308 /en/skills/Intent-Lab/VisionClaw -> 200
+https://agentskill.work/en/skills/win4r/memory-lancedb-pro
+  -> 308 /en/skills/CortexReach/memory-lancedb-pro -> 200
+https://agentskill.work/en/skills/zhayujie/chatgpt-on-wechat
+  -> 308 /en/skills/zhayujie/CowAgent -> 200
+https://agentskill.work/zh/skills/higress-group/hiclaw
+  -> 308 /zh/skills/agentscope-ai/HiClaw -> 200
+https://agentskill.work/en/skills/justlovemaki/OpenClaw-Docker-CN-IM
+  -> 308 /en/skills/justlovemaki/openclaw-china-docker -> 200
+```
+
+### 下一步
+
+1. 从 GSC Performance 导出 3/1-3/15 与 3/16-4/27 的 query/page 数据，按跌幅排序，优先检查点击/展示掉得最多的旧 URL。
+2. 对高价值旧 URL 分类：canonical `200`、GitHub rename `308`、搜索 fallback `308`、仍异常。
+3. 对仍异常的旧 URL 增加持久 redirect 映射或补齐 GitHub sync 覆盖。
+4. 对修复后的高价值 URL 在 GSC URL Inspection 中请求重新编入索引。
+
 ## 当前状态
 
 所有技术配置都正确：
