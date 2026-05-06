@@ -3,7 +3,16 @@ import { getApiBase } from "@/lib/apiBase";
 import { getSiteOrigin } from "@/lib/site";
 
 const REVALIDATE_SECONDS = 60 * 60;
-const PAGE_SIZE = 24;
+
+const FACET_LIMITS = {
+  topics: 80,
+  languages: 30,
+} as const;
+
+const MIN_FACET_COUNTS = {
+  topics: 3,
+  languages: 2,
+} as const;
 
 type FacetItem = {
   value: string;
@@ -74,23 +83,39 @@ function addFacetUrls(
     }
   }
 }
-
+function keepHighValueFacets(
+  items: FacetItem[],
+  kind: keyof typeof MIN_FACET_COUNTS,
+): FacetItem[] {
+  const minimumCount = MIN_FACET_COUNTS[kind];
+  return items.filter((item) => item.count >= minimumCount);
+}
 
 export async function GET() {
   const today = toDateStamp(new Date());
   const siteOrigin = getSiteOrigin();
 
-  const [topics, languages, owners] = await Promise.all([
-    fetchFacetItems("topics", 100),
-    fetchFacetItems("languages", 50),
-    fetchFacetItems("owners", 50),
+  const [topics, languages] = await Promise.all([
+    fetchFacetItems("topics", FACET_LIMITS.topics),
+    fetchFacetItems("languages", FACET_LIMITS.languages),
   ]);
 
   const urls: UrlEntry[] = [];
 
-  addFacetUrls(urls, topics, "topics", siteOrigin, today);
-  addFacetUrls(urls, languages, "languages", siteOrigin, today);
-  addFacetUrls(urls, owners, "owners", siteOrigin, today);
+  addFacetUrls(
+    urls,
+    keepHighValueFacets(topics, "topics"),
+    "topics",
+    siteOrigin,
+    today,
+  );
+  addFacetUrls(
+    urls,
+    keepHighValueFacets(languages, "languages"),
+    "languages",
+    siteOrigin,
+    today,
+  );
 
   const xml =
     `<?xml version="1.0" encoding="UTF-8"?>\n` +
