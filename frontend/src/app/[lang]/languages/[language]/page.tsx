@@ -47,6 +47,25 @@ function parseOffset(value: string | undefined): number | null {
   return parsed;
 }
 
+function decodePathSegment(value: string): string {
+  let current = value;
+  for (let index = 0; index < 8; index += 1) {
+    if (!current.includes("%")) {
+      break;
+    }
+    try {
+      const decoded = decodeURIComponent(current);
+      if (decoded === current) {
+        break;
+      }
+      current = decoded;
+    } catch {
+      break;
+    }
+  }
+  return current;
+}
+
 export async function generateMetadata({
   params,
   searchParams,
@@ -58,7 +77,7 @@ export async function generateMetadata({
     return {};
   }
 
-  const language = resolvedParams.language;
+  const language = decodePathSegment(resolvedParams.language);
   const siteOrigin = getSiteOrigin();
   const hasQuery = Boolean(first(resolvedSearch.q)?.trim());
   const offsetValue = first(resolvedSearch.offset);
@@ -130,7 +149,7 @@ export default async function LanguageFacetPage({ params, searchParams }: PagePr
     notFound();
   }
 
-  const language = resolvedParams.language;
+  const language = decodePathSegment(resolvedParams.language);
   const initialQuery = (first(resolvedSearch.q) || "").trim();
   const offsetValue = first(resolvedSearch.offset);
   const offsetParsed = parseOffset(offsetValue);
