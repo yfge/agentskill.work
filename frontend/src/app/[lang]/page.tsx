@@ -84,7 +84,7 @@ export async function generateMetadata({
       },
     },
     robots:
-      hasQuery || offset > 0
+      hasQuery
         ? {
             index: false,
             follow: true,

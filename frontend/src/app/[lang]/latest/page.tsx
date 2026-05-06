@@ -80,13 +80,6 @@ export async function generateMetadata({
         "x-default": `${siteOrigin}/zh/latest${offset > 0 ? `?offset=${offset}` : ""}`,
       },
     },
-    robots:
-      offset > 0
-        ? {
-            index: false,
-            follow: true,
-          }
-        : undefined,
     openGraph: {
       title,
       description: copy.latestSubtitle,
