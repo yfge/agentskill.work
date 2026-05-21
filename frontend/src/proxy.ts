@@ -115,9 +115,16 @@ function langFromAcceptLanguage(value: string | null | undefined): Lang {
 export function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const canonicalPathname = canonicalizePathname(pathname);
-  if (canonicalPathname) {
+  const hasSearchQuery = Boolean(request.nextUrl.searchParams.get("q")?.trim());
+  if (canonicalPathname || hasSearchQuery) {
     const url = request.nextUrl.clone();
-    url.pathname = canonicalPathname;
+    if (canonicalPathname) {
+      url.pathname = canonicalPathname;
+    }
+    if (hasSearchQuery) {
+      url.searchParams.delete("q");
+      url.searchParams.delete("offset");
+    }
     return NextResponse.redirect(url, 308);
   }
 
