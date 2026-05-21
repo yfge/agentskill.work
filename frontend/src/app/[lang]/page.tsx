@@ -65,12 +65,13 @@ export async function generateMetadata({
 
   const siteOrigin = getSiteOrigin();
   const canonicalUrl = `${siteOrigin}/${lang}${offset > 0 ? `?offset=${offset}` : ""}`;
+  const baseTitle = copy.seoTitle;
   const title =
     offset > 0
       ? lang === "zh"
-        ? `${copy.title} - 第 ${Math.floor(offset / PAGE_SIZE) + 1} 页`
-        : `${copy.title} - Page ${Math.floor(offset / PAGE_SIZE) + 1}`
-      : copy.title;
+        ? `${baseTitle} - 第 ${Math.floor(offset / PAGE_SIZE) + 1} 页`
+        : `${baseTitle} - Page ${Math.floor(offset / PAGE_SIZE) + 1}`
+      : baseTitle;
 
   return {
     title,

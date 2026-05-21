@@ -1,7 +1,8 @@
 export const messages = {
   zh: {
     title: "agentskill.work",
-    subtitle: "自动汇总 GitHub 上热门 Claude Skill 项目，集中展示与搜索。",
+    seoTitle: "Claude Skill 项目搜索与发现 - agentskill.work",
+    subtitle: "自动汇总 GitHub 上热门 Claude Skill 和 Agent Skill 项目，集中展示、搜索与发现。",
     searchPlaceholder: "按名称、仓库、描述搜索...",
     search: "搜索",
     loading: "加载中...",
@@ -111,8 +112,9 @@ export const messages = {
   },
   en: {
     title: "agentskill.work",
+    seoTitle: "Claude Skill Search & Discovery - agentskill.work",
     subtitle:
-      "Discover trending Claude Skill projects on GitHub, curated and searchable.",
+      "Discover trending Claude Skill and Agent Skill projects on GitHub, curated and searchable.",
     searchPlaceholder: "Search by name, repo, description...",
     search: "Search",
     loading: "Loading...",

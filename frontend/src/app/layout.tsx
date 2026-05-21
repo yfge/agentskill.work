@@ -7,9 +7,9 @@ import { getSiteOrigin } from "@/lib/site";
 
 export const metadata = {
   metadataBase: new URL(getSiteOrigin()),
-  title: "agentskill.work",
+  title: "Claude Skill Search & Discovery - agentskill.work",
   description:
-    "agentskill.work is a curated directory of trending Claude Skill projects on GitHub.",
+    "agentskill.work is a curated directory of trending Claude Skill and Agent Skill projects on GitHub.",
   icons: {
     icon: [
       { url: "/favicon.ico" },
@@ -43,9 +43,9 @@ export const metadata = {
     },
   },
   openGraph: {
-    title: "agentskill.work",
+    title: "Claude Skill Search & Discovery - agentskill.work",
     description:
-      "agentskill.work is a curated directory of trending Claude Skill projects on GitHub.",
+      "agentskill.work is a curated directory of trending Claude Skill and Agent Skill projects on GitHub.",
     url: `${getSiteOrigin()}/zh`,
     siteName: "agentskill.work",
     locale: "zh_CN",
@@ -55,9 +55,9 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "agentskill.work",
+    title: "Claude Skill Search & Discovery - agentskill.work",
     description:
-      "agentskill.work is a curated directory of trending Claude Skill projects on GitHub.",
+      "agentskill.work is a curated directory of trending Claude Skill and Agent Skill projects on GitHub.",
     images: ["/opengraph-image"],
   },
   keywords: [
