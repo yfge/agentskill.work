@@ -10,6 +10,7 @@ def search_skills(
     topic: str | None = None,
     language: str | None = None,
     owner: str | None = None,
+    skill_type: str | None = None,
     sort: str = "stars",
     limit: int = 20,
     offset: int = 0,
@@ -25,12 +26,16 @@ def search_skills(
         name_lc = func.lower(Skill.name)
         desc_lc = func.lower(func.coalesce(Skill.description, ""))
         desc_zh_lc = func.lower(func.coalesce(Skill.description_zh, ""))
+        skill_type_lc = func.lower(func.coalesce(Skill.skill_type, ""))
+        readme_lc = func.lower(func.coalesce(Skill.readme_excerpt, ""))
         stmt = stmt.where(
             name_lc.like(q)
             | full_name_lc.like(q)
             | desc_lc.like(q)
             | desc_zh_lc.like(q)
             | topics_lc.like(q)
+            | skill_type_lc.like(q)
+            | readme_lc.like(q)
         )
 
     if owner:
@@ -54,12 +59,21 @@ def search_skills(
                 | (topics_lc.like(f"%,{topic_value},%"))
             )
 
+    if skill_type:
+        skill_type_value = skill_type.strip().lower()
+        if skill_type_value:
+            stmt = stmt.where(
+                func.lower(func.coalesce(Skill.skill_type, "")) == skill_type_value
+            )
+
     count_stmt = select(func.count()).select_from(stmt.subquery())
     total = db.execute(count_stmt).scalar_one()
 
     order_by = Skill.stars.desc()
     if sort == "newest":
         order_by = func.coalesce(Skill.repo_created_at, Skill.created_at).desc()
+    elif sort == "quality":
+        order_by = func.coalesce(Skill.quality_score, 0).desc()
 
     items = (
         db.execute(stmt.order_by(order_by, Skill.id.desc()).offset(offset).limit(limit))

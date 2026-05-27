@@ -44,6 +44,11 @@ if settings.enable_scheduler:
             "task": "tasks.skill_enrich",
             "schedule": timedelta(minutes=settings.enrich_interval_minutes),
         }
+    if settings.enable_repository_inspection:
+        beat_schedule["repository-inspect-schedule"] = {
+            "task": "tasks.repository_inspect",
+            "schedule": timedelta(minutes=settings.inspect_interval_minutes),
+        }
 
 celery_app.conf.update(
     task_serializer="json",
@@ -72,4 +77,5 @@ if _running_under_pytest():
 
 
 import app.tasks.github_sync  # noqa: E402,F401
+import app.tasks.repository_inspect  # noqa: E402,F401
 import app.tasks.skill_enrich  # noqa: E402,F401

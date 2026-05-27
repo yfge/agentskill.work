@@ -61,38 +61,6 @@ async function fetchSkill(owner: string, repo: string): Promise<Skill | null> {
   return res.json();
 }
 
-type GitHubRepository = {
-  full_name?: string;
-  html_url?: string;
-};
-
-async function resolveGitHubRepositoryRedirect(
-  owner: string,
-  repo: string,
-): Promise<{ owner: string; repo: string } | null> {
-  const url = `https://api.github.com/repos/${encodeURIComponent(owner)}/${encodeURIComponent(repo)}`;
-  const res = await fetch(url, {
-    headers: {
-      Accept: "application/vnd.github+json",
-      "X-GitHub-Api-Version": "2022-11-28",
-    },
-    next: { revalidate: 86400 },
-  });
-  if (!res.ok) {
-    return null;
-  }
-
-  const data = (await res.json()) as GitHubRepository;
-  const [resolvedOwner, resolvedRepo] = (data.full_name || "").split("/");
-  if (!resolvedOwner || !resolvedRepo) {
-    return null;
-  }
-  if (resolvedOwner === owner && resolvedRepo === repo) {
-    return null;
-  }
-  return { owner: resolvedOwner, repo: resolvedRepo };
-}
-
 function formatStars(stars: number): string {
   if (stars >= 1000) {
     return `${(stars / 1000).toFixed(1).replace(/\.0$/, "")}k`;
@@ -209,18 +177,6 @@ export default async function SkillDetailPage({ params }: PageProps) {
 
   const skill = await fetchSkill(resolvedParams.owner, resolvedParams.repo);
   if (!skill) {
-    const renamedRepo = await resolveGitHubRepositoryRedirect(
-      resolvedParams.owner,
-      resolvedParams.repo,
-    );
-    if (renamedRepo) {
-      permanentRedirect(
-        `/${lang}/skills/${encodeURIComponent(renamedRepo.owner)}/${encodeURIComponent(
-          renamedRepo.repo,
-        )}`,
-      );
-    }
-
     const query = `${resolvedParams.owner}/${resolvedParams.repo}`;
     permanentRedirect(`/${lang}?q=${encodeURIComponent(query)}`);
   }
@@ -247,6 +203,7 @@ export default async function SkillDetailPage({ params }: PageProps) {
 
   const lastPushedAt = formatDate(skill.last_pushed_at);
   const fetchedAt = formatDate(skill.fetched_at);
+  const lastVerifiedAt = formatDate(skill.last_verified_at);
 
   const stats = [
     { label: copy.detailStars, value: skill.stars.toLocaleString() },
@@ -268,6 +225,28 @@ export default async function SkillDetailPage({ params }: PageProps) {
     { label: copy.detailFullName, value: skill.full_name },
     { label: copy.detailRepoId, value: skill.repo_id.toLocaleString() },
     { label: copy.detailGitHub, value: skill.html_url, href: skill.html_url },
+  ];
+
+  const registryFacts = [
+    {
+      label: copy.detailSkillType,
+      value: skill.skill_type || copy.detailUnknown,
+    },
+    {
+      label: copy.detailQualityScore,
+      value:
+        skill.quality_score !== null && skill.quality_score !== undefined
+          ? `${skill.quality_score}/100`
+          : copy.detailUnknown,
+    },
+    {
+      label: copy.detailVerification,
+      value: skill.verification_status || copy.detailUnknown,
+    },
+    {
+      label: copy.detailLastVerified,
+      value: lastVerifiedAt || copy.detailUnknown,
+    },
   ];
 
   const siteOrigin = getSiteOrigin();
@@ -296,6 +275,19 @@ export default async function SkillDetailPage({ params }: PageProps) {
       url: `https://github.com/${encodeURIComponent(resolvedParams.owner)}`,
     },
     keywords: skill.topics || undefined,
+    applicationCategory: skill.skill_type || undefined,
+    additionalProperty: [
+      {
+        "@type": "PropertyValue",
+        name: "verification_status",
+        value: skill.verification_status || undefined,
+      },
+      {
+        "@type": "PropertyValue",
+        name: "quality_score",
+        value: skill.quality_score ?? undefined,
+      },
+    ],
     interactionStatistic: [
       {
         "@type": "InteractionCounter",
@@ -482,7 +474,84 @@ export default async function SkillDetailPage({ params }: PageProps) {
           </section>
         </div>
 
-        <InstallCTA fullName={skill.full_name} htmlUrl={skill.html_url} lang={lang} />
+        <InstallCTA
+          fullName={skill.full_name}
+          htmlUrl={skill.html_url}
+          installMethods={skill.install_methods}
+          lang={lang}
+        />
+
+        <section className="detail-card">
+          <h2>{copy.detailRegistryInfo}</h2>
+          <div className="detail-list">
+            {registryFacts.map((fact) => (
+              <div key={fact.label} className="detail-list-row">
+                <span className="detail-list-label">{fact.label}</span>
+                <span className="detail-list-value">{fact.value}</span>
+              </div>
+            ))}
+          </div>
+          {(skill.platforms?.length || 0) > 0 && (
+            <div>
+              <span className="detail-list-label">{copy.detailPlatforms}</span>
+              <div className="detail-topics">
+                {(skill.platforms || []).map((platform) => (
+                  <span key={platform} className="detail-topic detail-topic-static">
+                    {platform}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+          {(skill.capabilities?.length || 0) > 0 && (
+            <div>
+              <span className="detail-list-label">{copy.detailCapabilities}</span>
+              <div className="detail-topics">
+                {(skill.capabilities || []).slice(0, 10).map((capability) => (
+                  <span key={capability} className="detail-topic detail-topic-static">
+                    {capability}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+          {(skill.source_files?.length || 0) > 0 && (
+            <div>
+              <span className="detail-list-label">{copy.detailSourceFiles}</span>
+              <div className="detail-topics">
+                {(skill.source_files || []).map((file) => (
+                  <span key={file} className="detail-topic detail-topic-static">
+                    {file}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+          {(skill.config_keys?.length || 0) > 0 && (
+            <div>
+              <span className="detail-list-label">{copy.detailConfigKeys}</span>
+              <div className="detail-topics">
+                {(skill.config_keys || []).map((key) => (
+                  <span key={key} className="detail-topic detail-topic-static">
+                    {key}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
+          {(skill.install_methods?.length || 0) > 1 && (
+            <div>
+              <span className="detail-list-label">{copy.detailInstallMethods}</span>
+              <ul className="detail-code-list">
+                {(skill.install_methods || []).slice(0, 5).map((method) => (
+                  <li key={method}>
+                    <code>{method}</code>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </section>
 
         <section className="detail-card">
           <h2>{copy.detailSummary}</h2>
@@ -524,6 +593,15 @@ export default async function SkillDetailPage({ params }: PageProps) {
                 <li key={item}>{item}</li>
               ))}
             </ul>
+          </section>
+        )}
+
+        {skill.readme_excerpt && (
+          <section className="detail-card">
+            <h2>{copy.detailReadmeExcerpt}</h2>
+            <p className="detail-description detail-readme-excerpt">
+              {skill.readme_excerpt}
+            </p>
           </section>
         )}
 

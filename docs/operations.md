@@ -22,6 +22,7 @@ cd docker && docker compose up -d
 - Beat: `agentskill-celery-beat`
 - Sync task: `tasks.github_sync` (interval from `SYNC_INTERVAL_MINUTES`)
 - Enrichment task: `tasks.skill_enrich` (interval from `ENRICH_INTERVAL_MINUTES`, enabled by `ENABLE_ENRICHMENT=true`)
+- Repository inspection task: `tasks.repository_inspect` (interval from `INSPECT_INTERVAL_MINUTES`, enabled by `ENABLE_REPOSITORY_INSPECTION=true`)
 - Immediate sync on beat start (if `SYNC_ON_START=true`)
 - GitHub search query: `GITHUB_SEARCH_QUERY` (defaults to `("claude skill" OR "agent skill") in:name,description,topics`)
 - Latest discovery (new repos) search window:
@@ -30,6 +31,7 @@ cd docker && docker compose up -d
   - `GITHUB_NEWEST_MAX_RESULTS` (default: 100)
 - GitHub rate-limit buffer: `GITHUB_RATE_LIMIT_BUFFER` (stop when remaining <= buffer)
 - LLM requirement: enrichment needs `DEEPSEEK_API_KEY` (LLM is never called in user-facing request handlers)
+- Repository inspection reads README and root files from GitHub in Celery only, then stores registry metadata (`skill_type`, `platforms`, `capabilities`, `install_methods`, `config_keys`, `source_files`, `quality_score`, `verification_status`, `last_verified_at`).
 
 ```bash
 # Run worker locally
@@ -64,18 +66,21 @@ The frontend reads these variables at runtime (no rebuild required; just update
 ## Server Deployment (agentskill.work)
 
 **Host**
+
 - Domain: `agentskill.work` (A record -> `47.77.193.163`)
 - Data disk mount: `/data`
 - App root: `/data/apps/agentskill.work`
 - Docker data-root: `/data/docker`
 
 **Docker (production)**
+
 - Compose file: `/data/apps/agentskill.work/docker/docker-compose.prod.yml`
 - Runtime env: `/data/apps/agentskill.work/docker/.env`
 - Stack entry: `IMAGE_TAG=<tag> docker compose -f docker-compose.prod.yml up -d --remove-orphans`
 - External port: `8083` (container `agentskill-nginx` listens on `8080`)
 
 **Server Nginx (systemd service)**
+
 - Config file: `/etc/nginx/conf.d/agentskill.work.conf`
 - Canonical host: `https://agentskill.work`
 - Redirects `https://www.agentskill.work/*` -> `https://agentskill.work/*` (avoid duplicate-content SEO issues)
@@ -84,6 +89,7 @@ The frontend reads these variables at runtime (no rebuild required; just update
 - WeChat verification file: keep `https://agentskill.work/e5e588a3b46a049f7e2354fa3ba02fde.txt` reachable (200)
 
 Example config (server nginx):
+
 ```nginx
 server {
     listen 80;
@@ -156,6 +162,7 @@ server {
 ```
 
 **TLS (Certbot + Nginx)**
+
 - Install: `dnf -y install certbot python3-certbot-nginx`
 - Issue/renew (first time):
   `certbot --nginx -d agentskill.work -d www.agentskill.work --agree-tos -m <email> --redirect -n`
@@ -165,5 +172,6 @@ server {
 - Certbot sets up a scheduled renewal automatically.
 
 **Firewall/Security Group**
+
 - Inbound TCP must allow: `80` and `443` (public)
 - `8083` is only required on the host for local proxying by server nginx.

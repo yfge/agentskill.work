@@ -23,7 +23,8 @@ def list_skills(
     topic: str | None = None,
     language: str | None = None,
     owner: str | None = None,
-    sort: Literal["stars", "newest"] = Query("stars"),
+    skill_type: str | None = None,
+    sort: Literal["stars", "newest", "quality"] = Query("stars"),
     limit: int = Query(20, ge=1, le=100),
     offset: int = Query(0, ge=0),
     db: Session = Depends(get_db),  # noqa: B008
@@ -34,6 +35,7 @@ def list_skills(
         topic=topic,
         language=language,
         owner=owner,
+        skill_type=skill_type,
         sort=sort,
         limit=limit,
         offset=offset,

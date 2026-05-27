@@ -194,7 +194,9 @@ def sync_github_skills(db: Session, settings: Settings) -> int:
         skill.stars = repo.get("stargazers_count", 0)
         skill.forks = repo.get("forks_count", 0)
         skill.language = repo.get("language")
-        skill.topics = ",".join(repo.get("topics", []) or [])
+        topics = repo.get("topics", []) or []
+        skill.topics = ",".join(topics)
+        skill.topics_json = topics
         skill.repo_created_at = _parse_datetime(repo.get("created_at"))
         skill.repo_updated_at = _parse_datetime(repo.get("updated_at"))
         skill.last_pushed_at = _parse_datetime(repo.get("pushed_at"))

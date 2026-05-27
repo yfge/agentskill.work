@@ -7,12 +7,14 @@ export function InstallCTA({
   fullName,
   htmlUrl,
   lang,
+  installMethods,
 }: {
   fullName: string;
   htmlUrl: string;
   lang: Language;
+  installMethods?: string[] | null;
 }) {
-  const command = `openclaw install ${fullName}`;
+  const command = installMethods?.[0] || `git clone https://github.com/${fullName}.git`;
   const [copied, setCopied] = useState(false);
 
   const handleCopy = useCallback(() => {
@@ -24,7 +26,7 @@ export function InstallCTA({
 
   return (
     <section className="install-cta">
-      <h2>{lang === "zh" ? "🚀 安装这个 Skill" : "🚀 Install this Skill"}</h2>
+      <h2>{lang === "zh" ? "安装这个 Skill" : "Install this Skill"}</h2>
       <div className="install-command">
         <code>{command}</code>
         <button
@@ -33,17 +35,12 @@ export function InstallCTA({
           onClick={handleCopy}
           aria-label="Copy install command"
         >
-          {copied ? "✅" : "📋"}
+          {copied ? "Copied" : "Copy"}
         </button>
       </div>
       <div className="install-actions">
-        <a
-          className="button primary"
-          href={htmlUrl}
-          target="_blank"
-          rel="noreferrer"
-        >
-          ⭐ GitHub
+        <a className="button primary" href={htmlUrl} target="_blank" rel="noreferrer">
+          GitHub
         </a>
       </div>
     </section>

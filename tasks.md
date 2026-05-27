@@ -32,6 +32,21 @@
 
 ## 待办（SEO / GEO 优化 Backlog）
 
+### 13) AI Agent Skill Registry 结构化升级
+
+- [x] 扩展 `skills` 模型，新增 registry metadata：`topics_json`、`skill_type`、`platforms`、`capabilities`、`install_methods`、`config_keys`、`source_files`、`readme_excerpt`、`quality_score`、`verification_status`、`last_verified_at`
+- [x] 增加 Alembic migration `0006_add_registry_metadata`
+- [x] 增加 Celery 离线仓库 inspection：读取 README 和根目录关键文件，只在后台任务中调用 GitHub API
+- [x] API / MCP / llms-full.txt 暴露结构化 registry 字段
+- [x] 详情页展示 registry 信息、验证状态、质量分、识别文件、配置键、README 摘要
+- [x] 移除详情页 404 fallback 中的前端 GitHub API 调用；找不到 skill 时仅站内重定向到搜索页
+
+下一步建议：
+
+- [ ] 增加 repo alias 表，由 Celery 离线维护 GitHub rename/redirect
+- [ ] 增加 Submit / Claim / Report outdated 表单与人工审核流
+- [ ] 增加 Compare / Alternatives 长尾页面
+
 ### 1) URL 级多语言（/en /zh）与去重策略
 
 - [x] 将 `?lang=en|zh` 升级为路径型多语言（`/en/...`、`/zh/...`）

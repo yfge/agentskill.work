@@ -3,8 +3,9 @@
 This file is a machine-friendly reference for agents and LLM-based tools that want to understand, cite, or integrate
 with agentskill.work.
 
-agentskill.work is a curated, searchable index of trending Claude Skill GitHub repositories. Data is aggregated from
-GitHub metadata and is stored locally for fast search, paging, and SEO-friendly pages.
+agentskill.work is a structured registry for AI Agent skills, starting with trending Claude Skill GitHub repositories.
+Data is aggregated from GitHub metadata plus offline README/root-file inspection and is stored locally for fast search,
+paging, comparison, verification badges, and SEO-friendly pages.
 
 Important term policy:
 - Keep the proper term "Claude Skill" as-is. Do NOT translate it (e.g., do not write "claude 技能").
@@ -33,7 +34,9 @@ Canonical host policy:
 
 - Skill → Owner: each skill belongs to exactly one GitHub owner (user or organization)
 - Skill → Language: each skill has at most one primary programming language
-- Skill → Topics: each skill has zero or more topics (comma-separated string)
+- Skill → Topics: each skill has zero or more topics (`topics_json`, with `topics` kept as a compatibility string)
+- Skill → Registry metadata: each inspected skill can have a type, platforms, capabilities, install methods, source files,
+  quality score, verification status, and last verification time
 - Owner → Skills: an owner can have multiple skills
 - Topic → Skills: a topic can be associated with multiple skills
 - Language → Skills: a language can be associated with multiple skills
@@ -51,6 +54,8 @@ Common questions and corresponding API calls:
 |---|---|
 | "What Claude Skill projects are trending?" | GET /api/skills?sort=stars |
 | "What are the newest Claude Skill repos?" | GET /api/skills?sort=newest |
+| "What are the highest-quality inspected skills?" | GET /api/skills?sort=quality |
+| "Show MCP servers" | GET /api/skills?skill_type=mcp_server |
 | "Find Python Claude Skill projects" | GET /api/skills?language=python |
 | "Show MCP-related skills" | GET /api/skills?topic=mcp |
 | "Search for skills about 'automation'" | GET /api/skills?q=automation |
@@ -88,9 +93,12 @@ Query parameters (all optional unless stated):
   - Filter by primary programming language (case-insensitive).
 - owner: string
   - Filter by GitHub owner (matches full_name prefix "{owner}/...").
+- skill_type: string
+  - Filter by structured registry type, e.g. claude_skill, mcp_server, codex_skill, cursor_rule, openclaw_skill, workflow.
 - sort: string (default: stars)
   - stars: order by GitHub stars (descending)
   - newest: order by GitHub repo created time (repo_created_at desc; fallback to created_at)
+  - quality: order by inspected quality_score desc
 - limit: integer (default: backend default, max: 100)
 - offset: integer (default: 0)
 
@@ -152,6 +160,17 @@ Metadata:
 - content_updated_at: string | null (ISO datetime; when enrichment content was generated)
 - language: string | null (primary programming language from GitHub)
 - topics: string | null (comma-separated GitHub topics; split on "," for an array)
+- topics_json: string[] | null (normalized GitHub topics; prefer this when present)
+- skill_type: string | null (structured type, e.g. claude_skill, mcp_server, codex_skill, cursor_rule, openclaw_skill, workflow)
+- platforms: string[] | null (detected platforms such as Claude, MCP, OpenClaw, Codex, Cursor, OpenAI Agents)
+- capabilities: string[] | null (detected capability tags from README/topics)
+- install_methods: string[] | null (detected README install commands, fallback git clone command)
+- config_keys: string[] | null (detected environment/config keys)
+- source_files: string[] | null (detected root files such as README.md, skill.json, manifest.json, mcp.json, package.json)
+- readme_excerpt: string | null (short README excerpt captured offline)
+- quality_score: number | null (0-100 heuristic score from README depth, manifest/examples/tests/install presence)
+- verification_status: string | null (readme_parsed, root_files_parsed, inspection_error, invalid_full_name)
+- last_verified_at: string | null (ISO datetime of offline repository inspection)
 - stars: number
 - forks: number
 - repo_created_at: string | null (ISO datetime from GitHub; repo created time)
@@ -175,15 +194,20 @@ Important constraint:
 Scheduling:
 - Celery beat triggers periodic sync jobs.
 - Celery beat can also trigger offline enrichment jobs (DeepSeek), gated by ENABLE_ENRICHMENT.
+- Celery beat can trigger offline repository inspection jobs, gated by ENABLE_REPOSITORY_INSPECTION.
 - Sync fetches repos using two strategies:
   - Trending: GitHub Search sorted by stars (config: GITHUB_SEARCH_QUERY / GITHUB_MAX_PAGES / GITHUB_MAX_RESULTS)
   - Latest discovery: GitHub Search with a created window (created:>=YYYY-MM-DD) and sort=updated
     (config: GITHUB_NEWEST_WINDOW_DAYS / GITHUB_NEWEST_MAX_PAGES / GITHUB_NEWEST_MAX_RESULTS)
 - Sync may stop early to avoid hitting GitHub API rate limits.
+- Repository inspection reads README and root contents from GitHub in batches (`INSPECT_BATCH_SIZE`) and never runs in
+  the user-facing request path.
 
 Content update frequency:
 - Skill metadata (stars, forks, last_pushed_at): syncs approximately every hour
 - LLM-enriched fields (summary, key_features, use_cases, seo_title, seo_description): batch processed, updated less frequently
+- Registry fields (skill_type, platforms, capabilities, install_methods, verification_status): batch processed by
+  repository inspection and refreshed when `last_pushed_at` is newer than `last_verified_at`
 - Facets (topics, languages, owners counts): derived from skill data, cached for 1 hour
 - Related skills: computed on-demand, cached for 1 hour
 

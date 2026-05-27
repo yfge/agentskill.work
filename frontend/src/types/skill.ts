@@ -21,6 +21,17 @@ export interface Skill {
   forks: number;
   language?: string | null;
   topics?: string | null;
+  topics_json?: string[] | null;
+  skill_type?: string | null;
+  platforms?: string[] | null;
+  capabilities?: string[] | null;
+  install_methods?: string[] | null;
+  config_keys?: string[] | null;
+  source_files?: string[] | null;
+  readme_excerpt?: string | null;
+  quality_score?: number | null;
+  verification_status?: string | null;
+  last_verified_at?: string | null;
   last_pushed_at?: string | null;
   repo_created_at?: string | null;
   repo_updated_at?: string | null;

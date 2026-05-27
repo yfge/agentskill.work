@@ -2,13 +2,14 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
-agentskill.work is a curated, searchable index of trending **Claude Skill** GitHub repositories.
+agentskill.work is a structured registry for AI Agent skills, starting with trending **Claude Skill** GitHub repositories.
 
 > Term policy: keep the proper term **"Claude Skill"** as-is. Do NOT translate it.
 
 ## Features
 
 - Scheduled sync of trending Claude Skill repos (GitHub metadata stored locally)
+- Offline repository inspection for README, manifest, install, platform, and verification metadata
 - Search + paging (never calls GitHub from the user-facing request path)
 - SEO/GEO: sitemaps, structured data (JSON-LD), dynamic Open Graph images, `llms.txt`
 - Bilingual UI: `/zh` and `/en`
@@ -79,14 +80,17 @@ Operations doc: `docs/operations.md`
 ## Public API
 
 Base URL:
+
 - `/api` (via Nginx)
 
 OpenAPI:
+
 - `/api/openapi.json`
 - `/api/docs`
 
 Read endpoints (no auth):
-- `GET /api/skills?q=&limit=&offset=&topic=&language=&owner=`
+
+- `GET /api/skills?q=&limit=&offset=&topic=&language=&owner=&skill_type=&sort=`
 - `GET /api/skills/{owner}/{repo}`
 - `GET /api/facets/topics`
 - `GET /api/facets/languages`

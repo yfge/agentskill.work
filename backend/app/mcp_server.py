@@ -39,6 +39,7 @@ def search_claude_skills(
     topic: str | None = None,
     language: str | None = None,
     owner: str | None = None,
+    skill_type: str | None = None,
     sort: str = "stars",
     limit: int = 20,
     offset: int = 0,
@@ -50,7 +51,8 @@ def search_claude_skills(
         topic: Filter by GitHub topic (e.g. "mcp", "claude-skill").
         language: Filter by programming language (e.g. "Python", "TypeScript").
         owner: Filter by GitHub owner/org.
-        sort: Sort order — "stars" (default) or "newest".
+        skill_type: Filter by registry type (claude_skill, mcp_server, etc.).
+        sort: Sort order — "stars" (default), "newest", or "quality".
         limit: Max results to return (1-50, default 20).
         offset: Pagination offset.
 
@@ -66,6 +68,7 @@ def search_claude_skills(
             topic=topic,
             language=language,
             owner=owner,
+            skill_type=skill_type,
             sort=sort,
             limit=limit,
             offset=offset,
@@ -82,6 +85,12 @@ def search_claude_skills(
                         "forks": s.forks,
                         "language": s.language,
                         "topics": s.topics,
+                        "topics_json": s.topics_json,
+                        "skill_type": s.skill_type,
+                        "platforms": s.platforms,
+                        "capabilities": s.capabilities,
+                        "quality_score": s.quality_score,
+                        "verification_status": s.verification_status,
                         "html_url": s.html_url,
                         "summary_en": s.summary_en,
                         "summary_zh": s.summary_zh,
@@ -128,6 +137,17 @@ def get_skill_detail(owner: str, repo: str) -> str:
                 "forks": skill.forks,
                 "language": skill.language,
                 "topics": skill.topics,
+                "topics_json": skill.topics_json,
+                "skill_type": skill.skill_type,
+                "platforms": skill.platforms,
+                "capabilities": skill.capabilities,
+                "install_methods": skill.install_methods,
+                "config_keys": skill.config_keys,
+                "source_files": skill.source_files,
+                "readme_excerpt": skill.readme_excerpt,
+                "quality_score": skill.quality_score,
+                "verification_status": skill.verification_status,
+                "last_verified_at": skill.last_verified_at,
                 "html_url": skill.html_url,
                 "last_pushed_at": skill.last_pushed_at,
                 "repo_created_at": skill.repo_created_at,

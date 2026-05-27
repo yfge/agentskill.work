@@ -25,6 +25,17 @@ class SkillBase(BaseModel):
     forks: int
     language: str | None
     topics: str | None
+    topics_json: list[str] | None = None
+    skill_type: str | None = None
+    platforms: list[str] | None = None
+    capabilities: list[str] | None = None
+    install_methods: list[str] | None = None
+    config_keys: list[str] | None = None
+    source_files: list[str] | None = None
+    readme_excerpt: str | None = None
+    quality_score: int | None = None
+    verification_status: str | None = None
+    last_verified_at: datetime | None = None
     last_pushed_at: datetime | None
     repo_created_at: datetime | None = None
     repo_updated_at: datetime | None = None

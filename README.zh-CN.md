@@ -2,13 +2,14 @@
 
 [English](README.md) | [简体中文](README.zh-CN.md)
 
-agentskill.work 是一个用于发现与检索 **Claude Skill** GitHub 仓库的流量站：定时抓取热门项目入库，并提供可索引的列表页/详情页。
+agentskill.work 是一个面向 AI Agent Skill 的结构化 registry，先从 **Claude Skill** GitHub 仓库做深：定时抓取热门项目入库，并提供可索引的列表页/详情页。
 
 > 术语约束：请保持 **"Claude Skill"** 原文，不要翻译成其它中文说法。
 
 ## 功能
 
 - 定时同步 GitHub 上热门 Claude Skill 项目（元数据落库）
+- 离线解析 README、manifest、安装方式、平台、能力与验证状态
 - 搜索 + 翻页（用户访问链路绝不直连 GitHub，避免把 GitHub 拉爆）
 - SEO/GEO：sitemap、结构化数据（JSON-LD）、动态 OG 图片、`llms.txt`
 - `/zh` 与 `/en` 双语页面
@@ -72,6 +73,7 @@ npm run dev
 
 - 定时同步：Celery beat + worker（见 `backend/app/core/celery_app.py`）
 - 手动触发：`POST /api/skills/sync`（默认关闭；开启后必须配置 token）
+- 仓库 inspection：仅在 Celery 后台读取 README / 根目录关键文件
 - 翻译/增厚：仅离线任务调用 DeepSeek（绝不在用户请求链路调用）
 
 运维与部署：见 `docs/operations.md`
@@ -79,14 +81,17 @@ npm run dev
 ## Public API
 
 Base URL：
+
 - `/api`（通过 Nginx）
 
 OpenAPI：
+
 - `/api/openapi.json`
 - `/api/docs`
 
 只读端点（无需鉴权）：
-- `GET /api/skills?q=&limit=&offset=&topic=&language=&owner=`
+
+- `GET /api/skills?q=&limit=&offset=&topic=&language=&owner=&skill_type=&sort=`
 - `GET /api/skills/{owner}/{repo}`
 - `GET /api/facets/topics`
 - `GET /api/facets/languages`

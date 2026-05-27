@@ -108,13 +108,17 @@ def list_top_topics(
                 logger.warning("Failed to get topics from cache: %s", exc)
 
     # Compute from database
-    rows = db.execute(select(Skill.topics)).scalars().all()
+    rows = db.execute(select(Skill.topics, Skill.topics_json)).all()
     counter: Counter[str] = Counter()
-    for topics in rows:
-        value = _normalize(topics)
-        if not value:
-            continue
-        for topic in value.split(","):
+    for topics, topics_json in rows:
+        if topics_json:
+            topic_values = topics_json
+        else:
+            value = _normalize(topics)
+            if not value:
+                continue
+            topic_values = value.split(",")
+        for topic in topic_values:
             item = topic.strip()
             if not item:
                 continue

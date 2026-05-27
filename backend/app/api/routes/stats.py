@@ -11,7 +11,7 @@ router = APIRouter(prefix="/stats", tags=["stats"])
 
 @router.get("/coverage")
 @cache_control(300)
-def coverage(response: Response, db: Session = Depends(get_db)) -> dict:
+def coverage(response: Response, db: Session = Depends(get_db)) -> dict:  # noqa: B008
     total = db.query(func.count(Skill.id)).scalar() or 0
     with_desc_zh = (
         db.query(func.count(Skill.id))
@@ -31,12 +31,28 @@ def coverage(response: Response, db: Session = Depends(get_db)) -> dict:
         .scalar()
         or 0
     )
+    with_registry = (
+        db.query(func.count(Skill.id))
+        .filter(Skill.last_verified_at.isnot(None))
+        .scalar()
+        or 0
+    )
+    with_readme = (
+        db.query(func.count(Skill.id))
+        .filter(Skill.readme_excerpt.isnot(None), Skill.readme_excerpt != "")
+        .scalar()
+        or 0
+    )
     return {
         "total": total,
         "description_zh": with_desc_zh,
         "summary_zh": with_summary_zh,
         "seo_title_zh": with_seo_zh,
+        "registry_verified": with_registry,
+        "readme_parsed": with_readme,
         "description_zh_pct": round(with_desc_zh / total * 100, 1) if total else 0,
         "summary_zh_pct": round(with_summary_zh / total * 100, 1) if total else 0,
         "seo_title_zh_pct": round(with_seo_zh / total * 100, 1) if total else 0,
+        "registry_verified_pct": round(with_registry / total * 100, 1) if total else 0,
+        "readme_parsed_pct": round(with_readme / total * 100, 1) if total else 0,
     }

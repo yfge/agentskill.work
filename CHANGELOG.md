@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Added structured registry metadata, offline repository inspection, and detail-page verification signals for AI Agent Skill entries.
+
 ## [0.1.0] - 2026-01-25
 
 ### Added

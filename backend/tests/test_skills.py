@@ -18,6 +18,14 @@ def seed_skills():
                     forks=1,
                     language="Python",
                     topics="cli,tools",
+                    topics_json=["cli", "tools"],
+                    skill_type="claude_skill",
+                    platforms=["Claude"],
+                    capabilities=["cli"],
+                    install_methods=["git clone https://github.com/foo/bar.git"],
+                    source_files=["README.md", "skill.json"],
+                    quality_score=80,
+                    verification_status="readme_parsed",
                     last_pushed_at=datetime(2026, 1, 1, tzinfo=UTC),
                 ),
                 Skill(
@@ -30,6 +38,14 @@ def seed_skills():
                     forks=2,
                     language="Go",
                     topics="web,cli",
+                    topics_json=["web", "cli"],
+                    skill_type="mcp_server",
+                    platforms=["MCP"],
+                    capabilities=["web"],
+                    install_methods=["git clone https://github.com/baz/qux.git"],
+                    source_files=["README.md", "mcp.json"],
+                    quality_score=95,
+                    verification_status="readme_parsed",
                     last_pushed_at=datetime(2026, 1, 2, tzinfo=UTC),
                 ),
             ]
@@ -77,3 +93,16 @@ def test_skills_filters(client):
     data = response.json()
     assert data["total"] == 1
     assert data["items"][0]["full_name"] == "foo/bar"
+
+    response = client.get("/api/skills?skill_type=mcp_server&limit=100&offset=0")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["total"] == 1
+    assert data["items"][0]["full_name"] == "baz/qux"
+    assert data["items"][0]["platforms"] == ["MCP"]
+    assert data["items"][0]["topics_json"] == ["web", "cli"]
+
+    response = client.get("/api/skills?sort=quality&limit=100&offset=0")
+    assert response.status_code == 200
+    data = response.json()
+    assert [item["full_name"] for item in data["items"]] == ["baz/qux", "foo/bar"]
