@@ -234,7 +234,7 @@ def inspect_skill_repository(
     owner, repo = owner_repo
 
     close_client = client is None
-    client = client or httpx.Client(timeout=30)
+    client = client or httpx.Client(timeout=30, follow_redirects=True)
     try:
         readme = _fetch_readme(client, settings, owner, repo)
         root_files = _fetch_root_files(client, settings, owner, repo)
@@ -305,7 +305,7 @@ def inspect_stale_skill_repositories(db: Session, settings: Settings) -> int:
     now = datetime.now(tz=UTC)
     updated = 0
     touched = 0
-    with httpx.Client(timeout=30) as client:
+    with httpx.Client(timeout=30, follow_redirects=True) as client:
         for skill in candidates:
             try:
                 payload = inspect_skill_repository(skill, settings, client)
