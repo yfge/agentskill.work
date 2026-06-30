@@ -110,3 +110,29 @@ def test_inspect_skill_repository_detects_hermes_agent_plugins():
     assert "XQUIK_API_KEY" in result.config_keys
     assert "HERMES_TWEET_ENABLE_ACTIONS" in result.config_keys
     assert result.verification_status == "readme_parsed"
+
+
+def test_inspect_skill_repository_keeps_manifest_only_hermes_marker():
+    skill = Skill(
+        repo_id=3,
+        name="social-actions",
+        full_name="example/social-actions",
+        description="Social automation plugin",
+        html_url="https://github.com/example/social-actions",
+        stars=5,
+        forks=0,
+        language="Python",
+        topics="social",
+        topics_json=["social"],
+    )
+
+    result = inspect_skill_repository(
+        skill,
+        Settings(),
+        client=FakeClient("", [".claude-plugin", "pyproject.toml"]),
+    )
+
+    assert result is not None
+    assert result.source_files == [".claude-plugin", "pyproject.toml"]
+    assert result.skill_type == "hermes_agent_plugin"
+    assert result.verification_status == "root_files_parsed"

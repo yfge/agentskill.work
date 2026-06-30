@@ -49,6 +49,7 @@ PLATFORM_KEYWORDS: tuple[tuple[str, tuple[str, ...]], ...] = (
 )
 
 KEY_FILES = {
+    ".claude-plugin",
     "README.md",
     "README.zh-CN.md",
     "README_EN.md",
@@ -148,6 +149,7 @@ def _detect_skill_type(text: str, topics: list[str], source_files: list[str]) ->
         "hermes agent" in haystack
         or "hermes-agent" in haystack
         or "hermes plugin" in haystack
+        or ".claude-plugin" in source_files
     ):
         return "hermes_agent_plugin"
     if "mcp" in haystack or "model context protocol" in haystack:
