@@ -24,7 +24,7 @@ cd docker && docker compose up -d
 - Enrichment task: `tasks.skill_enrich` (interval from `ENRICH_INTERVAL_MINUTES`, enabled by `ENABLE_ENRICHMENT=true`)
 - Repository inspection task: `tasks.repository_inspect` (interval from `INSPECT_INTERVAL_MINUTES`, enabled by `ENABLE_REPOSITORY_INSPECTION=true`)
 - Immediate sync on beat start (if `SYNC_ON_START=true`)
-- GitHub search query: `GITHUB_SEARCH_QUERY` (defaults to `("claude skill" OR "agent skill") in:name,description,topics`)
+- GitHub search query: `GITHUB_SEARCH_QUERY` (defaults to `("claude skill" OR "agent skill" OR openclaw OR "hermes agent" OR "hermes plugin") in:name,description,topics`)
 - Latest discovery (new repos) search window:
   - `GITHUB_NEWEST_WINDOW_DAYS` (default: 7)
   - `GITHUB_NEWEST_MAX_PAGES` (default: 2)

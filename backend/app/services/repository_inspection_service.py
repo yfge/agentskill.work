@@ -31,6 +31,7 @@ CAPABILITY_KEYWORDS: tuple[tuple[str, tuple[str, ...]], ...] = (
     ("pdf", ("pdf", "document")),
     ("memory", ("memory", "vector", "embedding", "lancedb", "rag")),
     ("search", ("search", "retrieval", "web search")),
+    ("social", ("social", "twitter", "x/twitter", "tweet")),
     ("image", ("image", "vision", "screenshot")),
     ("video", ("video", "ffmpeg", "transcript")),
     ("terminal", ("terminal", "shell", "cli")),
@@ -40,6 +41,7 @@ CAPABILITY_KEYWORDS: tuple[tuple[str, tuple[str, ...]], ...] = (
 PLATFORM_KEYWORDS: tuple[tuple[str, tuple[str, ...]], ...] = (
     ("Claude", ("claude", "claude skill", "anthropic")),
     ("MCP", ("mcp", "model context protocol")),
+    ("Hermes Agent", ("hermes agent", "hermes-agent", "hermes plugin")),
     ("OpenClaw", ("openclaw",)),
     ("Codex", ("codex",)),
     ("Cursor", ("cursor",)),
@@ -47,6 +49,7 @@ PLATFORM_KEYWORDS: tuple[tuple[str, tuple[str, ...]], ...] = (
 )
 
 KEY_FILES = {
+    ".claude-plugin",
     "README.md",
     "README.zh-CN.md",
     "README_EN.md",
@@ -142,6 +145,13 @@ def _fetch_root_files(
 
 def _detect_skill_type(text: str, topics: list[str], source_files: list[str]) -> str:
     haystack = " ".join([text, " ".join(topics), " ".join(source_files)]).lower()
+    if (
+        "hermes agent" in haystack
+        or "hermes-agent" in haystack
+        or "hermes plugin" in haystack
+        or ".claude-plugin" in source_files
+    ):
+        return "hermes_agent_plugin"
     if "mcp" in haystack or "model context protocol" in haystack:
         return "mcp_server"
     if "openclaw" in haystack or "SKILL.md" in source_files:
@@ -188,7 +198,7 @@ def _detect_config_keys(readme: str | None, source_files: list[str]) -> list[str
     filtered = [
         key
         for key in keys
-        if key.endswith(("KEY", "TOKEN", "SECRET", "URL", "ID"))
+        if key.endswith(("KEY", "TOKEN", "SECRET", "URL", "ID", "ACTIONS"))
         and key not in {"README", "HTTP", "HTTPS", "JSON"}
     ]
     if "package.json" in source_files:
