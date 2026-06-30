@@ -73,3 +73,40 @@ def test_inspect_skill_repository_extracts_registry_metadata():
     assert result.source_files == ["README.md", "mcp.json", "package.json", "tests"]
     assert result.quality_score >= 60
     assert result.verification_status == "readme_parsed"
+
+
+def test_inspect_skill_repository_detects_hermes_agent_plugins():
+    skill = Skill(
+        repo_id=2,
+        name="hermes-tweet",
+        full_name="Xquik-dev/hermes-tweet",
+        description="Hermes Agent plugin for X/Twitter exploration and guarded actions",
+        html_url="https://github.com/Xquik-dev/hermes-tweet",
+        stars=10,
+        forks=1,
+        language="Python",
+        topics="hermes-agent,twitter,social",
+        topics_json=["hermes-agent", "twitter", "social"],
+    )
+    readme = """
+    # Hermes Tweet
+
+    Hermes Agent plugin for X/Twitter exploration, timeline reading, and
+    action-gated posting workflows.
+
+    Configure XQUIK_API_KEY for read tools. Set HERMES_TWEET_ENABLE_ACTIONS=true
+    only when action tools should be available.
+    """
+    result = inspect_skill_repository(
+        skill,
+        Settings(),
+        client=FakeClient(readme, ["README.md", ".claude-plugin", "pyproject.toml"]),
+    )
+
+    assert result is not None
+    assert result.skill_type == "hermes_agent_plugin"
+    assert "Hermes Agent" in result.platforms
+    assert "social" in result.capabilities
+    assert "XQUIK_API_KEY" in result.config_keys
+    assert "HERMES_TWEET_ENABLE_ACTIONS" in result.config_keys
+    assert result.verification_status == "readme_parsed"
